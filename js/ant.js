@@ -5,7 +5,7 @@
  */
 var Ant = function (board) {
 
-    this.name = 'Langton’s Ant';
+    this.name = 'Chris Langton’s Ant';
     this.steps = 0;
     this.r = 0;
     this.c = 0;

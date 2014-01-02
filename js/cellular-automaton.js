@@ -1,11 +1,11 @@
 /**
- * JavaScript implementation of Cellular Automaton
+ * JavaScript implementation of Stephen Wolfram’s Elementary Cellular Automaton
  *
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
 var CellularAutomaton = function (board, rule) {
 
-    this.name = 'Cellular Automaton';
+    this.name = 'Stephen Wolfram’s Elementary Cellular Automaton';
 
     rule = typeof rule === 'undefined' ? null : rule;
 
@@ -16,7 +16,7 @@ var CellularAutomaton = function (board, rule) {
     this.matrix = [];
     this.slideshow = rule === null;
 
-    this.rule = this.slideshow ? 0 : rule;
+    this.rule = this.slideshow ? 30 : rule;
     this.rules = {};
 
     this.getInfo = function() {

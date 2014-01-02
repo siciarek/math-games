@@ -1,11 +1,16 @@
 body {
-    background-color: #FFFFFF
+    background-color: whitesmoke
 }
 
-h1 {
+h1, h2 {
     text-align: center;
     font-family: sans-serif;
-    color: #333333
+    text-shadow: 1px 1px white;
+    color: #444444
+}
+
+h2 {
+    text-align: left;
 }
 
 #board {
@@ -39,7 +44,7 @@ h1 {
     background-color: #000000
 }
 
-/* Cellular Automaton */
+/* Stephen Wolfram’s Cellular Automaton */
 
 #board.ca {
     border: none
