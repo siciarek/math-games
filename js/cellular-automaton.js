@@ -63,39 +63,37 @@ var CellularAutomaton = function (board, rule) {
                 this.rule++;
                 this.rule %= 256;
                 this.init();
-
                 return true;
             }
-
             return false;
         }
 
         for (var c = 0; c < this.board.cols; c++) {
 
-            var n = 0;
+            var key = 0;
 
             // left edge cell - no left neighbour:
             if (c == 0) {
-                n |= this.matrix[this.r][this.board.cols - 1] << 2;
-                n |= this.matrix[this.r][c] << 1;
-                n |= this.matrix[this.r][c + 1];
+                key |= this.matrix[this.r][this.board.cols - 1] << 2;
+                key |= this.matrix[this.r][c] << 1;
+                key |= this.matrix[this.r][c + 1];
             }
             // right edge cell - no right heghbour:
             else if (c == this.board.cols - 1) {
-                n |= this.matrix[this.r][c - 1] << 2;
-                n |= this.matrix[this.r][c] << 1;
-                n |= this.matrix[this.r][0];
+                key |= this.matrix[this.r][c - 1] << 2;
+                key |= this.matrix[this.r][c] << 1;
+                key |= this.matrix[this.r][0];
             }
             // cells with both neighbours:
             else {
-                n |= this.matrix[this.r][c - 1] << 2;
-                n |= this.matrix[this.r][c] << 1;
-                n |= this.matrix[this.r][c + 1];
+                key |= this.matrix[this.r][c - 1] << 2;
+                key |= this.matrix[this.r][c] << 1;
+                key |= this.matrix[this.r][c + 1];
             }
 
-            this.matrix[this.r + 1][c] = this.rules[n];
+            this.matrix[this.r + 1][c] = this.rules[key];
 
-            this.board.setCell(this.r + 1, c, this.rules[n] === 1);
+            this.board.setCell(this.r + 1, c, this.rules[key] === 1);
         }
 
         this.r++;
@@ -107,4 +105,3 @@ var CellularAutomaton = function (board, rule) {
 
     this.init();
 };
-
