@@ -23,7 +23,7 @@
     var speed = 30;
     var app = null;
     var board = null;
-    var rectangle = false;
+    var rectangle = location.href.match(/\?castle/) !== null;
 
     $(document).ready(function () {
         board = new Board();
