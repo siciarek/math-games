@@ -1,4 +1,4 @@
 math-games
 ==========
 
-Math games JavaScript implementations
+Math games JavaScript implementations.
