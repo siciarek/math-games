@@ -20,7 +20,7 @@ var CellularAutomaton = function (board, rule) {
     this.rules = {};
 
     this.getInfo = function() {
-        return 'rule ' + this.rule + ' generation ' + this.r;
+        return '<span style="color:black">rule ' + this.rule + '</span> (gen. ' + this.r + ')';
     };
 
     this.setRules = function () {
