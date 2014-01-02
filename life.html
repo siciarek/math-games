@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/">
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <link href="css/board.css" rel="stylesheet"/>
+
+</head>
+<body>
+
+<h1></h1>
+
+<div id="board"></div>
+<div class="info"></div>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="games/board.js"></script>
+<script src="games/life.js"></script>
+<script>
+    var speed = 150;
+    var app = null;
+    var board = null;
+
+    $(document).ready(function () {
+        board = new Board();
+
+        app = new Life(board);
+
+        run(app, speed);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+body {
+    background-color: #FFFFFF
+}
+
+h1 {
+    text-align: center;
+    font-family: sans-serif;
+    color: #333333
+}
+
+#board {
+    margin: auto;
+    display: table;
+    border-collapse: collapse;
+    border: 1px solid silver !important
+}
+
+#board + div.info {
+    font-family: sans-serif;
+    font-size: 14px;
+    text-align: center;
+    padding: 6px;
+    color: gray;
+}
+
+#board div {
+	display: table-row
+}
+
+#board span {
+	display: table-cell;
+	width: 3px;
+	height: 3px;
+    background-color: #FFFFFF;
+	font-size: 0
+}
+
+#board span.b {
+    background-color: #000000
+}
+
+/* Cellular Automaton */
+
+#board.ca {
+    border: none
+}
+
+#board.ca span.b {
+    background-color: #000000;
+    border: 1px solid #333333 !important
+}
+
+#board.ca span  {
+    width: 10px;
+    height: 10px;
+    border: 1px solid silver !important
+}
