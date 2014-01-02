@@ -10,7 +10,7 @@ var Life = function (board) {
     this.generations = 50;
     this.generation = 0;
 
-    this.structure = 350;
+    this.structure = 0;
     this.structures = [];
     this.definitions = null;
 
