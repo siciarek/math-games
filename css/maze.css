@@ -1,0 +1,17 @@
+@charset 'UTF-8';
+
+/**
+ * Perfect Maze
+ */
+
+#board {
+    border: none
+}
+
+#board span.b {
+    background-color: #FFFFFF;
+}
+
+#board span  {
+    background-color: #000000;
+}

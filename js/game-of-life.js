@@ -2,9 +2,13 @@
  * JavaScript implementation of John Conway’s Game of Life
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var GameOfLife = function (board) {
+var GameOfLife = function (board, rulestring) {
+
 
     this.name = 'John Conway’s Game of Life';
+    rulestring = rulestring || 'B3/S23';
+    this.rulestring = rulestring;
+
     this.current = [];
     this.buffer = [];
     this.generations = 0;
@@ -13,11 +17,26 @@ var GameOfLife = function (board) {
     this.pattern = 0;
     this.patterns = [];
 
+    this.pause = false;
     this.board = board;
+
+    this.born = function (n) {
+        var r = this.rulestring.split('/').shift();
+        return r.replace(n, '') !== r;
+    };
+
+    this.survive = function (n) {
+        var r = this.rulestring.split('/').pop();
+        return r.replace(n, '') !== r;
+    };
+
+    this.fetchPattern = function () {
+        return this.definitions[this.patterns[this.pattern]];
+    };
 
     this.setPattern = function () {
 
-        var pattern = this.definitions[this.patterns[this.pattern]];
+        var pattern = this.fetchPattern();
         var def = pattern.definition;
         var offsets = [];
 
@@ -61,8 +80,9 @@ var GameOfLife = function (board) {
 
     this.getInfo = function () {
         var description = this.definitions[this.patterns[this.pattern]].description;
+        var name = this.definitions[this.patterns[this.pattern]].name;
         return '' + (this.pattern + 1) + '/' + this.patterns.length + ''
-            + '<span style="color:black;display:inline-block;margin-left:16px;margin-right:16px">' + this.patterns[this.pattern] + '</span>'
+            + '<span style="color:black;display:inline-block;margin-left:16px;margin-right:16px">' + name + '</span>'
             + '(gen. ' + this.generation + '/' + this.generations + ')'
             + '<br/><pre style="font-family: sans-serif;font-style: italic">' + description.trim() + '</pre>'
             ;
@@ -82,7 +102,8 @@ var GameOfLife = function (board) {
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
                 var n = this.countNeighbours(r, c);
-                this.buffer[r][c] = n === 3 || n === 2 && this.current[r][c];
+                var v = this.current[r][c];
+                this.buffer[r][c] = v === false && this.born(n) || v === true && this.survive(n);
             }
         }
     };
@@ -90,19 +111,22 @@ var GameOfLife = function (board) {
     this.countNeighbours = function (row, col) {
         var count = 0;
         var neighbours = [
-            [-1, -1], [-1, 0], [-1, 1],
-            [ 0, -1],          [ 0, 1],
-            [ 1, -1], [ 1, 0], [ 1, 1]
+            [-1, -1],
+            [-1, 0],
+            [-1, 1],
+            [ 0, -1],
+            [ 0, 1],
+            [ 1, -1],
+            [ 1, 0],
+            [ 1, 1]
         ];
 
-        while(neighbours.length > 0) {
+        while (neighbours.length > 0) {
             var n = neighbours.shift();
             var r = row + n.shift();
             var c = col + n.shift();
             if (typeof this.current[r] !== 'undefined' && typeof this.current[r][c] !== 'undefined' && this.current[r][c]) {
-                if (count++ > 3) {
-                    return count;
-                }
+                count++;
             }
         }
 
@@ -141,8 +165,10 @@ var GameOfLife = function (board) {
     this.move = function () {
         this.board.clear();
 
-        this.computeBuff();
-        this.buff2curr();
+        if (this.pause === false) {
+            this.computeBuff();
+            this.buff2curr();
+        }
 
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
@@ -153,6 +179,11 @@ var GameOfLife = function (board) {
         }
 
         this.board.setInfo(this.getInfo());
+
+        if(this.pause === true) {
+            return false;
+        }
+
         this.generation++;
 
         if (this.generation > this.generations) {

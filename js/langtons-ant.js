@@ -6,14 +6,14 @@
 var LangtonsAnt = function (board) {
 
     this.name = 'Chris Langton’s Ant';
-    this.steps = 0;
+    this.step = 0;
     this.r = 0;
     this.c = 0;
     this.dir = 270;
     this.board = board;
 
     this.getInfo = function () {
-        return 'step ' + this.steps;
+        return 'step ' + this.step;
     };
 
     this.init = function () {
@@ -47,7 +47,7 @@ var LangtonsAnt = function (board) {
         this.dir %= 360;
 
         if (this.r < this.board.rows && this.c < this.board.cols && this.r >= 0 && this.c >= 0) {
-            this.steps++;
+            this.step++;
             this.board.setInfo(this.getInfo());
             return true;
         }
