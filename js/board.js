@@ -49,13 +49,11 @@ var Board = function (rows, cols, renderTo) {
             value = true;
         }
 
-        var cell = this.getCell(row, col);
-
         if (value === true) {
-            cell.addClass('b');
+            this.getCell(row, col).addClass('b');
         }
         else {
-            cell.removeClass('b');
+            this.getCell(row, col).removeClass('b');
         }
     };
 
