@@ -27,7 +27,7 @@ var Board = function (rows, cols, renderTo) {
     };
 
     this.clear = function () {
-        this.boardSelector.find(this.cellSelector).removeClass('b');
+        this.boardSelector.find(this.cellSelector + '.b').removeClass('b');
     };
 
     this.getCell = function (r, c) {

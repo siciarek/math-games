@@ -25,11 +25,14 @@ var GameOfLife = function (board) {
 
             var period = parseInt(pattern.type.replace(/^.*?p(\d+).*?/, '$1'));
 
-            if (period === 1 || period <= 20) {
+            if (period === 1) {
                 this.generations = 20;
             }
+            else if (period <= 20) {
+                this.generations = 35;
+            }
             else if (period <= 50) {
-                this.generations = 50;
+                this.generations = 60;
             }
             else {
                 this.generations = period + 20;
