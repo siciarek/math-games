@@ -2,27 +2,42 @@
  * JavaScript implementation of John Conway’s Game of Life
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var Life = function (board) {
+var GameOfLife = function (board) {
 
     this.name = 'John Conway’s Game of Life';
     this.current = [];
     this.buffer = [];
-    this.generations = 100;
+    this.generations = 0;
     this.generation = 0;
-
-    this.structure = 0;
-    this.structures = [];
     this.definitions = null;
+    this.pattern = 0;
+    this.patterns = [];
 
     this.board = board;
 
-    this.setStructure = function () {
+    this.setPattern = function () {
 
-        var r = Math.ceil(this.board.rows / 2);
-        var c = Math.ceil(this.board.cols / 2);
+        var pattern = this.definitions[this.patterns[this.pattern]];
+        var def = pattern.definition;
         var offsets = [];
 
-        var def = this.definitions[this.structures[this.structure]].definition;
+        if (pattern.type !== null && pattern.type.match(/p\d+/) !== null) {
+
+            var period = parseInt(pattern.type.replace(/^.*?p(\d+).*?/, '$1'));
+
+            if (period === 1 || period <= 20) {
+                this.generations = 20;
+            }
+            else if (period <= 50) {
+                this.generations = 50;
+            }
+            else {
+                this.generations = period + 20;
+            }
+        }
+        else {
+            this.generations = 120;
+        }
 
         for (var row = 0; row < def.length; row++) {
             for (var col = 0; col < def[0].length; col++) {
@@ -32,31 +47,30 @@ var Life = function (board) {
             }
         }
 
-        r -= Math.ceil(def.length / 2);
-        c -= Math.ceil(def[0].length / 2);
+        var top = Math.ceil((this.board.rows - def.length) / 2);
+        var left = Math.ceil((this.board.cols - def[0].length) / 2);
 
-        for (i = 0; i < offsets.length; i++) {
-            var o = offsets[i];
-            this.current[r + o[0]][c + o[1]] = 1;
+        while (offsets.length > 0) {
+            var o = offsets.shift();
+            this.current[top + o.shift()][left + o.shift()] = true;
         }
     };
 
     this.getInfo = function () {
-        var description = this.definitions[this.structures[this.structure]].description;
-        return '' + (this.structure + 1) + '/' + this.structures.length + ''
-            + '<span style="color:black;display:inline-block;margin-left:16px;margin-right:16px">' + this.structures[this.structure] + '</span>'
-            + '(gen. ' + this.generation + ')'
+        var description = this.definitions[this.patterns[this.pattern]].description;
+        return '' + (this.pattern + 1) + '/' + this.patterns.length + ''
+            + '<span style="color:black;display:inline-block;margin-left:16px;margin-right:16px">' + this.patterns[this.pattern] + '</span>'
+            + '(gen. ' + this.generation + '/' + this.generations + ')'
             + '<br/><pre style="font-family: sans-serif;font-style: italic">' + description.trim() + '</pre>'
             ;
     };
 
     this.reset = function () {
         for (var r = 0; r < this.board.rows; r++) {
-            this.buffer[r] = [];
             this.current[r] = [];
+            this.buffer[r] = [];
             for (var c = 0; c < this.board.cols; c++) {
-                this.buffer[r][c] = 0;
-                this.current[r][c] = 0;
+                this.current[r][c] = this.buffer[r][c] = false;
             }
         }
     };
@@ -65,30 +79,27 @@ var Life = function (board) {
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
                 var n = this.countNeighbours(r, c);
-                this.buffer[r][c] = n === 3 || n === 2 && this.current[r][c] === 1 ? 1 : 0;
+                this.buffer[r][c] = n === 3 || n === 2 && this.current[r][c];
             }
         }
     };
 
     this.countNeighbours = function (row, col) {
         var count = 0;
+        var neighbours = [
+            [-1, -1], [-1, 0], [-1, 1],
+            [ 0, -1],          [ 0, 1],
+            [ 1, -1], [ 1, 0], [ 1, 1]
+        ];
 
-        var n = [];
-        n.push([row - 1, col - 1]);
-        n.push([row - 1, col    ]);
-        n.push([row - 1, col + 1]);
-        n.push([row    , col - 1]);
-        n.push([row    , col + 1]);
-        n.push([row + 1, col - 1]);
-        n.push([row + 1, col    ]);
-        n.push([row + 1, col + 1]);
-
-        for (var i = 0; i < n.length; i++) {
-            var e = n[i];
-            var r = e[0];
-            var c = e[1];
-            if (typeof this.current[r] !== 'undefined' && typeof this.current[r][c] !== 'undefined' && this.current[r][c] === 1) {
-                count++;
+        while(neighbours.length > 0) {
+            var n = neighbours.shift();
+            var r = row + n.shift();
+            var c = col + n.shift();
+            if (typeof this.current[r] !== 'undefined' && typeof this.current[r][c] !== 'undefined' && this.current[r][c]) {
+                if (count++ > 3) {
+                    return count;
+                }
             }
         }
 
@@ -97,7 +108,6 @@ var Life = function (board) {
 
     this.buff2curr = function () {
         for (var r = 0; r < this.board.rows; r++) {
-            this.current[r] = [];
             for (var c = 0; c < this.board.cols; c++) {
                 this.current[r][c] = this.buffer[r][c];
             }
@@ -106,19 +116,19 @@ var Life = function (board) {
 
     this.init = function () {
         if (typeof this.board.rows !== 'undefined' && this.board.cols !== 'undefined') {
-            this.reset();
 
             if (this.definitions === null) {
                 this.definitions = getDefinitions();
 
                 for (var name in this.definitions) {
                     if (this.definitions.hasOwnProperty(name)) {
-                        this.structures.push(name);
+                        this.patterns.push(name);
                     }
                 }
             }
 
-            this.setStructure();
+            this.reset();
+            this.setPattern();
 
             this.board.setName(this.name);
             this.board.setInfo(this.getInfo());
@@ -133,7 +143,7 @@ var Life = function (board) {
 
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
-                if (this.current[r][c] === 1) {
+                if (this.current[r][c]) {
                     this.board.setCell(r, c);
                 }
             }
@@ -143,11 +153,11 @@ var Life = function (board) {
         this.generation++;
 
         if (this.generation > this.generations) {
-            this.reset();
             this.generation = 0;
-            this.structure++;
-            this.structure %= this.structures.length;
-            this.setStructure();
+            this.pattern++;
+            this.pattern %= this.patterns.length;
+            this.reset();
+            this.setPattern();
         }
 
         return true;
@@ -167,6 +177,7 @@ function parseDefinition(definition) {
 
     for (i = 0; i < temp.length; i++) {
         var e = temp[i];
+
         if (e === newrow) {
             data.push([]);
             row++;
@@ -191,12 +202,8 @@ function getDefinitions() {
                     continue;
                 }
 
-//                if(name !== 'ring of fire') continue;
-
-                data[name] = {
-                    definition: parseDefinition(e.definition),
-                    description: e.description
-                };
+                e.definition = parseDefinition(e.definition);
+                data[name] = e;
             }
         }
     }

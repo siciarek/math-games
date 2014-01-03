@@ -3,7 +3,7 @@
  *
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var Ant = function (board) {
+var LangtonsAnt = function (board) {
 
     this.name = 'Chris Langton’s Ant';
     this.steps = 0;
@@ -12,7 +12,7 @@ var Ant = function (board) {
     this.dir = 270;
     this.board = board;
 
-    this.getInfo = function() {
+    this.getInfo = function () {
         return 'step ' + this.steps;
     };
 
@@ -31,33 +31,28 @@ var Ant = function (board) {
 
         this.board.toggleCell(this.r, this.c);
 
-        switch (this.dir) {
-            case 0:
-                this.r++;
-                break;
-            case 90:
-                this.c--;
-                break;
-            case 180:
-                this.r--;
-                break;
-            case 270:
-                this.c++;
-                break;
-        }
+        var offsets = {
+            0: [ 1, 0],
+            90: [0, -1],
+            180: [-1, 0],
+            270: [0, 1]
+        };
 
-        this.dir += this.board.getCellColor(this.r, this.c) === 'black' ? -90 : 90;
+        var o = offsets[this.dir];
+        this.r += o.shift();
+        this.c += o.shift();
+
+        this.dir += this.board.isCellFilled(this.r, this.c) ? -90 : 90;
         this.dir += 360;
         this.dir %= 360;
 
-        if((this.r < this.board.rows && this.c < this.board.cols && this.r >= 0 && this.c >= 0) === false) {
-            return false;
+        if (this.r < this.board.rows && this.c < this.board.cols && this.r >= 0 && this.c >= 0) {
+            this.steps++;
+            this.board.setInfo(this.getInfo());
+            return true;
         }
 
-        this.steps++;
-        this.board.setInfo(this.getInfo());
-
-        return true;
+        return false;
     };
 
     this.init();

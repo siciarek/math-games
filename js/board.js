@@ -10,10 +10,12 @@ var Board = function (rows, cols, renderTo) {
     renderTo = renderTo || 'board';
 
     this.buffer = {};
-
     this.rows = rows;
     this.cols = cols;
-    this.selector = $('#' + renderTo);
+
+    this.rowSelector = 'div';
+    this.cellSelector = 'span';
+    this.boardSelector = $('#' + renderTo);
 
     this.setName = function (name) {
         $('head title').text(name);
@@ -21,19 +23,18 @@ var Board = function (rows, cols, renderTo) {
     };
 
     this.setInfo = function (info) {
-        this.selector.next().html(info);
+        this.boardSelector.next().html(info);
     };
 
     this.clear = function () {
-        this.selector.find('span').removeClass('b');
+        this.boardSelector.find(this.cellSelector).removeClass('b');
     };
 
     this.getCell = function (r, c) {
         var key = r + '-' + c;
 
-        if(typeof this.buffer[key] === 'undefined') {
-            console.log(key);
-            this.buffer[key] = $($(this.selector.find('div').get(r)).find('span').get(c));
+        if (typeof this.buffer[key] === 'undefined') {
+            this.buffer[key] = $($(this.boardSelector.find(this.rowSelector).get(r)).find(this.cellSelector).get(c));
         }
 
         return this.buffer[key];
@@ -45,7 +46,7 @@ var Board = function (rows, cols, renderTo) {
 
     this.setCell = function (row, col, value) {
 
-        if(typeof value === 'undefined') {
+        if (typeof value === 'undefined') {
             value = true;
         }
 
@@ -57,18 +58,27 @@ var Board = function (rows, cols, renderTo) {
         }
     };
 
-    this.getCellColor = function (row, col) {
-        return this.getCell(row, col).hasClass('b') ? 'black' : 'white';
+    this.isCellFilled = function (row, col) {
+        return this.getCell(row, col).hasClass('b');
     };
 
     this.init = function () {
+        var row = [
+            '<' + this.rowSelector + '>',
+            '</' + this.rowSelector + '>'
+        ];
+        var cell = '<' + this.cellSelector + '></' + this.cellSelector + '>';
+        var board = '';
+
         for (var r = 0; r < this.rows; r++) {
-            var row = $('<div></div>');
+            board += row[0];
             for (var c = 0; c < this.cols; c++) {
-                row.append('<span></span>');
+                board += cell;
             }
-            this.selector.prepend(row);
+            board += row[1];
         }
+
+        this.boardSelector.append(board);
     };
 
     this.init();

@@ -1,3 +1,9 @@
+@charset 'UTF-8';
+
+/**
+ * Basic board
+ */
+
 body {
     background-color: whitesmoke
 }
@@ -52,21 +58,4 @@ h2 {
 
 #board span.b {
     background-color: #000000
-}
-
-/* Stephen Wolfram’s Cellular Automaton */
-
-#board.ca {
-    border: none
-}
-
-#board.ca span.b {
-    background-color: #000000;
-    border: 1px solid #333333 !important
-}
-
-#board.ca span  {
-    width: 10px;
-    height: 10px;
-    border: 1px solid silver !important
 }

@@ -12,7 +12,6 @@
 <body>
 
 <h1></h1>
-
 <div id="board"></div>
 <div class="info"></div>
 
@@ -28,7 +27,7 @@
     $(document).ready(function () {
         board = new Board();
 
-        app = new Life(board);
+        app = new GameOfLife(board);
 
         run(app, speed);
     });
