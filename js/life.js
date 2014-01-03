@@ -7,7 +7,7 @@ var Life = function (board) {
     this.name = 'John Conway’s Game of Life';
     this.current = [];
     this.buffer = [];
-    this.generations = 50;
+    this.generations = 100;
     this.generation = 0;
 
     this.structure = 0;
@@ -190,6 +190,8 @@ function getDefinitions() {
                 if (e.definition.match(/\w/)) {
                     continue;
                 }
+
+//                if(name !== 'ring of fire') continue;
 
                 data[name] = {
                     definition: parseDefinition(e.definition),

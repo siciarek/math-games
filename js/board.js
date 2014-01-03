@@ -9,6 +9,8 @@ var Board = function (rows, cols, renderTo) {
     cols = cols || 161;
     renderTo = renderTo || 'board';
 
+    this.buffer = {};
+
     this.rows = rows;
     this.cols = cols;
     this.selector = $('#' + renderTo);
@@ -26,12 +28,15 @@ var Board = function (rows, cols, renderTo) {
         this.selector.find('span').removeClass('b');
     };
 
-    this.getCell = function (row, col) {
-        var row = this.selector
-            .find('div:nth-child(' + (row + 1) + ')');
+    this.getCell = function (r, c) {
+        var key = r + '-' + c;
 
-        return row
-            .find('span:nth-child(' + (col + 1) + ')');
+        if(typeof this.buffer[key] === 'undefined') {
+            console.log(key);
+            this.buffer[key] = $($(this.selector.find('div').get(r)).find('span').get(c));
+        }
+
+        return this.buffer[key];
     };
 
     this.toggleCell = function (row, col) {
@@ -52,10 +57,6 @@ var Board = function (rows, cols, renderTo) {
         else {
             cell.removeClass('b');
         }
-    };
-
-    this.unsetCell = function (row, col) {
-        this.setCell(row, col, false);
     };
 
     this.getCellColor = function (row, col) {
