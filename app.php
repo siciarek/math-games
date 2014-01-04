@@ -16,6 +16,8 @@ if (array_key_exists('REDIRECT_URL', $_SERVER)) {
     $page = preg_replace('|\.html$|', '', $page);
 }
 
+$page = empty($page) ? 'index' : $page;
+
 echo $twig->render('default/' . $page . '.html.twig');
 
 ?>
