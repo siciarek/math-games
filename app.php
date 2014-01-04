@@ -11,7 +11,8 @@ $twig = new Twig_Environment($loader, array(
 $page = 'index';
 
 if (array_key_exists('REDIRECT_URL', $_SERVER)) {
-    $page = preg_replace('/^\W/', '', $_SERVER['REDIRECT_URL']);
+    $page = preg_replace('|math\-games|', '', $page);
+    $page = preg_replace('/^\W+/', '', $_SERVER['REDIRECT_URL']);
     $page = preg_replace('|\.html$|', '', $page);
 }
 
