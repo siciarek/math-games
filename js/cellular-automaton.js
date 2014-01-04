@@ -14,11 +14,11 @@ var CellularAutomaton = function (board, rule) {
     this.matrix = [];
     this.sequence = [];
 
-    this.rule = this.slideshow ? 30 : rule;
     this.rules = {};
 
     rule = typeof rule === 'undefined' ? null : rule;
     this.slideshow = rule === null;
+    this.rule = this.slideshow ? 30 : rule;
     this.board = board;
 
     this.getInfo = function () {
