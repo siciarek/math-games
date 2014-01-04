@@ -45,7 +45,7 @@
     var rule = location.href.replace(/^.*?(\d+).*?$/, '$1');
     rule = isNaN(rule) ? 110 : parseInt(rule);
     var density = location.href.replace(/.*?,(0\.\d+).*?$/, '$1');
-    density = isNaN(density) ? 0 : parseFloat(density);
+    density = isNaN(density) ? 0.5 : parseFloat(density);
 
     $(document).ready(function () {
         board = new Board(255, 511);
