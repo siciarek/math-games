@@ -1,5 +1,11 @@
+/vendor
+/composer.lock
+/composer.phar
+/DEBUG
+
 .idea
 temp
 parse.php
+
 js/test.js
 test.html

@@ -2,21 +2,57 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link href="/css/cellular-automaton.css" rel="stylesheet"/>
+
+    <style>
+        body {
+            margin-top: 48px;
+            background-color: gray;
+        }
+
+        #board {
+            border: none !important;
+        }
+
+        #board span {
+            width: 2px !important;
+            height: 2px !important;
+        }
+
+        #board + div.info {
+            color: ghostwhite !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div id="board"></div>
+    <div class="info"></div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="/js/cellular-automaton.js"></script>
     <script>
-        var speed = 500;
+        var speed = 150;
         var app = null;
         var board = null;
+        var rule = location.href.replace(/^.*?(\d+).*?$/, '$1');
+        rule = isNaN(rule) ? 110 : parseInt(rule);
+        var density = location.href.replace(/.*?,(0\.\d+).*?$/, '$1');
+        density = isNaN(density) ? 0.5 : parseFloat(density);
 
         $(document).ready(function () {
-            board = new Board(16, 31);
+            board = new Board(255, 511);
 
-            app = new CellularAutomaton(board);
+            app = new CellularAutomaton(board, rule);
+            app.density = density;
+            app.steps = board.cols - 1;
+
+            app.getInfo = function () {
+                return 'rule ' + this.rule + ' (gen. ' + this.r + ') density: ' + this.density;
+            };
+
+            app.init();
 
             run(app, speed);
         });

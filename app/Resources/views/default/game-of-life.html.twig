@@ -1,22 +1,18 @@
 {% extends 'board.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link href="/css/cellular-automaton.css" rel="stylesheet"/>
-{% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
-    <script src="/js/cellular-automaton.js"></script>
+    <script src="/js/game-of-life-patterns.js"></script>
+    <script src="/js/game-of-life.js"></script>
     <script>
-        var speed = 500;
+        var speed = 150;
         var app = null;
         var board = null;
 
         $(document).ready(function () {
-            board = new Board(16, 31);
+            board = new Board();
 
-            app = new CellularAutomaton(board);
+            app = new GameOfLife(board);
 
             run(app, speed);
         });
