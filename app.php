@@ -8,7 +8,7 @@ $twig = new Twig_Environment($loader, array(
     'cache' => $debug ? null : __DIR__ . '/app/cache/prod/twig',
 ));
 
-$page = 'index';
+$page = '';
 
 if (array_key_exists('REDIRECT_URL', $_SERVER)) {
     $page = $_SERVER['REDIRECT_URL'];
