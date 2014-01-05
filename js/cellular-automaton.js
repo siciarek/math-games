@@ -17,6 +17,7 @@ var CellularAutomaton = function (board, rule) {
     this.rules = {};
 
     rule = typeof rule === 'undefined' ? null : rule;
+
     this.slideshow = rule === null;
     this.rule = this.slideshow ? 30 : rule;
     this.board = board;
@@ -35,6 +36,7 @@ var CellularAutomaton = function (board, rule) {
         this.c = 0;
         this.r = 0;
         this.matrix = [];
+        this.sequence = [];
 
         this.setRules();
 
@@ -53,9 +55,10 @@ var CellularAutomaton = function (board, rule) {
                 var sum = 0;
                 for (var i = 0; i < this.board.cols; i++) {
                     if (Math.random() < this.density) {
-                        sum += 1;
-                        this.matrix[this.r][i] = 1;
-                        this.board.setCell(this.r, i);
+                        var value = 1;
+                        this.matrix[this.r][i] = value;
+                        this.board.setCell(this.r, i, value === 1);
+                        sum += value;
                     }
                 }
                 this.sequence.push(sum);
@@ -71,10 +74,10 @@ var CellularAutomaton = function (board, rule) {
         }
     };
 
-
     this.move = function () {
 
-        if (this.r >= this.steps) {
+        if (this.r === this.steps) {
+
             console.log(this.sequence);
 
             if (this.slideshow === true) {
@@ -83,6 +86,7 @@ var CellularAutomaton = function (board, rule) {
                 this.init();
                 return true;
             }
+
             return false;
         }
 
@@ -90,32 +94,16 @@ var CellularAutomaton = function (board, rule) {
 
         for (var c = 0; c < this.board.cols; c++) {
 
-            var key = 0;
+            var key = 0, k = 0;
 
-            // left edge cell - no left neighbour:
-            if (c == 0) {
-                key |= this.matrix[this.r][this.board.cols - 1] << 2;
-                key |= this.matrix[this.r][c] << 1;
-                key |= this.matrix[this.r][c + 1];
-            }
-            // right edge cell - no right heghbour:
-            else if (c == this.board.cols - 1) {
-                key |= this.matrix[this.r][c - 1] << 2;
-                key |= this.matrix[this.r][c] << 1;
-                key |= this.matrix[this.r][0];
-            }
-            // cells with both neighbours:
-            else {
-                key |= this.matrix[this.r][c - 1] << 2;
-                key |= this.matrix[this.r][c] << 1;
-                key |= this.matrix[this.r][c + 1];
-            }
+            do {
+                key |= this.matrix[this.r][(this.board.cols + c - k + 1 ) % this.board.cols] << k++;
+            } while (k < 3);
 
-            this.matrix[this.r + 1][c] = this.rules[key];
-
-            sum += this.rules[key];
-
-            this.board.setCell(this.r + 1, c, this.rules[key] === 1);
+            var value = this.rules[key];
+            this.matrix[this.r + 1][c] = value;
+            this.board.setCell(this.r + 1, c, value === 1);
+            sum += value;
         }
 
         this.r++;
