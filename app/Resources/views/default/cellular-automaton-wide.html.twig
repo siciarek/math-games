@@ -47,7 +47,6 @@
 
             app = new CellularAutomaton(board, rule);
             app.density = density;
-            app.steps = board.rows - 1;
 
             app.getInfo = function () {
                 return 'rule ' + this.rule + ' (gen. ' + this.r + ') density: ' + this.density;

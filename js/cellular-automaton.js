@@ -8,7 +8,7 @@ var CellularAutomaton = function (board, rule) {
     this.name = 'Stephen Wolfram’s Elementary Cellular Automaton';
 
     this.density = 0;
-    this.steps = 15;
+    this.steps = 0;
     this.r = 0;
     this.c = 0;
     this.matrix = [];
@@ -42,6 +42,7 @@ var CellularAutomaton = function (board, rule) {
 
         if (typeof this.board.rows !== 'undefined' && this.board.cols !== 'undefined') {
             this.board.clear();
+            this.steps = this.board.rows - 1;
             this.c = Math.floor(this.board.cols / 2);
 
             for (var r = 0; r < this.board.rows; r++) {
