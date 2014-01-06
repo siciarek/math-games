@@ -19,7 +19,6 @@ var Board = function (rows, cols, renderTo) {
 
     this.setName = function (name) {
         $('head title').text(name);
-        $('h1').html(name);
     };
 
     this.setInfo = function (info) {

@@ -1,31 +1,7 @@
 {% extends 'board.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-
-    <style>
-        body {
-            margin-top: 48px;
-            background-color: gray;
-        }
-
-        #board {
-            border: none !important;
-        }
-
-        #board span {
-            width: 2px !important;
-            height: 2px !important;
-        }
-
-        #board + div.info {
-            color: ghostwhite !important;
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
-    <div id="board"></div>
+    <div id="board" class="wide"></div>
     <div class="info"></div>
 {% endblock %}
 

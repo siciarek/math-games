@@ -4,24 +4,6 @@
  * Basic board
  */
 
-body {
-    background-color: whitesmoke
-}
-
-h1, h2 {
-    font-size: 24px;
-    text-align: center;
-    font-family: sans-serif;
-    font-weight: normal;
-    text-shadow: 1px 1px white;
-    color: #444444
-}
-
-h2 {
-    font-size: 18px;
-    text-align: left;
-}
-
 #board {
     margin: auto;
     display: table;
@@ -37,7 +19,7 @@ h2 {
     color: gray;
 }
 
-#board + div.info pre {
+#board + div.info div {
     font-size: 12px;
     line-height: 18px;
     padding-top: 6px;
@@ -59,3 +41,9 @@ h2 {
 #board span.b {
     background-color: #000000
 }
+
+#board.wide span {
+    width: 2px !important;
+    height: 2px !important;
+}
+

@@ -4,10 +4,6 @@
  * Perfect Maze
  */
 
-#board {
-    border: none
-}
-
 #board span.b {
     background-color: #FFFFFF;
 }

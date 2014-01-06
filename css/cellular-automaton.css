@@ -4,10 +4,6 @@
  * Stephen Wolfram’s Cellular Automaton
  */
 
-#board {
-    border: none
-}
-
 #board span.b {
     background-color: #000000;
     border: 1px solid #333333 !important

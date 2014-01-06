@@ -84,7 +84,7 @@ var GameOfLife = function (board, rulestring) {
         return '' + (this.pattern + 1) + '/' + this.patterns.length + ''
             + '<span style="color:black;display:inline-block;margin-left:16px;margin-right:16px">' + name + '</span>'
             + '(gen. ' + this.generation + '/' + this.generations + ')'
-            + '<br/><pre style="font-family: sans-serif;font-style: italic">' + description.trim() + '</pre>'
+            + '<br/><div style="white-space:pre;font-family: sans-serif;font-style: italic">' + description.trim() + '</div>'
             ;
     };
 
