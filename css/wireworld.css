@@ -1,36 +1,17 @@
 @charset 'UTF-8';
 
 /**
- * Stephen Wolfram’s Cellular Automaton
+ * Brian Silverman’s Wireworld
  */
 
-#board span  {
-    width: 10px;
-    height: 10px;
-    background-color: #000000;
-    border: 1px solid gray !important
-}
-
-#board span.empty {
-    background-color: #000000;
-}
-
-#board span.electron-head {
-    background-color: #0080FF;
-}
-
-#board span.electron-tail {
-    background-color: #FF4000;
-}
-
-#board span.conductor {
-    background-color: #FFD700;
+#board {
+    border: none !important;
 }
 
 #board span  {
     width: 6px;
     height: 6px;
-    background-color: transparent;
+    background-color: #000000;
     border: none !important;
 }
 
@@ -39,13 +20,13 @@
 }
 
 #board span.electron-head {
-    background-color: #FFFF00;
+    background-color: #FFFFFF;
 }
 
 #board span.electron-tail {
-    background-color: #FF0000;
+    background-color: #909090;
 }
 
 #board span.conductor {
-    background-color: #000000;
+    background-color: #404040;
 }
