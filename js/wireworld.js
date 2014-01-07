@@ -71,7 +71,7 @@ var Wireworld = function (board, pattern) {
 
         pat = {};
         for (c = 0; c < this.board.cols; c++) {
-            r = this.r;
+            r = Math.floor(this.board.rows / 2);
             key = r + '-' + c;
             pat[key] = c === 0 ? 1 : 3;
         }
@@ -269,11 +269,7 @@ var Wireworld = function (board, pattern) {
         this.step = 0;
 
         if (typeof this.board.rows !== 'undefined' && this.board.cols !== 'undefined') {
-            this.r = Math.floor(this.board.rows / 2);
-            this.c = Math.floor(this.board.cols / 2);
-
             this.reset();
-
             this.board.setColors(this.colors);
             this.board.setName(this.name);
             this.board.setInfo(this.getInfo());
@@ -292,9 +288,8 @@ var Wireworld = function (board, pattern) {
 
         this.computeBuffer();
         this.buffer2grid();
-        this.step++;
 
-        return true;
+        return this.step++ < 300;
     };
 
     this.init();

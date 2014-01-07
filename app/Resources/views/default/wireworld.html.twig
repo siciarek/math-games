@@ -10,7 +10,7 @@
     <script src="js/wireworld.js"></script>
     <script src="js/wireworld-patterns.js"></script>
     <script>
-        var speed = 150;
+        var speed = 200;
         var app = null;
         var board = null;
 
@@ -51,14 +51,18 @@
             width = wireworldDigitAltBoard[0].length;
             height = wireworldDigitAltBoard.length;
 
-            wireworldDigitAltBoard[179][48] = 2;
-            wireworldDigitAltBoard[178][48] = 1;
+            // first clock:
+            wireworldDigitAltBoard[179][44] = 2;
+            wireworldDigitAltBoard[178][44] = 1;
 
-            wireworldDigitAltBoard[185][48] = 2;
-            wireworldDigitAltBoard[186][48] = 1;
+            // second clock:
+            wireworldDigitAltBoard[185][44] = 2;
+            wireworldDigitAltBoard[186][44] = 1;
+
+            var start = 66;
 
             for (var i = 0; i < 10; i++) {
-                var offset = 61 + i * 6;
+                var offset = start + i * 6;
 
                 var cond = i < digit;
 
@@ -72,18 +76,50 @@
             }
         }
 
-
         $(document).ready(function () {
 
             board = new Board(height, width);
 
-            if (pattern === 3) {
-                width = 128;
-                height = 280;
+            app = new Wireworld(board, pattern);
+
+            if(pattern === 3 || pattern === 4) {
+                app.board.setName = function (name) {
+                    name += ' (' + patterns[pattern] + ') [' + digit + ']';
+
+                    var url = location.href.replace(/\?.*$/, '');
+
+                    var html = '<i class="icon-cog icon-large"></i> ';
+                    html += name;
+                    html += ' <i class="icon-caret-down"></i>';
+
+                    var submenu = '<ul class="dropdown-menu">';
+                    for(var i = 0; i < 10; i++) {
+                        submenu += '<li>';
+                        submenu += '<a href="' + url + '?' + pattern + ',' + i + '">';
+                        submenu += '<i class="';
+                        submenu += 'icon-ok';
+                        submenu += '"';
+                        submenu += i !== digit ? ' style="color:transparent!important"': '';
+                        submenu += '></i> ';
+                        submenu += i;
+                        submenu += '</a>';
+                        submenu += '</li>';
+                    }
+                    submenu += '</ul>';
+
+                    $('head title').text(name);
+                    var li = $('li.title');
+                    li.addClass('dropdown')
+                            .find('a')
+                            .addClass('dropdown-toggle')
+                            .attr('data-toggle', 'dropdown')
+                            .attr('title', name)
+                            .html(html)
+                    li.append(submenu);
+                };
             }
 
-            app = new Wireworld(board, pattern);
-            app.name = app.name + ' (' + patterns[pattern] + ')';
+            app.reset();
             app.init();
 
             run(app, speed);

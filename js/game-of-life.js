@@ -9,7 +9,7 @@ var GameOfLife = function (board, rulestring) {
     rulestring = rulestring || 'B3/S23';
     this.rulestring = rulestring;
 
-    this.current = [];
+    this.grid = [];
     this.buffer = [];
     this.generations = 0;
     this.generation = 0;
@@ -74,7 +74,7 @@ var GameOfLife = function (board, rulestring) {
 
         while (offsets.length > 0) {
             var o = offsets.shift();
-            this.current[top + o.shift()][left + o.shift()] = true;
+            this.grid[top + o.shift()][left + o.shift()] = true;
         }
     };
 
