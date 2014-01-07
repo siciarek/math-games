@@ -1,0 +1,51 @@
+@charset 'UTF-8';
+
+/**
+ * Stephen Wolfram’s Cellular Automaton
+ */
+
+#board span  {
+    width: 10px;
+    height: 10px;
+    background-color: #000000;
+    border: 1px solid gray !important
+}
+
+#board span.empty {
+    background-color: #000000;
+}
+
+#board span.electron-head {
+    background-color: #0080FF;
+}
+
+#board span.electron-tail {
+    background-color: #FF4000;
+}
+
+#board span.conductor {
+    background-color: #FFD700;
+}
+
+#board span  {
+    width: 6px;
+    height: 6px;
+    background-color: transparent;
+    border: none !important;
+}
+
+#board span.empty {
+    background-color: transparent;
+}
+
+#board span.electron-head {
+    background-color: #FFFF00;
+}
+
+#board span.electron-tail {
+    background-color: #FF0000;
+}
+
+#board span.conductor {
+    background-color: #000000;
+}

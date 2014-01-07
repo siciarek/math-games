@@ -90,19 +90,19 @@ var GameOfLife = function (board, rulestring) {
 
     this.reset = function () {
         for (var r = 0; r < this.board.rows; r++) {
-            this.current[r] = [];
+            this.grid[r] = [];
             this.buffer[r] = [];
             for (var c = 0; c < this.board.cols; c++) {
-                this.current[r][c] = this.buffer[r][c] = false;
+                this.grid[r][c] = this.buffer[r][c] = false;
             }
         }
     };
 
-    this.computeBuff = function () {
+    this.computeBuffer = function () {
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
                 var n = this.countNeighbours(r, c);
-                var v = this.current[r][c];
+                var v = this.grid[r][c];
                 this.buffer[r][c] = v === false && this.born(n) || v === true && this.survive(n);
             }
         }
@@ -125,7 +125,7 @@ var GameOfLife = function (board, rulestring) {
             var n = neighbours.shift();
             var r = row + n.shift();
             var c = col + n.shift();
-            if (typeof this.current[r] !== 'undefined' && typeof this.current[r][c] !== 'undefined' && this.current[r][c]) {
+            if (typeof this.grid[r] !== 'undefined' && typeof this.grid[r][c] !== 'undefined' && this.grid[r][c]) {
                 count++;
             }
         }
@@ -133,10 +133,10 @@ var GameOfLife = function (board, rulestring) {
         return count;
     };
 
-    this.buff2curr = function () {
+    this.buffer2grid = function () {
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
-                this.current[r][c] = this.buffer[r][c];
+                this.grid[r][c] = this.buffer[r][c];
             }
         }
     };
@@ -166,13 +166,13 @@ var GameOfLife = function (board, rulestring) {
         this.board.clear();
 
         if (this.pause === false) {
-            this.computeBuff();
-            this.buff2curr();
+            this.computeBuffer();
+            this.buffer2grid();
         }
 
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
-                if (this.current[r][c]) {
+                if (this.grid[r][c]) {
                     this.board.setCell(r, c);
                 }
             }

@@ -12,10 +12,15 @@ var Board = function (rows, cols, renderTo) {
     this.buffer = {};
     this.rows = rows;
     this.cols = cols;
+    this.colors = [];
 
     this.rowSelector = 'div';
     this.cellSelector = 'span';
     this.boardSelector = $('#' + renderTo);
+
+    this.setColors = function (colors) {
+        this.colors = colors;
+    }
 
     this.setName = function (name) {
         $('head title').text(name);
@@ -41,6 +46,13 @@ var Board = function (rows, cols, renderTo) {
 
     this.toggleCell = function (row, col) {
         this.getCell(row, col).toggleClass('b');
+    };
+
+    this.setCellColor = function (row, col, value) {
+        if (value > 0) {
+            this.getCell(row, col).removeAttr('class');
+            this.getCell(row, col).addClass(this.colors[value]);
+        }
     };
 
     this.setCell = function (row, col, value) {
