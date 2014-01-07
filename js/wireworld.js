@@ -54,12 +54,6 @@ var Wireworld = function (board, pattern) {
         'conductor'
     ];
 
-    this.trigger = function(condition) {
-        if(condition) {
-            console.log(this.step);
-        }
-    };
-
     this.getInfo = function () {
         return 'step ' + this.step;
     };
@@ -135,6 +129,15 @@ var Wireworld = function (board, pattern) {
         l = 11;
         while (l--) {
             pat[r-- + '-' + c++ ] = 3;
+        }
+
+        l = 32;
+        while (l--) {
+            pat[r + '-' + c++ ] = 3;
+        }
+
+        for (; c < this.board.cols;) {
+            pat[r++ + '-' + c++] = 3;
         }
 
         patterns.push(pat);
@@ -254,6 +257,7 @@ var Wireworld = function (board, pattern) {
     ];
 
     this.buffer2grid = function () {
+
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
                 this.grid[r][c] = this.buffer[r][c];
@@ -262,6 +266,7 @@ var Wireworld = function (board, pattern) {
     };
 
     this.init = function () {
+        this.step = 0;
 
         if (typeof this.board.rows !== 'undefined' && this.board.cols !== 'undefined') {
             this.r = Math.floor(this.board.rows / 2);
@@ -277,19 +282,17 @@ var Wireworld = function (board, pattern) {
 
     this.move = function () {
 
-
-        if(this.step % 60 === 0)
         for (var r = 0; r < this.board.rows; r++) {
             for (var c = 0; c < this.board.cols; c++) {
                 this.board.setCellColor(r, c, this.grid[r][c]);
             }
         }
+
         this.board.setInfo(this.getInfo());
 
-        var of = 1;
-        this.trigger(++this.step % (240 + of) === 0);
         this.computeBuffer();
         this.buffer2grid();
+        this.step++;
 
         return true;
     };

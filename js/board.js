@@ -20,10 +20,12 @@ var Board = function (rows, cols, renderTo) {
 
     this.setColors = function (colors) {
         this.colors = colors;
-    }
+    };
 
     this.setName = function (name) {
         $('head title').text(name);
+        $('li.title a').html('<i class="icon-cog icon-large"></i> ' + name)
+            .attr('title', name);
     };
 
     this.setInfo = function (info) {

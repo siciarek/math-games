@@ -9,8 +9,8 @@
 }
 
 #board span  {
-    width: 6px;
-    height: 6px;
+    width: 3px;
+    height: 3px;
     background-color: #000000;
     border: none !important;
 }

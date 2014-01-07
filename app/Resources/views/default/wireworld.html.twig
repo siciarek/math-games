@@ -3,30 +3,27 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="css/wireworld.css" rel="stylesheet"/>
-
-    <style>
-        #board span {
-            width: 4px;
-            height: 4px;
-            border: none !important
-        }
-
-        ;
-    </style>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="js/wireworld.js"></script>
-    <script src="js/wireworld-digit-board.js"></script>
-    <script src="js/wireworld-digit-alt-board.js"></script>
+    <script src="js/wireworld-patterns.js"></script>
     <script>
-        var speed = 100;
+        var speed = 150;
         var app = null;
         var board = null;
 
         var height = 34 * 2;
         var width = 64 * 2;
+
+        var patterns = [
+            'conductor horizontal',
+            'conductor broken line',
+            'clocks',
+            '7 segment display',
+            '7 segment display with decoder'
+        ];
 
         var pattern = location.href.replace(/^.*?(\d+).*?$/, '$1');
         pattern = isNaN(pattern) ? 0 : parseInt(pattern);
@@ -40,9 +37,9 @@
 
             width = wireworldDigitBoard[0].length;
             height = wireworldDigitBoard.length;
-            wireworldDigitBoard[272][37 + digit * 6] = 1;
-            wireworldDigitBoard[273][37 + digit * 6] = 3;
-            wireworldDigitBoard[273][37 + digit * 6 + 1] = 2;
+            wireworldDigitBoard[263][33 + digit * 6] = 1;
+            wireworldDigitBoard[264][33 + digit * 6] = 3;
+            wireworldDigitBoard[264][33 + digit * 6 + 1] = 2;
         }
 
         if (pattern === 4) {
@@ -60,6 +57,19 @@
             wireworldDigitAltBoard[185][48] = 2;
             wireworldDigitAltBoard[186][48] = 1;
 
+            for (var i = 0; i < 10; i++) {
+                var offset = 61 + i * 6;
+
+                var cond = i < digit;
+
+                if (cond) {
+                    wireworldDigitAltBoard[202][offset - 1] = 1;
+                    wireworldDigitAltBoard[202][offset] = 2;
+                } else {
+                    wireworldDigitAltBoard[204][offset] = 1;
+                    wireworldDigitAltBoard[204][offset + 1] = 2;
+                }
+            }
         }
 
 
@@ -73,29 +83,8 @@
             }
 
             app = new Wireworld(board, pattern);
-
-            if (pattern === 4) {
-                app.trigger = function (condition) {
-                    var to = 10;
-                    if (condition) {
-                        for (var i = 0; i < to; i++) {
-                            var offset = i * 6;
-
-                            var cond = i < digit;
-
-                            if (!cond) {
-                                this.grid[204][offset + 64] = 1;
-                                this.grid[204][offset + 64 + 1] = 2;
-                            }
-
-                            if (cond) {
-                                this.grid[202][offset + 64 - 1] = 1;
-                                this.grid[202][offset + 64 - 1 + 1] = 2;
-                            }
-                        }
-                    }
-                };
-            }
+            app.name = app.name + ' (' + patterns[pattern] + ')';
+            app.init();
 
             run(app, speed);
         });
