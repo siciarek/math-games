@@ -163,6 +163,30 @@ var Wireworld = function (board, pattern) {
 
     this.reset = function () {
 
+        if(this.pattern === 6) {
+            for (var r = 0; r < this.board.rows; r++) {
+                this.grid[r] = [];
+                this.buffer[r] = [];
+                for (var c = 0; c < this.board.cols; c++) {
+                    this.grid[r][c] = gateAndNotAndNot[r][c];
+                }
+            }
+
+            return;
+        }
+
+        if(this.pattern === 5) {
+            for (var r = 0; r < this.board.rows; r++) {
+                this.grid[r] = [];
+                this.buffer[r] = [];
+                for (var c = 0; c < this.board.cols; c++) {
+                    this.grid[r][c] = gateAndNotOr[r][c];
+                }
+            }
+
+            return;
+        }
+
         if(this.pattern === 3) {
             for (var r = 0; r < this.board.rows; r++) {
                 this.grid[r] = [];
@@ -289,7 +313,7 @@ var Wireworld = function (board, pattern) {
         this.computeBuffer();
         this.buffer2grid();
 
-        return this.step++ < 300;
+        return this.step++ < 400;
     };
 
     this.init();
