@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
+
+<project name="math-games" basedir="." default="ccx">
+
+    <target name="ccx">
+        <delete verbose="true" includeemptydirs="true">
+            <fileset dir="app/cache" excludes=".gitkeep" includes="**/*"/>
+        </delete>
+    </target>
+
+</project>
+
