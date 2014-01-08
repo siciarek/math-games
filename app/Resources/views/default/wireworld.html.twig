@@ -28,8 +28,22 @@
         ];
 
         var pattern = location.href.replace(/^.*?(\d+).*?$/, '$1');
-        pattern = isNaN(pattern) ? 0 : parseInt(pattern);
+        pattern = isNaN(pattern) ? 2 : parseInt(pattern);
         var digit = 0;
+
+        if (pattern === 2) {
+            width = clocks[0].length;
+            height = clocks.length;
+
+            for (var r = 0; r < 22; r++) {
+                if(r === 2) {
+                    continue;
+                }
+                var offset = r * 6;
+                clocks[3 + offset][14] = 2;
+                clocks[4 + offset][15] = 1;
+            }
+        }
 
         if (pattern === 6) {
             var temp = location.href.replace(/^.*?\?(.*)$/, '$1').split(',');
@@ -151,7 +165,7 @@
 
                     var to = 10;
 
-                    if(pattern === 5 || pattern === 6) {
+                    if (pattern === 5 || pattern === 6) {
                         to = 4;
                     }
 
@@ -169,7 +183,7 @@
 
                         text = i;
 
-                        if(pattern === 5 || pattern === 6) {
+                        if (pattern === 5 || pattern === 6) {
                             text = gateOptions[i];
                         }
 
