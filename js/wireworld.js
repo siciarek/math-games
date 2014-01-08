@@ -163,6 +163,18 @@ var Wireworld = function (board, pattern) {
 
     this.reset = function () {
 
+        if(this.pattern === 7) {
+            for (var r = 0; r < this.board.rows; r++) {
+                this.grid[r] = [];
+                this.buffer[r] = [];
+                for (var c = 0; c < this.board.cols; c++) {
+                    this.grid[r][c] = gates[r][c];
+                }
+            }
+
+            return;
+        }
+
         if(this.pattern === 2) {
             for (var r = 0; r < this.board.rows; r++) {
                 this.grid[r] = [];
