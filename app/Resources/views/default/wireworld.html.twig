@@ -59,12 +59,13 @@
         height = clocks.length;
 
         for (var r = 0; r < 22; r++) {
+            coffset = 17;
             if (r === 2) {
-                continue;
+                coffset -= 8;
             }
-            var offset = r * 6;
-            clocks[3 + offset][14] = 2;
-            clocks[4 + offset][15] = 1;
+            var offset = 3 + r * 6;
+            clocks[offset][coffset] = 2;
+            clocks[offset + 1][coffset + 1] = 1;
         }
     }
 
@@ -152,10 +153,10 @@
             if (cond) {
                 wireworldDigitAltBoard[202][offset - 1] = 1;
                 wireworldDigitAltBoard[202][offset] = 2;
-            } else {
-                wireworldDigitAltBoard[204][offset] = 1;
-                wireworldDigitAltBoard[204][offset + 1] = 2;
             }
+
+            wireworldDigitAltBoard[204][offset] = 1;
+            wireworldDigitAltBoard[204][offset + 1] = 2;
         }
     }
 
