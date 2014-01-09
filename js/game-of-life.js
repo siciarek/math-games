@@ -2,8 +2,7 @@
  * JavaScript implementation of John Conway’s Game of Life
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var GameOfLife = function (board, rulestring) {
-
+var GameOfLife = function (width, height, rulestring) {
 
     this.name = 'John Conway’s Game of Life';
     rulestring = rulestring || 'B3/S23';
@@ -18,7 +17,8 @@ var GameOfLife = function (board, rulestring) {
     this.patterns = [];
 
     this.pause = false;
-    this.board = board;
+    this.rows = height;
+    this.cols = width;
 
     this.born = function (n) {
         var r = this.rulestring.split('/').shift();
@@ -34,7 +34,7 @@ var GameOfLife = function (board, rulestring) {
         return this.definitions[this.patterns[this.pattern]];
     };
 
-    this.setPattern = function () {
+    this.setUpPattern = function () {
 
         var pattern = this.fetchPattern();
         var def = pattern.definition;
@@ -69,8 +69,8 @@ var GameOfLife = function (board, rulestring) {
             }
         }
 
-        var top = Math.ceil((this.board.rows - def.length) / 2);
-        var left = Math.ceil((this.board.cols - def[0].length) / 2);
+        var top = Math.ceil((this.rows - def.length) / 2);
+        var left = Math.ceil((this.cols - def[0].length) / 2);
 
         while (offsets.length > 0) {
             var o = offsets.shift();
@@ -89,18 +89,18 @@ var GameOfLife = function (board, rulestring) {
     };
 
     this.reset = function () {
-        for (var r = 0; r < this.board.rows; r++) {
+        for (var r = 0; r < this.rows; r++) {
             this.grid[r] = [];
             this.buffer[r] = [];
-            for (var c = 0; c < this.board.cols; c++) {
+            for (var c = 0; c < this.cols; c++) {
                 this.grid[r][c] = this.buffer[r][c] = false;
             }
         }
     };
 
     this.computeBuffer = function () {
-        for (var r = 0; r < this.board.rows; r++) {
-            for (var c = 0; c < this.board.cols; c++) {
+        for (var r = 0; r < this.rows; r++) {
+            for (var c = 0; c < this.cols; c++) {
                 var n = this.countNeighbours(r, c);
                 var v = this.grid[r][c];
                 this.buffer[r][c] = v === false && this.born(n) || v === true && this.survive(n);
@@ -134,64 +134,44 @@ var GameOfLife = function (board, rulestring) {
     };
 
     this.buffer2grid = function () {
-        for (var r = 0; r < this.board.rows; r++) {
-            for (var c = 0; c < this.board.cols; c++) {
+        for (var r = 0; r < this.rows; r++) {
+            for (var c = 0; c < this.cols; c++) {
                 this.grid[r][c] = this.buffer[r][c];
             }
         }
     };
 
     this.init = function () {
-        if (typeof this.board.rows !== 'undefined' && this.board.cols !== 'undefined') {
 
-            if (this.definitions === null) {
-                this.definitions = getDefinitions();
+        if (this.definitions === null) {
+            this.definitions = getDefinitions();
 
-                for (var name in this.definitions) {
-                    if (this.definitions.hasOwnProperty(name)) {
-                        this.patterns.push(name);
-                    }
+            for (var name in this.definitions) {
+                if (this.definitions.hasOwnProperty(name)) {
+                    this.patterns.push(name);
                 }
             }
-
-            this.reset();
-            this.setPattern();
-
-            this.board.setName(this.name);
-            this.board.setInfo(this.getInfo());
         }
+
+        this.reset();
+        this.setUpPattern();
+    };
+
+    this.nextPattern = function() {
+        this.pattern++;
+        this.pattern %= this.patterns.length;
     };
 
     this.move = function () {
-        this.board.clear();
 
-        if (this.pause === false) {
-            this.computeBuffer();
-            this.buffer2grid();
-        }
+        this.computeBuffer();
+        this.buffer2grid();
 
-        for (var r = 0; r < this.board.rows; r++) {
-            for (var c = 0; c < this.board.cols; c++) {
-                if (this.grid[r][c]) {
-                    this.board.setCell(r, c);
-                }
-            }
-        }
-
-        this.board.setInfo(this.getInfo());
-
-        if(this.pause === true) {
-            return false;
-        }
-
-        this.generation++;
-
-        if (this.generation > this.generations) {
+        if (this.generation++ > this.generations) {
             this.generation = 0;
-            this.pattern++;
-            this.pattern %= this.patterns.length;
+            this.nextPattern();
             this.reset();
-            this.setPattern();
+            this.setUpPattern();
         }
 
         return true;

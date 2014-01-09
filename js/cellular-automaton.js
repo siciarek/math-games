@@ -3,10 +3,12 @@
  *
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var CellularAutomaton = function (board, rule) {
+var CellularAutomaton = function (width, height, board, rule) {
 
     this.name = 'Stephen Wolfram’s Elementary Cellular Automaton';
 
+    this.rows = height;
+    this.cols = width;
     this.density = 0;
     this.steps = 0;
     this.r = 0;
@@ -20,7 +22,7 @@ var CellularAutomaton = function (board, rule) {
 
     this.slideshow = rule === null;
     this.rule = this.slideshow ? 30 : rule;
-    this.board = board;
+
 
     this.getInfo = function () {
         return '<span style="color:black">rule ' + this.rule + '</span> (gen. ' + this.r + ')';
@@ -35,43 +37,40 @@ var CellularAutomaton = function (board, rule) {
     this.init = function () {
         this.c = 0;
         this.r = 0;
-        this.matrix = [];
+        this.grid = [];
         this.sequence = [];
 
         this.setRules();
 
-        if (typeof this.board.rows !== 'undefined' && this.board.cols !== 'undefined') {
-            this.board.clear();
-            this.steps = this.board.rows - 1;
-            this.c = Math.floor(this.board.cols / 2);
+        if (typeof this.rows !== 'undefined' && this.cols !== 'undefined') {
 
-            for (var r = 0; r < this.board.rows; r++) {
-                this.matrix[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
-                    this.matrix[r].push(0);
+            this.steps = this.rows - 1;
+            this.c = Math.floor(this.cols / 2);
+
+            for (var r = 0; r < this.rows; r++) {
+                this.grid[r] = [];
+                for (var c = 0; c < this.cols; c++) {
+                    this.grid[r].push(0);
                 }
             }
 
             if (this.density > 0) {
                 var sum = 0;
-                for (var i = 0; i < this.board.cols; i++) {
+                for (var i = 0; i < this.cols; i++) {
                     if (Math.random() < this.density) {
                         var value = 1;
-                        this.matrix[this.r][i] = value;
-                        this.board.setCell(this.r, i, value === 1);
+                        this.grid[this.r][i] = value;
+
                         sum += value;
                     }
                 }
                 this.sequence.push(sum);
             }
             else {
-                this.matrix[this.r][this.c] = 1;
-                this.board.setCell(this.r, this.c);
+                this.grid[this.r][this.c] = 1;
+
                 this.sequence.push(1);
             }
-
-            this.board.setName(this.name);
-            this.board.setInfo(this.getInfo());
         }
     };
 
@@ -93,17 +92,17 @@ var CellularAutomaton = function (board, rule) {
 
         var sum = 0;
 
-        for (var c = 0; c < this.board.cols; c++) {
+        for (var c = 0; c < this.cols; c++) {
 
             var key = 0, k = 0;
 
             do {
-                key |= this.matrix[this.r][(this.board.cols + c - k + 1 ) % this.board.cols] << k++;
+                key |= this.grid[this.r][(this.cols + c - k + 1 ) % this.cols] << k++;
             } while (k < 3);
 
             var value = this.rules[key];
-            this.matrix[this.r + 1][c] = value;
-            this.board.setCell(this.r + 1, c, value === 1);
+            this.grid[this.r + 1][c] = value;
+
             sum += value;
         }
 
@@ -111,7 +110,7 @@ var CellularAutomaton = function (board, rule) {
 
         this.sequence.push(sum);
 
-        this.board.setInfo(this.getInfo());
+
 
         return true;
     };

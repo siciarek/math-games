@@ -7,14 +7,24 @@
     <script>
         var speed = 150;
         var app = null;
-        var board = null;
+        var display = null;
+
+        var pattern = location.href.replace(/^.*?(\d+).*?$/, '$1');
+        pattern = isNaN(pattern) ? null : parseInt(pattern);
 
         $(document).ready(function () {
-            board = new Board();
+            app = new GameOfLife(160, 120);
 
-            app = new GameOfLife(board);
+            if (pattern !== null) {
+                app.pattern = pattern <= 0 ? 0 : pattern - 1;
+                app.pattern %= app.patterns.length;
+                app.nextPattern = function() {};
+                app.init();
+            }
 
-            run(app, speed);
+            display = new Display(app);
+
+            display.run(speed);
         });
     </script>
 {% endblock %}

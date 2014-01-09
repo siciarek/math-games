@@ -11,14 +11,12 @@
     <script>
         var speed = 500;
         var app = null;
-        var board = null;
+        var display = null;
 
         $(document).ready(function () {
-            board = new Board(16, 31);
-
-            app = new CellularAutomaton(board);
-
-            run(app, speed);
+            app = new CellularAutomaton(31, 16, board);
+            display = new Display(app);
+            display.run(speed);
         });
     </script>
 {% endblock %}

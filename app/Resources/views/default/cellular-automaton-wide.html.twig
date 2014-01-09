@@ -11,7 +11,7 @@
     <script>
         var speed = 150;
         var app = null;
-        var board = null;
+        var display = null;
 
         var rule = location.href.replace(/^.*?(\d+).*?$/, '$1');
         rule = isNaN(rule) ? 110 : parseInt(rule);
@@ -19,18 +19,13 @@
         density = isNaN(density) ? 0.5 : parseFloat(density);
 
         $(document).ready(function () {
-            board = new Board(255, 511);
-
-            app = new CellularAutomaton(board, rule);
+            app = new CellularAutomaton(511, 255, rule);
             app.density = density;
-
             app.getInfo = function () {
                 return 'rule ' + this.rule + ' (gen. ' + this.r + ') density: ' + this.density;
             };
-
-            app.init();
-
-            run(app, speed);
+            display = new Display(app);
+            display.run(speed);
         });
     </script>
 {% endblock %}

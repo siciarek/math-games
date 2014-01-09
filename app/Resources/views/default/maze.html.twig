@@ -7,12 +7,12 @@
     <script>
         var speed = 150;
         var app = null;
-        var board = null;
+        var display = null;
+
         var index = location.href.replace(/^.*?(\d+).*?$/, '$1');
         index = isNaN(index) ? 0 : parseInt(index);
 
         $(document).ready(function () {
-            board = new Board();
 
             var names = {
                 'B3/S1234': 'Maze',
@@ -26,10 +26,9 @@
                 rulestrings.push(name);
             }
 
-            app = new GameOfLife(board, rulestrings[index]);
+            app = new GameOfLife(160, 120, rulestrings[index]);
             app.pause = false;
             app.name = names[app.rulestring] + ' (' + app.rulestring + ')';
-
             app.fetchPattern = function () {
                 this.pattern = 107;
                 var pat = this.definitions[this.patterns[this.pattern]];
@@ -39,9 +38,8 @@
                 return pat;
             };
 
-            app.init();
-
-            run(app, speed);
+            display = new Display(app);
+            display.run(speed);
         });
     </script>
 {% endblock %}
