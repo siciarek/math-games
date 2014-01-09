@@ -32,30 +32,9 @@
     pattern = isNaN(pattern) ? 2 : parseInt(pattern);
     var digit = 0;
 
-
-    if (pattern === 0) {
+    if (pattern <= 1) {
         width = wwpatterns[pattern][0].length;
         height = wwpatterns[pattern].length;
-    }
-
-    if (pattern === 7) {
-        width = gates[0].length;
-        height = gates.length;
-    }
-
-    if (pattern === 2) {
-        width = clocks[0].length;
-        height = clocks.length;
-
-        for (var r = 0; r < 22; r++) {
-            coffset = 17;
-            if (r === 2) {
-                coffset -= 8;
-            }
-            var offset = 3 + r * 6;
-            clocks[offset][coffset] = 2;
-            clocks[offset + 1][coffset + 1] = 1;
-        }
     }
 
     if (pattern === 6) {

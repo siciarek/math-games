@@ -1,37 +1,3 @@
-function createClock(pat, size, start, obj) {
-    r = start[0];
-    c = start[1];
-    l = size.v;
-    while (l--) {
-        pat[r++ + '-' + c ] = 3;
-    }
-    c++;
-    l = size.h;
-    while (l--) {
-        pat[r + '-' + c++ ] = 3;
-    }
-    r--;
-    l = size.v;
-    while (l--) {
-        pat[r-- + '-' + c ] = 3;
-    }
-    c--;
-    l = size.h;
-    while (l--) {
-        pat[r + '-' + c-- ] = 3;
-    }
-
-    r = start[0];
-    c = start[1] + size.h + 1;
-    l = obj.board.cols - c;
-    while (l--) {
-        pat[r + '-' + c++ ] = 3;
-    }
-
-    pat[(start[0] - 1) + '-' + (start[1] + size.h)] = 2;
-    pat[(start[0]) + '-' + (start[1] + size.h + 1)] = 1;
-}
-
 /**
  * JavaScript implementation of  Brian Silverman’s Wireworld
  *
@@ -163,7 +129,7 @@ var Wireworld = function (board, pattern) {
 
     this.reset = function () {
 
-        if(this.pattern === 0) {
+        if(this.pattern <= 1) {
             for (var r = 0; r < this.board.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
@@ -361,7 +327,9 @@ var Wireworld = function (board, pattern) {
         this.computeBuffer();
         this.buffer2grid();
 
-        return this.step++ < 400;
+        this.step++;
+
+        return true;
     };
 
     this.init();
