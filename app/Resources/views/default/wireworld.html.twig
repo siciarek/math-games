@@ -32,26 +32,15 @@
     pattern = isNaN(pattern) ? 2 : parseInt(pattern);
     var digit = 0;
 
+
+    if (pattern === 0) {
+        width = wwpatterns[pattern][0].length;
+        height = wwpatterns[pattern].length;
+    }
+
     if (pattern === 7) {
         width = gates[0].length;
         height = gates.length;
-
-        for (var r = 0; r < 3; r++) {
-            var roffset = r * 11;
-
-            for (var c = 0; c < 3; c++) {
-                var coffset = c * 27;
-
-                if (c === 0 || c === 1) {
-                    gates[2 + roffset][2 + coffset] = 2;
-                    gates[3 + roffset][3 + coffset] = 1;
-                }
-                if (c === 0 || c === 2) {
-                    gates[5 + roffset + (r === 2 ? 1 : 0)][3 + coffset] = 1;
-                    gates[6 + roffset + (r === 2 ? 1 : 0)][2 + coffset] = 2;
-                }
-            }
-        }
     }
 
     if (pattern === 2) {
