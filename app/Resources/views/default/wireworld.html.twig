@@ -1,10 +1,5 @@
 {% extends 'board.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link href="css/wireworld.css" rel="stylesheet"/>
-{% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
     <script src="js/wireworld.js"></script>
@@ -12,24 +7,19 @@
     <script>
     var speed = 200;
     var app = null;
-    var board = null;
-
-    var height = 34 * 2;
-    var width = 64 * 2;
+    var display = null;
 
     var patterns = [
-        'conductor horizontal',
-        'conductor broken line',
         'clocks',
-        '7 segment display',
-        '7 segment display with decoder',
+        'single output gates',
         'gate AND NOT/OR',
         'gate AND NOT/AND NOT',
-        'single output gates'
+        '7 segment display',
+        '7 segment display with decoder'
     ];
 
     var pattern = location.href.replace(/^.*?(\d+).*?$/, '$1');
-    pattern = isNaN(pattern) ? 2 : parseInt(pattern);
+    pattern = isNaN(pattern) ? 0 : parseInt(pattern);
     var digit = 0;
 
     if (pattern <= 1) {
@@ -130,9 +120,7 @@
 
     $(document).ready(function () {
 
-        board = new Board(height, width);
-
-        app = new Wireworld(board, pattern);
+        app = new Wireworld(width, height, pattern);
 
         if (pattern === 3 || pattern === 4 || pattern === 5 || pattern === 6) {
             app.board.setName = function (name) {
@@ -197,10 +185,8 @@
             };
         }
 
-        app.reset();
-        app.init();
-
-        run(app, speed);
+        display = new Display(app);
+        display.run(speed);
     });
     </script>
 {% endblock %}

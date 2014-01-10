@@ -21,7 +21,14 @@ var Display = function (app, renderTo) {
 
     this.buffer = {};
     this.interval = null;
-    this.colors = [];
+    this.colors = [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f'
+    ];
 
     this.setColors = function (colors) {
         this.colors = colors;
@@ -55,7 +62,7 @@ var Display = function (app, renderTo) {
         this.getCell(row, col).toggleClass('b');
     };
 
-    this.setCellColor = function (row, col, value) {
+    this.setPixel = function (row, col, value) {
         if (value > 0) {
             this.getCell(row, col).removeAttr('class');
             this.getCell(row, col).addClass(this.colors[value]);
@@ -74,10 +81,6 @@ var Display = function (app, renderTo) {
         else {
             this.getCell(row, col).removeClass('b');
         }
-    };
-
-    this.isCellFilled = function (row, col) {
-        return this.getCell(row, col).hasClass('b');
     };
 
     this.init = function () {
@@ -107,8 +110,8 @@ var Display = function (app, renderTo) {
 
         for (var r = 0; r < this.app.rows; r++) {
             for (var c = 0; c < this.app.cols; c++) {
-                if (this.app.grid[r][c]) {
-                    this.setCell(r, c);
+                if (this.app.grid[r][c] !== 0) {
+                    this.setPixel(r, c, this.app.grid[r][c]);
                 }
             }
         }

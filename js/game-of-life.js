@@ -22,12 +22,12 @@ var GameOfLife = function (width, height, rulestring) {
 
     this.born = function (n) {
         var r = this.rulestring.split('/').shift();
-        return r.replace(n, '') !== r;
+        return r.replace(n, '') !== r ? 1 : 0;
     };
 
     this.survive = function (n) {
         var r = this.rulestring.split('/').pop();
-        return r.replace(n, '') !== r;
+        return r.replace(n, '') !== r ? 1 : 0;
     };
 
     this.fetchPattern = function () {
@@ -74,7 +74,7 @@ var GameOfLife = function (width, height, rulestring) {
 
         while (offsets.length > 0) {
             var o = offsets.shift();
-            this.grid[top + o.shift()][left + o.shift()] = true;
+            this.grid[top + o.shift()][left + o.shift()] = 1;
         }
     };
 
@@ -93,7 +93,8 @@ var GameOfLife = function (width, height, rulestring) {
             this.grid[r] = [];
             this.buffer[r] = [];
             for (var c = 0; c < this.cols; c++) {
-                this.grid[r][c] = this.buffer[r][c] = false;
+                this.grid[r][c] = 0;
+                this.buffer[r][c] = 0;
             }
         }
     };
@@ -103,7 +104,7 @@ var GameOfLife = function (width, height, rulestring) {
             for (var c = 0; c < this.cols; c++) {
                 var n = this.countNeighbours(r, c);
                 var v = this.grid[r][c];
-                this.buffer[r][c] = v === false && this.born(n) || v === true && this.survive(n);
+                this.buffer[r][c] = (v === 0 && this.born(n) || v === 1 && this.survive(n)) ? 1 : 0;
             }
         }
     };
@@ -125,7 +126,7 @@ var GameOfLife = function (width, height, rulestring) {
             var n = neighbours.shift();
             var r = row + n.shift();
             var c = col + n.shift();
-            if (typeof this.grid[r] !== 'undefined' && typeof this.grid[r][c] !== 'undefined' && this.grid[r][c]) {
+            if (typeof this.grid[r] !== 'undefined' && typeof this.grid[r][c] !== 'undefined' && this.grid[r][c] === 1) {
                 count++;
             }
         }

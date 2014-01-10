@@ -3,7 +3,7 @@
  *
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var Wireworld = function (board, pattern) {
+var Wireworld = function (width, height, pattern) {
 
     pattern = pattern || 0;
 
@@ -12,128 +12,20 @@ var Wireworld = function (board, pattern) {
     this.step = 0;
     this.grid = [];
     this.buffer = [];
-    this.board = board;
-    this.colors = [
-        'empty',
-        'electron-head',
-        'electron-tail',
-        'conductor'
-    ];
+    this.cols = width;
+    this.rows = height;
 
     this.getInfo = function () {
         return 'step ' + this.step;
     };
 
-    this.getPattern = function (pattern) {
-
-        var patterns = [];
-        var pat = null;
-        var c = 0;
-        var r = 0;
-        var key = null;
-        var l = 0;
-
-        // simple horizontal conductor
-
-        pat = {};
-        for (c = 0; c < this.board.cols; c++) {
-            r = Math.floor(this.board.rows / 2);
-            key = r + '-' + c;
-            pat[key] = c === 0 ? 1 : 3;
-        }
-        patterns.push(pat);
-
-        // conductor
-
-        pat = {};
-
-        r = 16;
-        c = 0;
-        pat[r + '-' + c] = 1; // electron head
-        c++;
-
-        l = 10;
-        while (l--) {
-            pat[r + '-' + c++] = 3;
-        }
-        r++;
-
-        l = 10;
-        while (l--) {
-            pat[r++ + '-' + c ] = 3;
-        }
-        c++;
-
-        l = 10;
-        while (l--) {
-            pat[r + '-' + c++] = 3;
-        }
-        r--;
-
-        l = 10;
-        while (l--) {
-            pat[r-- + '-' + c ] = 3;
-        }
-        c++;
-
-        l = 10;
-        while (l--) {
-            pat[r + '-' + c++] = 3;
-        }
-        r++;
-
-        l = 10;
-        while (l--) {
-            pat[r++ + '-' + c++ ] = 3;
-        }
-
-        l = 10;
-        while (l--) {
-            pat[r + '-' + c++] = 3;
-        }
-
-        l = 11;
-        while (l--) {
-            pat[r-- + '-' + c++ ] = 3;
-        }
-
-        l = 32;
-        while (l--) {
-            pat[r + '-' + c++ ] = 3;
-        }
-
-        for (; c < this.board.cols;) {
-            pat[r++ + '-' + c++] = 3;
-        }
-
-        patterns.push(pat);
-
-        // clock
-
-        pat = {};
-        var maxtime = 16;
-
-        for (var t = 0; t < maxtime; t++) {
-            var top = 3 + 4 * t;
-            var horiz = t;
-            var left = maxtime - t;
-            createClock(pat, { h: horiz, v: 1 }, [top, left], this);
-        }
-
-        patterns.push(pat);
-
-        pattern %= patterns.length;
-
-        return patterns[pattern];
-    };
-
     this.reset = function () {
 
         if(this.pattern <= 1) {
-            for (var r = 0; r < this.board.rows; r++) {
+            for (var r = 0; r < this.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
+                for (var c = 0; c < this.cols; c++) {
                     this.grid[r][c] = wwpatterns[this.pattern][r][c];
                 }
             }
@@ -142,10 +34,10 @@ var Wireworld = function (board, pattern) {
         }
 
         if(this.pattern === 7) {
-            for (var r = 0; r < this.board.rows; r++) {
+            for (var r = 0; r < this.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
+                for (var c = 0; c < this.cols; c++) {
                     this.grid[r][c] = gates[r][c];
                 }
             }
@@ -154,10 +46,10 @@ var Wireworld = function (board, pattern) {
         }
 
         if(this.pattern === 7) {
-            for (var r = 0; r < this.board.rows; r++) {
+            for (var r = 0; r < this.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
+                for (var c = 0; c < this.cols; c++) {
                     this.grid[r][c] = gates[r][c];
                 }
             }
@@ -166,10 +58,10 @@ var Wireworld = function (board, pattern) {
         }
 
         if(this.pattern === 2) {
-            for (var r = 0; r < this.board.rows; r++) {
+            for (var r = 0; r < this.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
+                for (var c = 0; c < this.cols; c++) {
                     this.grid[r][c] = clocks[r][c];
                 }
             }
@@ -178,10 +70,10 @@ var Wireworld = function (board, pattern) {
         }
 
         if(this.pattern === 6) {
-            for (var r = 0; r < this.board.rows; r++) {
+            for (var r = 0; r < this.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
+                for (var c = 0; c < this.cols; c++) {
                     this.grid[r][c] = gateAndNotAndNot[r][c];
                 }
             }
@@ -190,10 +82,10 @@ var Wireworld = function (board, pattern) {
         }
 
         if(this.pattern === 5) {
-            for (var r = 0; r < this.board.rows; r++) {
+            for (var r = 0; r < this.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
+                for (var c = 0; c < this.cols; c++) {
                     this.grid[r][c] = gateAndNotOr[r][c];
                 }
             }
@@ -202,10 +94,10 @@ var Wireworld = function (board, pattern) {
         }
 
         if(this.pattern === 3) {
-            for (var r = 0; r < this.board.rows; r++) {
+            for (var r = 0; r < this.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
+                for (var c = 0; c < this.cols; c++) {
                     this.grid[r][c] = wireworldDigitBoard[r][c];
                 }
             }
@@ -214,29 +106,15 @@ var Wireworld = function (board, pattern) {
         }
 
         if(this.pattern === 4) {
-            for (var r = 0; r < this.board.rows; r++) {
+            for (var r = 0; r < this.rows; r++) {
                 this.grid[r] = [];
                 this.buffer[r] = [];
-                for (var c = 0; c < this.board.cols; c++) {
+                for (var c = 0; c < this.cols; c++) {
                     this.grid[r][c] = wireworldDigitAltBoard[r][c];
                 }
             }
 
             return;
-        }
-
-        var p = this.getPattern(this.pattern);
-
-        for (var r = 0; r < this.board.rows; r++) {
-            this.grid[r] = [];
-            this.buffer[r] = [];
-            for (var c = 0; c < this.board.cols; c++) {
-                this.grid[r][c] = this.buffer[r][c] = 0;
-
-                if (typeof p[r + '-' + c] !== 'undefined') {
-                    this.grid[r][c] = p[r + '-' + c];
-                }
-            }
         }
     };
 
@@ -246,8 +124,8 @@ var Wireworld = function (board, pattern) {
     };
 
     this.computeBuffer = function () {
-        for (var r = 0; r < this.board.rows; r++) {
-            for (var c = 0; c < this.board.cols; c++) {
+        for (var r = 0; r < this.rows; r++) {
+            for (var c = 0; c < this.cols; c++) {
                 this.buffer[r][c] = this.getState(r, c);
             }
         }
@@ -296,8 +174,8 @@ var Wireworld = function (board, pattern) {
 
     this.buffer2grid = function () {
 
-        for (var r = 0; r < this.board.rows; r++) {
-            for (var c = 0; c < this.board.cols; c++) {
+        for (var r = 0; r < this.rows; r++) {
+            for (var c = 0; c < this.cols; c++) {
                 this.grid[r][c] = this.buffer[r][c];
             }
         }
@@ -305,24 +183,10 @@ var Wireworld = function (board, pattern) {
 
     this.init = function () {
         this.step = 0;
-
-        if (typeof this.board.rows !== 'undefined' && this.board.cols !== 'undefined') {
-            this.reset();
-            this.board.setColors(this.colors);
-            this.board.setName(this.name);
-            this.board.setInfo(this.getInfo());
-        }
+        this.reset();
     };
 
     this.move = function () {
-
-        for (var r = 0; r < this.board.rows; r++) {
-            for (var c = 0; c < this.board.cols; c++) {
-                this.board.setCellColor(r, c, this.grid[r][c]);
-            }
-        }
-
-        this.board.setInfo(this.getInfo());
 
         this.computeBuffer();
         this.buffer2grid();
