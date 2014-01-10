@@ -1,4 +1,4 @@
-{% extends 'board.html.twig' %}
+{% extends 'display.html.twig' %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -6,28 +6,17 @@
     <script>
         var speed = 100;
         var app = null;
-        var board = null;
-        var rectangle = location.href.match(/\?castle/) !== null;
+        var display = null;
+
+        var pattern = location.href.replace(/^.*?(\d+).*?$/, '$1');
+        pattern = isNaN(pattern) ? 0 : parseInt(pattern);
 
         $(document).ready(function () {
-            board = new Board();
+            app = new LangtonsAnt(161, 120, pattern);
 
-            // Rectangle in the middle of the board:
-            if (rectangle === true) {
-                for (var r = 0; r < board.rows; r++) {
-                    for (var c = 0; c < board.cols; c++) {
-                        if (c > parseInt(board.cols / 4) && c < parseInt(board.cols - (board.cols / 4))
-                                && r > parseInt(board.rows / 2.5) && r < parseInt(board.rows - (board.rows / 2.5))
-                                ) {
-                            board.toggleCell(r, c);
-                        }
-                    }
-                }
-            }
+            display = new Display(app);
 
-            app = new LangtonsAnt(board);
-
-            run(app, speed);
+            display.run(speed);
         });
     </script>
 {% endblock %}

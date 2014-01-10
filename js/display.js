@@ -89,17 +89,17 @@ var Display = function (app, renderTo) {
             '</' + this.rowSelector + '>'
         ];
         var cell = '<' + this.cellSelector + '></' + this.cellSelector + '>';
-        var board = '';
+        var display = '';
 
         for (var r = 0; r < this.app.rows; r++) {
-            board += row[0];
+            display += row[0];
             for (var c = 0; c < this.app.cols; c++) {
-                board += cell;
+                display += cell;
             }
-            board += row[1];
+            display += row[1];
         }
 
-        this.selector.append(board);
+        this.selector.append(display);
     };
 
     this.move = function () {

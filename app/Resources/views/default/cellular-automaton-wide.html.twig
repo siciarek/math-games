@@ -1,9 +1,4 @@
-{% extends 'board.html.twig' %}
-
-{% block body %}
-    <div id="board" class="wide"></div>
-    <div class="info"></div>
-{% endblock %}
+{% extends 'display.html.twig' %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -19,6 +14,7 @@
         density = isNaN(density) ? 0.5 : parseFloat(density);
 
         $(document).ready(function () {
+            $('#board').addClass('wide');
             app = new CellularAutomaton(511, 255, rule);
             app.density = density;
             app.getInfo = function () {

@@ -1,9 +1,4 @@
-{% extends 'board.html.twig' %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link href="css/cellular-automaton.css" rel="stylesheet"/>
-{% endblock %}
+{% extends 'display.html.twig' %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -14,6 +9,7 @@
         var display = null;
 
         $(document).ready(function () {
+            $('#board').addClass('ca');
             app = new CellularAutomaton(31, 16, board);
             display = new Display(app);
             display.run(speed);

@@ -7,6 +7,8 @@
 #board {
     margin: auto;
     display: table;
+    background-color: #000000;
+    border-collapse: collapse;
 }
 
 #board + div.info {
@@ -32,7 +34,7 @@
 	display: table-cell;
 	width: 3px;
 	height: 3px;
-    background-color: #000000;
+    color: transparent;
 	font-size: 0
 }
 
@@ -52,8 +54,24 @@
     background-color: #404040;
 }
 
+#board.ca {
+    background-color: #FFFFFF !important;
+}
+
+#board.ca span.b {
+    background-color: #000000;
+    border: 1px solid #333333 !important
+}
+
+#board.ca span  {
+    width: 10px;
+    height: 10px;
+    border: 1px solid silver !important
+}
+
 #board.wide span {
     width: 2px !important;
     height: 2px !important;
+    border: none !important
 }
 
