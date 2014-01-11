@@ -3,26 +3,24 @@
  *
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var CellularAutomaton = function (width, height, board, rule) {
+var CellularAutomaton = function (width, height, rule, density) {
+
+    density = density || 0;
 
     this.name = 'Stephen Wolfram’s Elementary Cellular Automaton';
-
     this.rows = height;
     this.cols = width;
-    this.density = 0;
-    this.steps = 0;
+    this.density = density;
     this.r = 0;
     this.c = 0;
-    this.matrix = [];
-    this.sequence = [];
 
+    this.grid = [];
+    this.sequence = [];
     this.rules = {};
 
     rule = typeof rule === 'undefined' ? null : rule;
-
     this.slideshow = rule === null;
     this.rule = this.slideshow ? 30 : rule;
-
 
     this.getInfo = function () {
         return '<span style="color:black">rule ' + this.rule + '</span> (gen. ' + this.r + ')';
@@ -42,53 +40,35 @@ var CellularAutomaton = function (width, height, board, rule) {
 
         this.setRules();
 
-        if (typeof this.rows !== 'undefined' && this.cols !== 'undefined') {
+        this.c = Math.floor(this.cols / 2);
 
-            this.steps = this.rows - 1;
-            this.c = Math.floor(this.cols / 2);
+        for (var r = 0; r < this.rows; r++) {
+            this.grid[r] = [];
+            for (var c = 0; c < this.cols; c++) {
+                this.grid[r].push(0);
+            }
+        }
 
-            for (var r = 0; r < this.rows; r++) {
-                this.grid[r] = [];
-                for (var c = 0; c < this.cols; c++) {
-                    this.grid[r].push(0);
+        if (this.density > 0) {
+            var sum = 0;
+            for (var i = 0; i < this.cols; i++) {
+                if (Math.random() < this.density) {
+                    var value = 1;
+                    this.grid[this.r][i] = value;
+
+                    sum += value;
                 }
             }
-
-            if (this.density > 0) {
-                var sum = 0;
-                for (var i = 0; i < this.cols; i++) {
-                    if (Math.random() < this.density) {
-                        var value = 1;
-                        this.grid[this.r][i] = value;
-
-                        sum += value;
-                    }
-                }
-                this.sequence.push(sum);
-            }
-            else {
-                this.grid[this.r][this.c] = 1;
-
-                this.sequence.push(1);
-            }
+            this.sequence.push(sum);
+        }
+        else {
+            this.grid[this.r][this.c] = 1;
+            this.sequence.push(1);
         }
     };
 
     this.move = function () {
 
-        if (this.r === this.steps) {
-
-            console.log(this.sequence);
-
-            if (this.slideshow === true) {
-                this.rule++;
-                this.rule %= 256;
-                this.init();
-                return true;
-            }
-
-            return false;
-        }
 
         var sum = 0;
 
@@ -101,16 +81,30 @@ var CellularAutomaton = function (width, height, board, rule) {
             } while (k < 3);
 
             var value = this.rules[key];
-            this.grid[this.r + 1][c] = value;
 
-            sum += value;
+            if(typeof this.grid[this.r + 1] !== 'undefined') {
+                this.grid[this.r + 1][c] = value;
+                sum += value;
+            }
         }
-
-        this.r++;
 
         this.sequence.push(sum);
 
+        this.r++;
 
+        if (!(this.r < this.rows)) {
+
+            console.log(this.sequence);
+
+            if (this.slideshow === true) {
+                this.rule++;
+                this.rule %= 256;
+                this.init();
+                return true;
+            }
+
+            return false;
+        }
 
         return true;
     };

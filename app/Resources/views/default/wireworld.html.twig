@@ -121,9 +121,10 @@
     $(document).ready(function () {
 
         app = new Wireworld(width, height, pattern);
+        display = new Display(app);
 
-        if (pattern === 3 || pattern === 4 || pattern === 5 || pattern === 6) {
-            app.board.setName = function (name) {
+        if (pattern === 5 || pattern === 6) {
+            display.setName = function (name) {
 
                 var gateOptions = [
                     'a = FALSE, b = FALSE',
@@ -185,7 +186,6 @@
             };
         }
 
-        display = new Display(app);
         display.run(speed);
     });
     </script>

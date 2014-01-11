@@ -2,23 +2,29 @@
 
 {% block body %}
 
-    <div class="page-header text-muted">
-        <h1>
-            <i class="icon-cog"></i>
-            Applications
-        </h1>
+    <div class="jumbotron">
+        <div class="container">
+            <h1 style="color:#999999">
+                <i class="icon-list-alt"></i>
+                Math Games
+            </h1>
+
+            <hr style="border-bottom: 1px dashed #999999;"/>
+
+            <p>
+                This page is for the peope who are interested in visual aspect of mathematical computations.<br>
+                Generally we present results of <em>cellular automata</em> work.
+            </p>
+
+            <p>If you want to find out more please visit our <em>References</em> page.</p>
+
+            <br/>
+
+            <a href="/references.html" class="btn btn-primary btn-lg" role="button">
+                <i class="icon-book icon-large"></i>
+                References &raquo;
+            </a>
+        </div>
     </div>
-
-    <ul class="list-unstyled">
-        <li><a target="_blank" href="cellular-automaton.html">Stephen Wolfram’s Elementary Cellular Automaton</a></li>
-        <li><a target="_blank" href="cellular-automaton-wide.html">Stephen Wolfram’s Elementary Cellular Automaton (wide)</a></li>
-        <li><a target="_blank" href="langtons-ant.html">Chris Langton’s Ant (empty board)</a></li>
-        <li><a target="_blank" href="langtons-ant.html?castle">Chris Langton’s Ant (castle)</a></li>
-        <li><a target="_blank" href="game-of-life.html">John Conway’s Game of Life (B3/S23)</a></li>
-        <li><a target="_blank" href="maze.html">Maze (B3/S1234)</a></li>
-        <li><a target="_blank" href="maze.html?1">Maze Full of Mice (B37/S1234)</a></li>
-        <li><a target="_blank" href="maze.html?2">Mazectric (B3/S12345)</a></li>
-    </ul>
-
 
 {% endblock %}

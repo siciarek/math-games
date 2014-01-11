@@ -15,12 +15,11 @@
 
         $(document).ready(function () {
             $('#board').addClass('wide');
-            app = new CellularAutomaton(511, 255, rule);
-            app.density = density;
+            app = new CellularAutomaton(511, 255, rule, density);
             app.getInfo = function () {
                 return 'rule ' + this.rule + ' (gen. ' + this.r + ') density: ' + this.density;
             };
-            display = new Display(app);
+            display = new Display(app, false);
             display.run(speed);
         });
     </script>

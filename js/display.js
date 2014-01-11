@@ -3,13 +3,14 @@
  *
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var Display = function (app, renderTo) {
+var Display = function (app, reset, renderTo) {
 
     /**
      * App to run
      * @type {object}
      */
     this.app = app;
+    this.reset = typeof reset === 'undefined' ? true : reset;
 
     /**
      * Main display selector
@@ -30,13 +31,9 @@ var Display = function (app, renderTo) {
         'f'
     ];
 
-    this.setColors = function (colors) {
-        this.colors = colors;
-    };
-
     this.setName = function (name) {
         var html = '<i class="icon-cog icon-large"></i> ' + this.app.name;
-        $('head title').text(name);
+        $('head title').text(this.app.name);
         $('li.title a').html(html).attr('title', this.app.name);
     };
 
@@ -45,7 +42,12 @@ var Display = function (app, renderTo) {
     };
 
     this.clear = function () {
-        this.selector.find(this.cellSelector + '.b').removeClass('b');
+        if (this.reset === true) {
+            for (var c = 0; c < this.colors.length; c++) {
+                var cls = this.colors[c];
+                this.selector.find(this.cellSelector + '.' + cls).removeClass(cls);
+            }
+        }
     };
 
     this.getCell = function (r, c) {
@@ -108,7 +110,10 @@ var Display = function (app, renderTo) {
 
         this.clear();
 
-        for (var r = 0; r < this.app.rows; r++) {
+        var startrow = this.reset ? 0 : this.app.r - 1;
+        var endrow = this.reset ? this.app.rows : this.app.r;
+
+        for (var r = startrow; r < endrow; r++) {
             for (var c = 0; c < this.app.cols; c++) {
                 if (this.app.grid[r][c] !== 0) {
                     this.setPixel(r, c, this.app.grid[r][c]);
