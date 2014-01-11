@@ -23,21 +23,17 @@ var LangtonsAnt = function (width, height, pattern) {
         this.r = Math.floor(this.rows / 2);
         this.c = Math.floor(this.cols / 2);
 
-        for (var r = 0; r < this.rows; r++) {
-            this.grid[r] = [];
-            for (var c = 0; c < this.cols; c++) {
-                this.grid[r][c] = 0;
-            }
-        }
+        var p = [
+            1, 0, 0.5
+        ];
 
-        if (this.pattern === 1) {
-            for (var r = 0; r < this.rows; r++) {
-                for (var c = 0; c < this.cols; c++) {
-                    if (c > parseInt(this.cols / 4) && c < parseInt(this.cols - (this.cols / 4))
-                        && r > parseInt(this.rows / 2.5) && r < parseInt(this.rows - (this.rows / 2.5))
-                        ) {
-                        this.grid[r][c] = 1;
-                    }
+        for (var r = 0; r < this.rows; r++) {
+            this.grid.push([]);
+            for (var c = 0; c < this.cols; c++) {
+                if (c > parseInt(this.cols / 4) && c < parseInt(this.cols - (this.cols / 4))
+                    && r > parseInt(this.rows / 2.5) && r < parseInt(this.rows - (this.rows / 2.5))
+                    ) {
+                    this.grid[r][c] = Math.random() < p[this.pattern] ? 0 : 3;
                 }
             }
         }
@@ -58,7 +54,7 @@ var LangtonsAnt = function (width, height, pattern) {
         this.r += o.shift();
         this.c += o.shift();
 
-        this.dir += this.grid[this.r][this.c] === 1 ? -90 : 90;
+        this.dir += this.grid[this.r][this.c] === 0 ? 90 : -90;
         this.dir += 360;
         this.dir %= 360;
 

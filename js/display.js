@@ -16,7 +16,7 @@ var Display = function (app, reset, renderTo) {
      * Main display selector
      * @type {*|jQuery|HTMLElement}
      */
-    this.selector = typeof renderTo === 'undefined' ? $('#board') : $(renderTo);
+    this.selector = typeof renderTo === 'undefined' ? $('#display') : $(renderTo);
     this.rowSelector = 'div';
     this.cellSelector = 'span';
 
@@ -32,9 +32,9 @@ var Display = function (app, reset, renderTo) {
     ];
 
     this.setName = function (name) {
-        var html = '<i class="icon-cog icon-large"></i> ' + this.app.name;
-        $('head title').text(this.app.name);
-        $('li.title a').html(html).attr('title', this.app.name);
+        var html = '<i class="icon-cog icon-large"></i> ' + name;
+        $('head title').text(name);
+        $('ul.navbar-right li.title a').html(html).attr('title', name);
     };
 
     this.setInfo = function () {
@@ -102,6 +102,7 @@ var Display = function (app, reset, renderTo) {
         }
 
         this.selector.append(display);
+        this.setName(this.app.name);
     };
 
     this.move = function () {

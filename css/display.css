@@ -1,17 +1,17 @@
 @charset 'UTF-8';
 
 /**
- * Basic board
+ * Basic display
  */
 
-#board {
+#display {
     margin: auto;
     display: table;
     background-color: #000000;
     border-collapse: collapse;
 }
 
-#board + div.info {
+#display + div.info {
     font-family: sans-serif;
     font-size: 14px;
     text-align: center;
@@ -19,18 +19,18 @@
     color: gray;
 }
 
-#board + div.info div {
+#display + div.info div {
     font-size: 12px;
     line-height: 18px;
     padding-top: 6px;
     margin-top: 0;
 }
 
-#board div {
+#display div {
 	display: table-row
 }
 
-#board span {
+#display span {
 	display: table-cell;
 	width: 3px;
 	height: 3px;
@@ -38,38 +38,38 @@
 	font-size: 0
 }
 
-#board span.a {
+#display span.a {
     background-color: transparent;
 }
 
-#board span.b {
+#display span.b {
     background-color: #FFFFFF
 }
 
-#board span.c {
+#display span.c {
     background-color: #909090;
 }
 
-#board span.d {
+#display span.d {
     background-color: #404040;
 }
 
-#board.ca {
+#display.ca {
     background-color: #FFFFFF !important;
 }
 
-#board.ca span.b {
+#display.ca span.b {
     background-color: #000000;
     border: 1px solid #333333 !important
 }
 
-#board.ca span  {
+#display.ca span  {
     width: 10px;
     height: 10px;
     border: 1px solid silver !important
 }
 
-#board.wide span {
+#display.wide span {
     width: 2px !important;
     height: 2px !important;
     border: none !important

@@ -14,7 +14,7 @@
         density = isNaN(density) ? 0.5 : parseFloat(density);
 
         $(document).ready(function () {
-            $('#board').addClass('wide');
+            $('#display').addClass('wide');
             app = new CellularAutomaton(511, 255, rule, density);
             app.getInfo = function () {
                 return 'rule ' + this.rule + ' (gen. ' + this.r + ') density: ' + this.density;

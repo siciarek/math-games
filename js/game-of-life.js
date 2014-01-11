@@ -13,8 +13,9 @@ var GameOfLife = function (width, height, rulestring) {
     this.generations = 0;
     this.generation = 0;
     this.definitions = null;
-    this.pattern = 0;
+    this.pattern = -1;
     this.patterns = [];
+    this.slideshow = true;
 
     this.pause = false;
     this.rows = height;
@@ -81,6 +82,7 @@ var GameOfLife = function (width, height, rulestring) {
     this.getInfo = function () {
         var description = this.definitions[this.patterns[this.pattern]].description;
         var name = this.definitions[this.patterns[this.pattern]].name;
+
         return '' + (this.pattern + 1) + '/' + this.patterns.length + ''
             + '<span style="color:black;display:inline-block;margin-left:16px;margin-right:16px">' + name + '</span>'
             + '(gen. ' + this.generation + '/' + this.generations + ')'
@@ -154,25 +156,29 @@ var GameOfLife = function (width, height, rulestring) {
             }
         }
 
+        this.nextPattern();
         this.reset();
         this.setUpPattern();
     };
 
-    this.nextPattern = function() {
+    this.nextPattern = function () {
         this.pattern++;
         this.pattern %= this.patterns.length;
     };
 
     this.move = function () {
-
         this.computeBuffer();
         this.buffer2grid();
+        this.generation++;
 
-        if (this.generation++ > this.generations) {
+        if (this.generation > this.generations) {
             this.generation = 0;
-            this.nextPattern();
-            this.reset();
-            this.setUpPattern();
+
+            if (this.slideshow) {
+                this.nextPattern();
+                this.reset();
+                this.setUpPattern();
+            }
         }
 
         return true;

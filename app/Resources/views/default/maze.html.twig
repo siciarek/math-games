@@ -12,6 +12,8 @@
         var index = location.href.replace(/^.*?(\d+).*?$/, '$1');
         index = isNaN(index) ? 0 : parseInt(index);
 
+        var basepattern = 107;
+
         $(document).ready(function () {
 
             var names = {
@@ -28,14 +30,20 @@
 
             app = new GameOfLife(160, 120, rulestrings[index]);
             app.pause = false;
+            app.pattern = basepattern;
             app.name = names[app.rulestring] + ' (' + app.rulestring + ')';
+            app.slideshow = false;
+
             app.fetchPattern = function () {
-                this.pattern = 107;
                 var pat = this.definitions[this.patterns[this.pattern]];
                 pat.name = 'base: ' + pat.name;
-                pat.type = 'p200';
+                pat.type = 'p666';
                 pat.description = '';
                 return pat;
+            };
+
+            app.nextPattern = function() {
+                this.pattern = basepattern;
             };
 
             display = new Display(app);
