@@ -10,10 +10,13 @@ var LangtonsAnt = function (width, height, pattern) {
     this.step = 0;
     this.r = 0;
     this.c = 0;
-    this.dir = 270;
+    this.dir = 180;
     this.grid = [];
     this.cols = width;
     this.rows = height;
+
+    this.left = 90;
+    this.right = -90;
 
     this.getInfo = function () {
         return 'step ' + this.step;
@@ -30,6 +33,7 @@ var LangtonsAnt = function (width, height, pattern) {
         for (var r = 0; r < this.rows; r++) {
             this.grid.push([]);
             for (var c = 0; c < this.cols; c++) {
+                this.grid[r][c] = 0;
                 if (c > parseInt(this.cols / 4) && c < parseInt(this.cols - (this.cols / 4))
                     && r > parseInt(this.rows / 2.5) && r < parseInt(this.rows - (this.rows / 2.5))
                     ) {
@@ -41,7 +45,11 @@ var LangtonsAnt = function (width, height, pattern) {
 
     this.move = function () {
 
-        this.grid[this.r][this.c] = this.grid[this.r][this.c] === 0 ? 1 : 0;
+        if(typeof this.grid[this.r] === 'undefined' || typeof this.grid[this.r][this.c] === 'undefined') {
+            return false;
+        }
+
+        this.grid[this.r][this.c] = this.grid[this.r][this.c] !== 0 ? 0 : 1;
 
         var offsets = {
             0: [ 1, 0],
@@ -54,16 +62,17 @@ var LangtonsAnt = function (width, height, pattern) {
         this.r += o.shift();
         this.c += o.shift();
 
-        this.dir += this.grid[this.r][this.c] === 0 ? 90 : -90;
+        if(typeof this.grid[this.r] === 'undefined' || typeof this.grid[this.r][this.c] === 'undefined') {
+            return false;
+        }
+
+        this.dir += this.grid[this.r][this.c] !== 0 ? this.left : this.right;
         this.dir += 360;
         this.dir %= 360;
 
-        if (this.r < this.rows && this.r > 0 && this.c < this.cols && this.c > 0) {
-            this.step++;
-            return true;
-        }
+        this.step++;
 
-        return false;
+        return true;
     };
 
     this.init();

@@ -1,0 +1,82 @@
+{% extends 'display.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        #display {
+            background-color: white;
+        }
+
+        #display span {
+            width: 16px;
+            height: 16px;
+            border: 1px solid gray;
+        }
+
+        #display span.b {
+            background-color: black !important;
+            opacity: 0.2;
+        }
+
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="js/langtons-ant.js"></script>
+    <script>
+        var speed = 100;
+        var app = null;
+        var display = null;
+
+        var pattern = location.href.replace(/^.*?(\d+).*?$/, '$1');
+        pattern = isNaN(pattern) ? 8 : parseInt(pattern);
+
+        $(document).ready(function () {
+            var bits = pattern;
+
+            var width = 2 * bits;
+            var height = 2;
+
+
+            app = new LangtonsAnt(width, height, pattern);
+
+            app.getInfo = function () {
+                return 'step ' + this.step + ', bits: ' + bits + ', number: ' + parseInt(this.number, 2) + ', bin: ' + this.number;
+            };
+
+            LangtonsAnt.prototype.afterMove = function () {
+                if (this.step === 1 || this.r === 1) {
+                    var byte = [];
+
+                    for (var c = 0; c < this.cols / 2; c++) {
+                        byte.push(this.grid[0][c]);
+                    }
+
+                    this.number = byte.join('');
+                }
+
+//                this.r = 10000;
+
+                this.cursor = { r: this.r, c: this.c };
+            };
+
+            app.r = height / 2;
+            app.c = width / 2;
+            app.left = 0;
+
+            display = new Display(app);
+
+            for(var c = 1; c <= pattern; c++) {
+                var selector = '#display div:first-child span:nth-child(' + c + ')';
+                $(selector).attr('style', 'background-color:yellow;border: 2px solid gray;opacity: 1');
+            }
+
+            $('#display div:nth-child(1) span:nth-child(' + bits +'), #display div:nth-child(2) span:nth-child(' + bits +')')
+                    .css('border-right', '4px solid blue')
+
+            display.run(speed);
+        });
+    </script>
+{% endblock %}

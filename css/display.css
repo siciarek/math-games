@@ -27,7 +27,8 @@
 }
 
 #display div {
-	display: table-row
+	display: table-row;
+    color: transparent
 }
 
 #display span {
@@ -36,6 +37,11 @@
 	height: 3px;
     color: transparent;
 	font-size: 0
+}
+
+#display span.x {
+    background-color: red;
+    opacity: 1;
 }
 
 #display span.a {
@@ -53,6 +59,8 @@
 #display span.d {
     background-color: #404040;
 }
+
+
 
 #display.ca {
     background-color: #FFFFFF !important;

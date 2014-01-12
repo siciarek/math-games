@@ -28,7 +28,8 @@ var Display = function (app, reset, renderTo) {
         'c',
         'd',
         'e',
-        'f'
+        'f',
+        'x'
     ];
 
     this.setName = function (name) {
@@ -107,7 +108,15 @@ var Display = function (app, reset, renderTo) {
 
     this.move = function () {
 
-        var result = app.move();
+        if (typeof this.app.beforeMove === 'function') {
+            this.app.beforeMove();
+        }
+
+        var result = this.app.move();
+
+        if (typeof this.app.afterMove === 'function') {
+            this.app.afterMove();
+        }
 
         this.clear();
 
@@ -116,11 +125,17 @@ var Display = function (app, reset, renderTo) {
 
         for (var r = startrow; r < endrow; r++) {
             for (var c = 0; c < this.app.cols; c++) {
-                if (this.app.grid[r][c] !== 0) {
-                    this.setPixel(r, c, this.app.grid[r][c]);
+                if (typeof this.app.cursor === 'object' && this.app.cursor.r === r && this.app.cursor.c === c) {
+                    this.setPixel(r, c, 6);
+                }
+                else {
+                    if (this.app.grid[r][c] !== 0) {
+                        this.setPixel(r, c, this.app.grid[r][c]);
+                    }
                 }
             }
         }
+
 
         this.setInfo();
 
