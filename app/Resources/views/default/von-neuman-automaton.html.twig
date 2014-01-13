@@ -1,0 +1,33 @@
+{% extends 'display.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        #display span {
+            /*border: 1px solid gray;*/
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="js/von-neuman-automaton.js"></script>
+    <script>
+        var speed = 300;
+        var app = null;
+        var display = null;
+
+        var pattern = location.href.replace(/^.*?(\d+).*?$/, '$1');
+        pattern = isNaN(pattern) ? 0 : parseInt(pattern);
+
+        $(document).ready(function () {
+            app = new VonNeumanAutomaton(160, 120, pattern);
+
+            display = new Display(app);
+
+            display.run(speed);
+        });
+
+    </script>
+{% endblock %}

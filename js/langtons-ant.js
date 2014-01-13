@@ -15,8 +15,12 @@ var LangtonsAnt = function (width, height, pattern) {
     this.cols = width;
     this.rows = height;
 
-    this.left = 90;
-    this.right = -90;
+    // L (90° left), R (90° right), N (no turn) and U (180° U-turn)
+
+    this.L = 90;
+    this.R = -90;
+    this.N = 0;
+    this.U = 180;
 
     this.getInfo = function () {
         return 'step ' + this.step;
@@ -43,6 +47,12 @@ var LangtonsAnt = function (width, height, pattern) {
         }
     };
 
+    this.computeDirection = function() {
+        this.dir += this.grid[this.r][this.c] !== 0 ? this.L : this.R;
+        this.dir += 360;
+        this.dir %= 360;
+    };
+
     this.move = function () {
 
         if(typeof this.grid[this.r] === 'undefined' || typeof this.grid[this.r][this.c] === 'undefined') {
@@ -66,9 +76,7 @@ var LangtonsAnt = function (width, height, pattern) {
             return false;
         }
 
-        this.dir += this.grid[this.r][this.c] !== 0 ? this.left : this.right;
-        this.dir += 360;
-        this.dir %= 360;
+        this.computeDirection();
 
         this.step++;
 
