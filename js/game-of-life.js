@@ -104,14 +104,22 @@ var GameOfLife = function (width, height, rulestring) {
     this.computeBuffer = function () {
         for (var r = 0; r < this.rows; r++) {
             for (var c = 0; c < this.cols; c++) {
-                var n = this.countNeighbours(r, c);
+                var n = this.countNeighbourhood(r, c);
                 var v = this.grid[r][c];
                 this.buffer[r][c] = (v === 0 && this.born(n) || v === 1 && this.survive(n)) ? 1 : 0;
             }
         }
     };
 
-    this.countNeighbours = function (row, col) {
+    this.buffer2grid = function () {
+        for (var r = 0; r < this.rows; r++) {
+            for (var c = 0; c < this.cols; c++) {
+                this.grid[r][c] = this.buffer[r][c];
+            }
+        }
+    };
+
+    this.countNeighbourhood = function (row, col) {
         var count = 0;
         var neighbours = [
             [-1, -1],
@@ -134,14 +142,6 @@ var GameOfLife = function (width, height, rulestring) {
         }
 
         return count;
-    };
-
-    this.buffer2grid = function () {
-        for (var r = 0; r < this.rows; r++) {
-            for (var c = 0; c < this.cols; c++) {
-                this.grid[r][c] = this.buffer[r][c];
-            }
-        }
     };
 
     this.init = function () {
