@@ -196,7 +196,7 @@ var VonNeumanAutomaton = function (width, height, pattern) {
 
         this.generation++;
 
-        if(this.generation > this.generations) {
+        if (this.generation > this.generations) {
             this.init();
         }
 
@@ -236,27 +236,31 @@ function getDefinitions() {
         success: function (response) {
             var lines = response.replace(/\r/g, '').split('\n');
 
-            for (var l in lines) {
+            while(lines.length > 0) {
 
-                var line = lines[l];
+                var line = lines.shift();
 
                 var match = line.match(/^(\d{6})$/g);
 
-                if(match === null) {
+                if (match === null) {
                     continue;
                 }
 
-                var c = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$1');
-                var t = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$2');
-                var r = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$3');
-                var b = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$4');
-                var l = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$5');
-                var i = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$6');
+                var temp = line.split('');
 
-                data.rules[[c, t, r, b, l].join('')] = i;     //       T
-                data.rules[[c, l, t, r, b].join('')] = i;     //    L  C R   >>=>> I (next state)
-                data.rules[[c, b, l, t, r].join('')] = i;     //       B
-                data.rules[[c, r, b, l, t].join('')] = i;     //  (with rotations)
+                var c = temp.shift(); // current cell
+                var t = temp.shift(); // top neighbour
+                var r = temp.shift(); // right neighbour
+                var b = temp.shift(); // bottom neighbour
+                var l = temp.shift(); // left neighbour
+
+                var i = temp.shift(); // new state for current cell
+
+                // All neighbourhood rotations lead to the same new state:
+                data.rules[[c, t, r, b, l].join('')] = i; //   0
+                data.rules[[c, l, t, r, b].join('')] = i; //  90 CW
+                data.rules[[c, b, l, t, r].join('')] = i; // 180 CW
+                data.rules[[c, r, b, l, t].join('')] = i; // 250 CW
             }
         }
     });
