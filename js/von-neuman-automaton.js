@@ -65,6 +65,9 @@ var VonNeumanAutomaton = function (width, height, pattern) {
         '3010112020112112222020222020112112222112102220222220202020222020222220202020202020112102222102000200222200202102000200000012020200020000222200202200020000202000200020220000220222020000020000220222020222222222020222020000020000020222020000020000',
     ];
 
+    // http://psoup.math.wisc.edu/mcell/rullex_nmbi.html
+    // http://golly.cvs.sourceforge.net/viewvc/golly/golly/src/Rules/Langtons-Loops.table
+
     this.getInfo = function () {
         return 'gen. ' + this.generation;
     };
