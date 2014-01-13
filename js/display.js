@@ -19,17 +19,20 @@ var Display = function (app, reset, renderTo) {
     this.selector = typeof renderTo === 'undefined' ? $('#display') : $(renderTo);
     this.rowSelector = 'div';
     this.cellSelector = 'span';
+    this.cursor = 1000;
 
     this.buffer = {};
     this.interval = null;
     this.colors = [
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'x'
+        '_0',
+        '_1',
+        '_2',
+        '_3',
+        '_4',
+        '_5',
+        '_6',
+        '_7',
+        '_1000'
     ];
 
     this.setName = function (name) {
@@ -61,14 +64,11 @@ var Display = function (app, reset, renderTo) {
         return this.buffer[key];
     };
 
-    this.toggleCell = function (row, col) {
-        this.getCell(row, col).toggleClass('b');
-    };
-
     this.setPixel = function (row, col, value) {
         if (value > 0) {
+            var cls = '_' + value
             this.getCell(row, col).removeAttr('class');
-            this.getCell(row, col).addClass(this.colors[value]);
+            this.getCell(row, col).addClass(cls);
         }
     };
 
@@ -126,7 +126,7 @@ var Display = function (app, reset, renderTo) {
         for (var r = startrow; r < endrow; r++) {
             for (var c = 0; c < this.app.cols; c++) {
                 if (typeof this.app.cursor === 'object' && this.app.cursor.r === r && this.app.cursor.c === c) {
-                    this.setPixel(r, c, 6);
+                    this.setPixel(r, c, this.cursor);
                 }
                 else {
                     if (this.app.grid[r][c] !== 0) {
@@ -135,7 +135,6 @@ var Display = function (app, reset, renderTo) {
                 }
             }
         }
-
 
         this.setInfo();
 

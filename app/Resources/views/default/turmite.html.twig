@@ -14,7 +14,7 @@
             border: 1px solid gray;
         }
 
-        #display span.b {
+        #display span._1 {
             background-color: black !important;
             opacity: 0.2;
         }
@@ -43,11 +43,11 @@
             app = new LangtonsAnt(width, height, pattern);
 
             app.getInfo = function () {
-                return 'step ' + this.step + ', bits: ' + bits + ', number: ' + parseInt(this.number, 2) + ', bin: ' + this.number;
+                return 'gen. ' + this.generation + ', bits: ' + bits + ', number: ' + parseInt(this.number, 2) + ', bin: ' + this.number;
             };
 
-            LangtonsAnt.prototype.afterMove = function () {
-                if (this.step === 1 || this.r === 1) {
+            app.afterMove = function () {
+                if (this.generation === 1 || this.r === 1) {
                     var byte = [];
 
                     for (var c = 0; c < this.cols / 2; c++) {

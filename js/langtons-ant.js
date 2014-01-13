@@ -7,7 +7,7 @@ var LangtonsAnt = function (width, height, pattern) {
 
     this.name = 'Chris Langton’s Ant';
     this.pattern = pattern
-    this.step = 0;
+    this.generation = 0;
     this.r = 0;
     this.c = 0;
     this.dir = 180;
@@ -23,7 +23,7 @@ var LangtonsAnt = function (width, height, pattern) {
     this.U = 180;
 
     this.getInfo = function () {
-        return 'step ' + this.step;
+        return 'gen. ' + this.generation;
     };
 
     this.init = function () {
@@ -47,15 +47,19 @@ var LangtonsAnt = function (width, height, pattern) {
         }
     };
 
-    this.computeDirection = function() {
+    this.computeDirection = function () {
         this.dir += this.grid[this.r][this.c] !== 0 ? this.L : this.R;
         this.dir += 360;
         this.dir %= 360;
     };
 
+    this.afterMove = function () {
+        this.cursor = { r: this.r, c: this.c };
+    };
+
     this.move = function () {
 
-        if(typeof this.grid[this.r] === 'undefined' || typeof this.grid[this.r][this.c] === 'undefined') {
+        if (typeof this.grid[this.r] === 'undefined' || typeof this.grid[this.r][this.c] === 'undefined') {
             return false;
         }
 
@@ -72,13 +76,13 @@ var LangtonsAnt = function (width, height, pattern) {
         this.r += o.shift();
         this.c += o.shift();
 
-        if(typeof this.grid[this.r] === 'undefined' || typeof this.grid[this.r][this.c] === 'undefined') {
+        if (typeof this.grid[this.r] === 'undefined' || typeof this.grid[this.r][this.c] === 'undefined') {
             return false;
         }
 
         this.computeDirection();
 
-        this.step++;
+        this.generation++;
 
         return true;
     };

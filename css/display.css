@@ -39,28 +39,15 @@
 	font-size: 0
 }
 
-#display span.x {
+#display span._0 {background-color: transparent;}
+#display span._1 {background-color: #FFFFFF;}
+#display span._2 {background-color: #909090;}
+#display span._3 {background-color: #404040;}
+
+#display span._1000 {
     background-color: red;
     opacity: 1;
 }
-
-#display span.a {
-    background-color: transparent;
-}
-
-#display span.b {
-    background-color: #FFFFFF
-}
-
-#display span.c {
-    background-color: #909090;
-}
-
-#display span.d {
-    background-color: #404040;
-}
-
-
 
 #display.ca {
     background-color: #FFFFFF !important;
