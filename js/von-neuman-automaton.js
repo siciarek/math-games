@@ -326,7 +326,7 @@ function getPattern(pattern) {
             while (lines.length > 0) {
 
                 line = lines.shift().trim();
-                if (!(line.length > 0 && !line.match(/^#/))) {
+                if (!(line.length > 0 && !line.match(/^[#@]/))) {
                     continue;
                 }
 
