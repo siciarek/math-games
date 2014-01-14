@@ -108,16 +108,6 @@ var Display = function (app, reset, renderTo) {
 
     this.move = function () {
 
-        if (typeof this.app.beforeMove === 'function') {
-            this.app.beforeMove();
-        }
-
-        var result = this.app.move();
-
-        if (typeof this.app.afterMove === 'function') {
-            this.app.afterMove();
-        }
-
         this.clear();
 
         var startrow = this.reset ? 0 : this.app.r - 1;
@@ -134,6 +124,16 @@ var Display = function (app, reset, renderTo) {
                     }
                 }
             }
+        }
+
+        if (typeof this.app.beforeMove === 'function') {
+            this.app.beforeMove();
+        }
+
+        var result = this.app.move();
+
+        if (typeof this.app.afterMove === 'function') {
+            this.app.afterMove();
         }
 
         this.setInfo();

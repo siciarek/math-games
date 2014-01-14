@@ -4,6 +4,11 @@
     {{ parent() }}
 
     <style>
+
+        /*#display span {*/
+            /*width: 16px;*/
+            /*height: 16px;*/
+        /*}*/
         #display span._0 { background-color: transparent; }
         #display span._1 { background-color: #0000FF; }
         #display span._2 { background-color: #FF0000; }
@@ -19,7 +24,7 @@
     {{ parent() }}
     <script src="js/von-neuman-automaton.js"></script>
     <script>
-        var speed = 50;
+        var speed = 100;
         var app = null;
         var display = null;
 
@@ -27,7 +32,7 @@
         pattern = isNaN(pattern) ? 0 : parseInt(pattern);
 
         $(document).ready(function () {
-            app = new VonNeumanAutomaton(180, 170, pattern);
+            app = new VonNeumanAutomaton(180, 160, pattern);
 
             display = new Display(app);
 

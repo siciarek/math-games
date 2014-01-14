@@ -70,7 +70,8 @@ var VonNeumanAutomaton = function (width, height, pattern) {
     };
 
     this.trans = function (row, col) {
-        return this.transitions[this.neumanNeighbourhood(row, col)];
+        var n = this.neumanNeighbourhood(row, col);
+        return this.transitions[n];
     };
 
     this.reset = function () {
@@ -136,8 +137,8 @@ var VonNeumanAutomaton = function (width, height, pattern) {
         this.r = Math.floor(this.rows / 2);
         this.c = Math.floor(this.cols / 2);
 
-        if (pattern === 100) {
-            var def = getDefinitions();
+        if (pattern === 100 || pattern === 101) {
+            var def = getPattern(pattern);
 
             var ro = Math.floor(def.height / 2);
             var co = Math.floor(def.width / 2);
@@ -194,9 +195,7 @@ var VonNeumanAutomaton = function (width, height, pattern) {
         this.computeBuffer();
         this.buffer2grid();
 
-        this.generation++;
-
-        if (this.generation > this.generations) {
+        if (++this.generation > this.generations) {
             this.init();
         }
 
@@ -207,16 +206,31 @@ var VonNeumanAutomaton = function (width, height, pattern) {
 };
 
 
-function getDefinitions() {
+function getPattern(pattern) {
+
+    var patterns = {
+        '100': [
+            'data/Langtons-Loops/Langtons-Loops.table',
+            'data/Langtons-Loops/Langtons-Loops.rle'
+        ],
+        '101': [
+            'data/Byl-Loop/Byl-Loop.table',
+            'data/Byl-Loop/Byl-Loop.rle'
+        ]
+    };
+
+    var pat = patterns[pattern];
 
     var data = {
         width: 0,
         height: 0,
+        states: 2,
         rules: {},
         pattern: []
     };
 
-    var states = {
+    var states = {};
+    states = {
         '.': 0,
         'A': 1,
         'B': 2,
@@ -227,18 +241,30 @@ function getDefinitions() {
         'G': 7
     };
 
+//    states = {
+//        '.': 0,
+//        'A': 1,
+//        'B': 2,
+//        'C': 3,
+//        'D': 4
+//    };
+
     var pattern = '';
 
-
     $.ajax({
-        url: 'data/Langtons-Loops/Langtons-Loops.table',
+        url: pat[0],
         async: false,
         success: function (response) {
             var lines = response.replace(/\r/g, '').split('\n');
 
-            while(lines.length > 0) {
+            while (lines.length > 0) {
 
                 var line = lines.shift();
+
+                if (line.match(/^n_states:\s*(\d)\s*$/)) {
+                    data.states = parseInt(line.match(/^n_states:\s*(\d)\s*$/).pop());
+                    continue;
+                }
 
                 var match = line.match(/^(\d{6})$/g);
 
@@ -246,27 +272,35 @@ function getDefinitions() {
                     continue;
                 }
 
-                var temp = line.split('');
+                var c = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$1');
+                var t = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$2');
+                var r = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$3');
+                var b = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$4');
+                var l = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$5');
+                var i = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$6');
 
-                var c = temp.shift(); // current cell
-                var t = temp.shift(); // top neighbour
-                var r = temp.shift(); // right neighbour
-                var b = temp.shift(); // bottom neighbour
-                var l = temp.shift(); // left neighbour
-
-                var i = temp.shift(); // new state for current cell
+                i = parseInt(i);
 
                 // All neighbourhood rotations lead to the same new state:
-                data.rules[[c, t, r, b, l].join('')] = i; //   0
-                data.rules[[c, l, t, r, b].join('')] = i; //  90 CW
-                data.rules[[c, b, l, t, r].join('')] = i; // 180 CW
-                data.rules[[c, r, b, l, t].join('')] = i; // 250 CW
+                data.rules['' + [c, t, r, b, l].join('')] = i; //   0
+                data.rules['' + [c, l, t, r, b].join('')] = i; //  90 CW
+                data.rules['' + [c, b, l, t, r].join('')] = i; // 180 CW
+                data.rules['' + [c, r, b, l, t].join('')] = i; // 250 CW
             }
+
+            // Clear undefined rules:
+            for (a = 0; a < 9; a++)
+                for (b = 0; b < 9; b++)
+                    for (c = 0; c < 9; c++)
+                        for (d = 0; d < 9; d++)
+                            for (e = 0; e < 9; e++)
+                                if (typeof data.rules[[a, b, c, d, e].join('')] === 'undefined') data.rules[[a, b, c, d, e].join('')] = a;
+
         }
     });
 
     $.ajax({
-        url: 'data/Langtons-Loops/Langtons-Loops.rle',
+        url: pat[1],
         async: false,
         success: function (response) {
 
