@@ -32,6 +32,7 @@ var Display = function (app, reset, renderTo) {
         '_5',
         '_6',
         '_7',
+        '_8',
         '_1000'
     ];
 

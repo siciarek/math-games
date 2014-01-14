@@ -19,6 +19,8 @@ var VonNeumanAutomaton = function (width, height, pattern) {
     this.grid = [];
     this.buffer = [];
 
+    this.pat = [];
+
     var states = [
 
 //    a ground state U (48, 48, 48)
@@ -60,7 +62,7 @@ var VonNeumanAutomaton = function (width, height, pattern) {
 
     this.patterns = [
         '201101001100101101001011001101001',
-        '3012120201120201012201012120120201012201012120012120201201012120012120201120201012120201012201012120012120201201012120012120201120201012012120201120201012201012120201012120012120201120201012012120201120201012201012120120201012201012120012120201',
+        '3012120201120201012201012120120201012201012120012120201201012120012120201120201012120201012201012120012120201201012120012120201120201012012120201120201012201012120201012120012120201120201012012120201120201012201012120120201012201012120012120201'
     ];
 
     // http://psoup.math.wisc.edu/mcell/rullex_nmbi.html
@@ -91,7 +93,7 @@ var VonNeumanAutomaton = function (width, height, pattern) {
     this.computeBuffer = function () {
         for (var r = 0; r < this.rows; r++) {
             for (var c = 0; c < this.cols; c++) {
-                var v = this.trans(r, c);
+                v = this.trans(r, c);
                 this.buffer[r][c] = v;
             }
         }
@@ -137,8 +139,9 @@ var VonNeumanAutomaton = function (width, height, pattern) {
         this.r = Math.floor(this.rows / 2);
         this.c = Math.floor(this.cols / 2);
 
-        if (pattern === 100 || pattern === 101) {
-            var def = getPattern(pattern);
+        var def = getPattern(pattern);
+
+        if (def != null) {
 
             var ro = Math.floor(def.height / 2);
             var co = Math.floor(def.width / 2);
@@ -149,39 +152,42 @@ var VonNeumanAutomaton = function (width, height, pattern) {
                 var point = def.pattern[d];
                 var r = point[0];
                 var c = point[1];
-                var val = point[2];
-                this.grid[(this.r - ro) + r][(this.c - co) + c] = val;
-            }
 
-            return;
-        }
+                r += (this.r - ro);
+                c += (this.c - co);
 
-        var size = 2;
-
-        for (r = this.r - size; r < this.r + size; r++) {
-            for (var c = this.c - size; c < this.c + size; c++) {
-                this.grid[r][c] = 1;
+                this.grid[r][c] = point[2];
             }
         }
+        else {
 
-        size = 1;
+            var size = 2;
 
-        for (r = this.r - size; r < this.r + size; r++) {
-            for (var c = this.c - size; c < this.c + size; c++) {
-                this.grid[r][c] = 0;
+            for (r = this.r - size; r < this.r + size; r++) {
+                for (c = this.c - size; c < this.c + size; c++) {
+                    this.grid[r][c] = 1;
+                }
             }
-        }
 
-        transitions = this.patterns[pattern].split('');
-        this.states = transitions.shift();
+            size = 1;
 
-        for (var me = 0; me < this.states; me++) {
-            for (var n = 0; n < this.states; n++) {
-                for (var e = 0; e < this.states; e++) {
-                    for (var s = 0; s < this.states; s++) {
-                        for (var w = 0; w < this.states; w++) {
-                            var key = [me, n, e, s, w].join('');
-                            this.transitions[key] = parseInt(transitions.shift());
+            for (r = this.r - size; r < this.r + size; r++) {
+                for (c = this.c - size; c < this.c + size; c++) {
+                    this.grid[r][c] = 0;
+                }
+            }
+
+            transitions = this.patterns[pattern].split('');
+            this.states = transitions.shift();
+
+            for (var me = 0; me < this.states; me++) {
+                for (var n = 0; n < this.states; n++) {
+                    for (var e = 0; e < this.states; e++) {
+                        for (var s = 0; s < this.states; s++) {
+                            for (var w = 0; w < this.states; w++) {
+                                var key = [me, n, e, s, w].join('');
+                                this.transitions[key] = parseInt(transitions.shift());
+                            }
                         }
                     }
                 }
@@ -194,12 +200,7 @@ var VonNeumanAutomaton = function (width, height, pattern) {
 
         this.computeBuffer();
         this.buffer2grid();
-
-        if (++this.generation > this.generations) {
-            this.init();
-        }
-
-        return true;
+        return this.generation++ < this.generations;
     };
 
     this.init();
@@ -208,29 +209,38 @@ var VonNeumanAutomaton = function (width, height, pattern) {
 
 function getPattern(pattern) {
 
-    var patterns = {
-        '100': [
-            'data/Langtons-Loops/Langtons-Loops.table',
-            'data/Langtons-Loops/Langtons-Loops.rle'
-        ],
-        '101': [
-            'data/Byl-Loop/Byl-Loop.table',
-            'data/Byl-Loop/Byl-Loop.rle'
-        ]
-    };
+    var patterns = [
+        'Langtons-Loops',
+        'Byl-Loop',
+        'Chou-Reggia-1',
+        'Chou-Reggia-2',
+        'Evoloop'
+    ];
 
-    var pat = patterns[pattern];
+    pattern -= 100;
+
+    if (typeof patterns[pattern] === 'undefined') {
+        return null;
+    }
+
+    var rootdir = '/data';
+
+    // Golly
+    var patternurl = rootdir + '/Patterns/' + patterns[pattern] + '.rle';
+
+    // http://code.google.com/p/ruletablerepository/wiki/TheRules#Self-replicating_loops
+    var ruleurl = rootdir + '/Rules/' + patterns[pattern] + '.table';
 
     var data = {
         width: 0,
         height: 0,
         states: 2,
+        rule: null,
         rules: {},
         pattern: []
     };
 
-    var states = {};
-    states = {
+    var states = {
         '.': 0,
         'A': 1,
         'B': 2,
@@ -238,77 +248,24 @@ function getPattern(pattern) {
         'D': 4,
         'E': 5,
         'F': 6,
-        'G': 7
+        'G': 7,
+        'H': 8
     };
-
-//    states = {
-//        '.': 0,
-//        'A': 1,
-//        'B': 2,
-//        'C': 3,
-//        'D': 4
-//    };
 
     var pattern = '';
 
-    $.ajax({
-        url: pat[0],
-        async: false,
-        success: function (response) {
-            var lines = response.replace(/\r/g, '').split('\n');
-
-            while (lines.length > 0) {
-
-                var line = lines.shift();
-
-                if (line.match(/^n_states:\s*(\d)\s*$/)) {
-                    data.states = parseInt(line.match(/^n_states:\s*(\d)\s*$/).pop());
-                    continue;
-                }
-
-                var match = line.match(/^(\d{6})$/g);
-
-                if (match === null) {
-                    continue;
-                }
-
-                var c = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$1');
-                var t = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$2');
-                var r = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$3');
-                var b = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$4');
-                var l = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$5');
-                var i = line.replace(/^(\d)(\d)(\d)(\d)(\d)(\d)$/, '$6');
-
-                i = parseInt(i);
-
-                // All neighbourhood rotations lead to the same new state:
-                data.rules['' + [c, t, r, b, l].join('')] = i; //   0
-                data.rules['' + [c, l, t, r, b].join('')] = i; //  90 CW
-                data.rules['' + [c, b, l, t, r].join('')] = i; // 180 CW
-                data.rules['' + [c, r, b, l, t].join('')] = i; // 250 CW
-            }
-
-            // Clear undefined rules:
-            for (a = 0; a < 9; a++)
-                for (b = 0; b < 9; b++)
-                    for (c = 0; c < 9; c++)
-                        for (d = 0; d < 9; d++)
-                            for (e = 0; e < 9; e++)
-                                if (typeof data.rules[[a, b, c, d, e].join('')] === 'undefined') data.rules[[a, b, c, d, e].join('')] = a;
-
-        }
-    });
 
     $.ajax({
-        url: pat[1],
+        url: patternurl,
         async: false,
         success: function (response) {
 
-            var lines = response.replace(/\r/g, '').split('\n');
+            var lines = response.replace(/\r/g, '\n').split('\n');
+
             for (var l in lines) {
                 if (lines.hasOwnProperty(l)) {
                     var line = lines[l].trim();
-                    if (line.match(/^#/)) {
+                    if (line.length === 0 || line.match(/^#/)) {
                         continue;
                     }
 
@@ -318,17 +275,17 @@ function getPattern(pattern) {
                         data.width = parseInt(match[1]);
                         data.height = parseInt(match[2]);
                         data.rule = match[3];
+                        continue;
                     }
 
-                    if (line.match(/^[.A-G]/ig)) {
+                    if (line.match(/^\d*[.A-Z$]/ig)) {
                         pattern += line;
                     }
                 }
-
             }
 
             pattern = pattern.replace(/!$/, '');
-            match = pattern.match(/(\d*[.A-G]|\$)/ig);
+            match = pattern.match(/(\d*[.A-Z\$]|\$)/ig);
             var row = 0;
             var col = 0;
 
@@ -341,7 +298,7 @@ function getPattern(pattern) {
                     continue;
                 }
 
-                var ch = chunk.match(/^(\d+)?([.A-G])$/);
+                var ch = chunk.match(/^(\d+)?([.A-Z])$/);
 
                 if (ch != null) {
                     count = typeof ch[1] === 'undefined' ? 1 : parseInt(ch[1]);
@@ -352,6 +309,147 @@ function getPattern(pattern) {
                     }
                 }
             }
+        }
+    });
+
+    $.ajax({
+        url: ruleurl,
+        async: false,
+        success: function (response) {
+            var lines = response.replace(/\r/g, '').split('\n');
+            var line = null;
+            var empty = true;
+
+            var vars = {};
+            var transitions = [];
+
+            while (lines.length > 0) {
+
+                line = lines.shift().trim();
+                if (!(line.length > 0 && !line.match(/^#/))) {
+                    continue;
+                }
+
+                if (line.match(/^n_states:\s*(\d)\s*$/)) {
+                    data.states = parseInt(line.match(/^n_states:\s*(\d)\s*$/).pop());
+                    continue;
+                }
+
+                var match = line.match(/^(\d{6})$/g);
+
+                if (match === null) {
+                    continue;
+                }
+
+                transitions.push(line);
+            }
+
+            if (transitions.length === 0) {
+
+                lines = response.replace(/\r/g, '').split('\n');
+
+                while (lines.length > 0) {
+
+                    line = lines.shift();
+                    line = line.trim();
+
+                    if (line.length === 0 || line.match(/^#/)) {
+                        continue;
+                    }
+
+                    match = line.match(/^var\s*(\w+)\s*=\s*\{(.*)\}$/);
+
+                    if (match !== null) {
+                        var tmp = match[2].split(',');
+                        vars[match[1]] = [];
+                        for (var x = 0; x < tmp.length; x++) {
+                            vars[match[1]].push(tmp[x].trim());
+                        }
+                        continue;
+                    }
+
+                    line = line.replace(/\s/g, '').trim();
+
+                    match = line.match(/^((?:\w+,){5}(?:\d+))$/g);
+
+                    if(match === null) {
+                        continue;
+                    }
+
+                    if (match !== null) {
+                        transitions.push(line);
+                    }
+                }
+
+                var stackl = [];
+                var stackr = [];
+
+                for (var y = 0; y < transitions.length; y++) {
+
+                    var rule = transitions[y];
+                    match = rule.match(/([^\d,]+)/g);
+
+                    if (match === null) {
+                        continue;
+                    }
+
+                    stackl = [rule];
+                    stackr = [];
+
+                    while(match.length > 0) {
+                        var symbol = match.shift();
+
+                        while (stackl.length > 0) {
+                            var xrule = stackl.pop();
+
+                            for (var v = 0; v < vars[symbol].length; v++) {
+                                var state = vars[symbol][v];
+                                stackr.push(xrule.replace(symbol, state));
+                            }
+                        }
+
+                        while(stackr.length > 0) {
+                            stackl.push(stackr.pop());
+                        }
+                    }
+
+                    while (stackl.length > 0) {
+                        var elem = stackl.pop().replace(/\D/g, '');
+                        transitions.push(elem);
+                    }
+                }
+            }
+
+            while (transitions.length) {
+                line = transitions.pop();
+                line = line.replace(/,/g, '');
+
+                var el = line.split('');
+                c = el[0];
+                t = el[1];
+                r = el[2];
+                b = el[3];
+                l = el[4];
+                i = el[5];
+
+                i = parseInt(i);
+
+                // All neighbourhood rotations lead to the same new state:
+                data.rules[[c, t, r, b, l].join('')] = i; //   0
+                data.rules[[c, l, t, r, b].join('')] = i; //  90 CW
+                data.rules[[c, b, l, t, r].join('')] = i; // 180 CW
+                data.rules[[c, r, b, l, t].join('')] = i; // 250 CW
+            }
+
+            // Clear undefined rules:
+            for (a = 0; a < data.states; a++)
+                for (b = 0; b < data.states; b++)
+                    for (c = 0; c < data.states; c++)
+                        for (d = 0; d < data.states; d++)
+                            for (e = 0; e < data.states; e++)
+                                if (typeof data.rules[[a, b, c, d, e].join('')] === 'undefined') {
+                                    data.rules[[a, b, c, d, e].join('')] = a;
+                                }
         }
     });
 
