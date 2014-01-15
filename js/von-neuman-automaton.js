@@ -60,12 +60,6 @@ var VonNeumanAutomaton = function (width, height, pattern) {
         27, 28 //    East-directed (excited and quiescent) (185, 56, 255) (235, 36, 36)
     ];
 
-    this.patterns = [
-        '201101001100101101001011001101001',
-        '3012120201120201012201012120120201012201012120012120201201012120012120201120201012120201012201012120012120201201012120012120201120201012012120201120201012201012120201012120012120201120201012012120201120201012201012120120201012201012120012120201'
-    ];
-
-    // http://psoup.math.wisc.edu/mcell/rullex_nmbi.html
 
     this.getInfo = function () {
         return 'gen. ' + this.generation;
@@ -141,7 +135,7 @@ var VonNeumanAutomaton = function (width, height, pattern) {
 
         var def = getPattern(pattern);
 
-        if (def != null) {
+        if (def !== null) {
 
             var ro = Math.floor(def.height / 2);
             var co = Math.floor(def.width / 2);
@@ -159,45 +153,11 @@ var VonNeumanAutomaton = function (width, height, pattern) {
                 this.grid[r][c] = point[2];
             }
         }
-        else {
-
-            var size = 2;
-
-            for (r = this.r - size; r < this.r + size; r++) {
-                for (c = this.c - size; c < this.c + size; c++) {
-                    this.grid[r][c] = 1;
-                }
-            }
-
-            size = 1;
-
-            for (r = this.r - size; r < this.r + size; r++) {
-                for (c = this.c - size; c < this.c + size; c++) {
-                    this.grid[r][c] = 0;
-                }
-            }
-
-            transitions = this.patterns[pattern].split('');
-            this.states = transitions.shift();
-
-            for (var me = 0; me < this.states; me++) {
-                for (var n = 0; n < this.states; n++) {
-                    for (var e = 0; e < this.states; e++) {
-                        for (var s = 0; s < this.states; s++) {
-                            for (var w = 0; w < this.states; w++) {
-                                var key = [me, n, e, s, w].join('');
-                                this.transitions[key] = parseInt(transitions.shift());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
     };
 
     this.move = function () {
 
+//        return false;
         this.computeBuffer();
         this.buffer2grid();
         return this.generation++ < this.generations;
@@ -207,29 +167,28 @@ var VonNeumanAutomaton = function (width, height, pattern) {
 };
 
 
-function getPattern(pattern) {
+function getPattern(patterni) {
 
     var patterns = [
+        'Fredkin2',
+        'Fredkin3',
+        'Crystal2',
+        'Crystal3a',
+        'Crystal3b',
+        'Galaxy',
         'Langtons-Loops',
         'Byl-Loop',
         'Chou-Reggia-1',
         'Chou-Reggia-2',
-        'Evoloop'
+        'Evoloop',
+        'SDSR-Loop'
     ];
 
-    pattern -= 100;
-
-    if (typeof patterns[pattern] === 'undefined') {
-        return null;
-    }
+    patterni %= patterns.length;
 
     var rootdir = '/data';
-
-    // Golly
-    var patternurl = rootdir + '/Patterns/' + patterns[pattern] + '.rle';
-
-    // http://code.google.com/p/ruletablerepository/wiki/TheRules#Self-replicating_loops
-    var ruleurl = rootdir + '/Rules/' + patterns[pattern] + '.table';
+    var patternurl = rootdir + '/Patterns/' + patterns[patterni] + '.rle';
+    var ruleurl = rootdir + '/Rules/' + patterns[patterni] + '.table';
 
     var data = {
         width: 0,
@@ -254,13 +213,14 @@ function getPattern(pattern) {
 
     var pattern = '';
 
+    // Prepare pattern
 
     $.ajax({
         url: patternurl,
         async: false,
         success: function (response) {
 
-            var lines = response.replace(/\r/g, '\n').split('\n');
+            var lines = response.replace(/\r/g, '\n').replace(/\n\n/g, '\n').split('\n');
 
             for (var l in lines) {
                 if (lines.hasOwnProperty(l)) {
@@ -312,146 +272,178 @@ function getPattern(pattern) {
         }
     });
 
-    $.ajax({
-        url: ruleurl,
-        async: false,
-        success: function (response) {
-            var lines = response.replace(/\r/g, '').split('\n');
-            var line = null;
-            var empty = true;
+    // Prepare rules:
 
-            var vars = {};
-            var transitions = [];
+    if (patterni <= 5) {
+        // http://psoup.math.wisc.edu/mcell/rullex_nmbi.html
 
-            while (lines.length > 0) {
+        var rules = [
+            '201101001100101101001011001101001',
+            '3012120201120201012201012120120201012201012120012120201201012120012120201120201012120201012201012120012120201201012120012120201120201012012120201120201012201012120201012120012120201120201012012120201120201012201012120120201012201012120012120201',
+            '201101101101101101111101011001000',
+            '3012101220100010100210200002102010000010121010100011002210000002200010012002002221111101111101000100111100100101000100000020000100000001111100100100000001100001011222222220222200200222200000222200200200022020200020000220200200200020000000000000',
+            '3012100200100011002200012020100020021021221021012020122200021010002212102020112021111111111111100100111100100111100100100010001100001011111100100100001011100011011222222222222200200222200200222200200200022022200020020222200200200022000200020000',
+            '3010112020112112220020220000112112220112110200220200000020220000220200000000000000002002222002000200222200200002000200000000002200002020222200200200002020200020002020220000220220000000000000220220000220220000000000000000000000000000000000000000'
+        ];
 
-                line = lines.shift().trim();
-                if (!(line.length > 0 && !line.match(/^[#@]/))) {
-                    continue;
+        var temp = rules[patterni].split('');
+        data.states = temp.shift();
+
+        for (var c = 0; c < data.states; c++) {
+            for (var t = 0; t < data.states; t++) {
+                for (var r = 0; r < data.states; r++) {
+                    for (var b = 0; b < data.states; b++) {
+                        for (var l = 0; l < data.states; l++) {
+                            data.rules[[c, t, r, b, l].join('')] = parseInt(temp.shift());
+                        }
+                    }
                 }
-
-                if (line.match(/^n_states:\s*(\d)\s*$/)) {
-                    data.states = parseInt(line.match(/^n_states:\s*(\d)\s*$/).pop());
-                    continue;
-                }
-
-                var match = line.match(/^(\d{6})$/g);
-
-                if (match === null) {
-                    continue;
-                }
-
-                transitions.push(line);
             }
+        }
+    }
+    else {
 
-            if (transitions.length === 0) {
+        $.ajax({
+            url: ruleurl,
+            async: false,
+            success: function (response) {
+                var lines = response.replace(/\r/g, '').split('\n');
+                var line = null;
+                var empty = true;
 
-                lines = response.replace(/\r/g, '').split('\n');
+                var vars = {};
+                var transitions = [];
 
                 while (lines.length > 0) {
 
-                    line = lines.shift();
-                    line = line.trim();
-
-                    if (line.length === 0 || line.match(/^#/)) {
+                    line = lines.shift().trim();
+                    if (!(line.length > 0 && !line.match(/^[#@]/))) {
                         continue;
                     }
 
-                    match = line.match(/^var\s*(\w+)\s*=\s*\{(.*)\}$/);
-
-                    if (match !== null) {
-                        var tmp = match[2].split(',');
-                        vars[match[1]] = [];
-                        for (var x = 0; x < tmp.length; x++) {
-                            vars[match[1]].push(tmp[x].trim());
-                        }
+                    if (line.match(/^n_states:\s*(\d)\s*$/)) {
+                        data.states = parseInt(line.match(/^n_states:\s*(\d)\s*$/).pop());
                         continue;
                     }
 
-                    line = line.replace(/\s/g, '').trim();
-
-                    match = line.match(/^((?:\w+,){5}(?:\d+))$/g);
-
-                    if(match === null) {
-                        continue;
-                    }
-
-                    if (match !== null) {
-                        transitions.push(line);
-                    }
-                }
-
-                var stackl = [];
-                var stackr = [];
-
-                for (var y = 0; y < transitions.length; y++) {
-
-                    var rule = transitions[y];
-                    match = rule.match(/([^\d,]+)/g);
+                    var match = line.match(/^(\d{6})$/g);
 
                     if (match === null) {
                         continue;
                     }
 
-                    stackl = [rule];
-                    stackr = [];
+                    transitions.push(line);
+                }
 
-                    while(match.length > 0) {
-                        var symbol = match.shift();
+                if (transitions.length === 0) {
 
-                        while (stackl.length > 0) {
-                            var xrule = stackl.pop();
+                    lines = response.replace(/\r/g, '').split('\n');
 
-                            for (var v = 0; v < vars[symbol].length; v++) {
-                                var state = vars[symbol][v];
-                                stackr.push(xrule.replace(symbol, state));
+                    while (lines.length > 0) {
+
+                        line = lines.shift();
+                        line = line.trim();
+
+                        if (line.length === 0 || line.match(/^#/)) {
+                            continue;
+                        }
+
+                        match = line.match(/^var\s*(\w+)\s*=\s*\{(.*)\}$/);
+
+                        if (match !== null) {
+                            var tmp = match[2].split(',');
+                            vars[match[1]] = [];
+                            for (var x = 0; x < tmp.length; x++) {
+                                vars[match[1]].push(tmp[x].trim());
+                            }
+                            continue;
+                        }
+
+                        line = line.replace(/\s/g, '').trim();
+
+                        match = line.match(/^((?:\w+,){5}(?:\d+))$/g);
+
+                        if (match === null) {
+                            continue;
+                        }
+
+                        if (match !== null) {
+                            transitions.push(line);
+                        }
+                    }
+
+                    var stackl = [];
+                    var stackr = [];
+
+                    for (var y = 0; y < transitions.length; y++) {
+
+                        var rule = transitions[y];
+                        match = rule.match(/([^\d,]+)/g);
+
+                        if (match === null) {
+                            continue;
+                        }
+
+                        stackl = [rule];
+                        stackr = [];
+
+                        while (match.length > 0) {
+                            var symbol = match.shift();
+
+                            while (stackl.length > 0) {
+                                var xrule = stackl.pop();
+
+                                for (var v = 0; v < vars[symbol].length; v++) {
+                                    var state = vars[symbol][v];
+                                    stackr.push(xrule.replace(symbol, state));
+                                }
+                            }
+
+                            while (stackr.length > 0) {
+                                stackl.push(stackr.pop());
                             }
                         }
 
-                        while(stackr.length > 0) {
-                            stackl.push(stackr.pop());
+                        while (stackl.length > 0) {
+                            var elem = stackl.pop().replace(/\D/g, '');
+                            transitions.push(elem);
                         }
                     }
-
-                    while (stackl.length > 0) {
-                        var elem = stackl.pop().replace(/\D/g, '');
-                        transitions.push(elem);
-                    }
                 }
+
+                while (transitions.length) {
+                    line = transitions.pop();
+                    line = line.replace(/,/g, '');
+
+                    var el = line.split('');
+                    c = el[0];
+                    t = el[1];
+                    r = el[2];
+                    b = el[3];
+                    l = el[4];
+                    i = el[5];
+
+                    i = parseInt(i);
+
+                    // All neighbourhood rotations lead to the same new state:
+                    data.rules[[c, t, r, b, l].join('')] = i; //   0
+                    data.rules[[c, l, t, r, b].join('')] = i; //  90 CW
+                    data.rules[[c, b, l, t, r].join('')] = i; // 180 CW
+                    data.rules[[c, r, b, l, t].join('')] = i; // 250 CW
+                }
+
+                // Clear undefined rules:
+                for (a = 0; a < data.states; a++)
+                    for (b = 0; b < data.states; b++)
+                        for (c = 0; c < data.states; c++)
+                            for (d = 0; d < data.states; d++)
+                                for (e = 0; e < data.states; e++)
+                                    if (typeof data.rules[[a, b, c, d, e].join('')] === 'undefined') {
+                                        data.rules[[a, b, c, d, e].join('')] = a;
+                                    }
             }
-
-            while (transitions.length) {
-                line = transitions.pop();
-                line = line.replace(/,/g, '');
-
-                var el = line.split('');
-                c = el[0];
-                t = el[1];
-                r = el[2];
-                b = el[3];
-                l = el[4];
-                i = el[5];
-
-                i = parseInt(i);
-
-                // All neighbourhood rotations lead to the same new state:
-                data.rules[[c, t, r, b, l].join('')] = i; //   0
-                data.rules[[c, l, t, r, b].join('')] = i; //  90 CW
-                data.rules[[c, b, l, t, r].join('')] = i; // 180 CW
-                data.rules[[c, r, b, l, t].join('')] = i; // 250 CW
-            }
-
-            // Clear undefined rules:
-            for (a = 0; a < data.states; a++)
-                for (b = 0; b < data.states; b++)
-                    for (c = 0; c < data.states; c++)
-                        for (d = 0; d < data.states; d++)
-                            for (e = 0; e < data.states; e++)
-                                if (typeof data.rules[[a, b, c, d, e].join('')] === 'undefined') {
-                                    data.rules[[a, b, c, d, e].join('')] = a;
-                                }
-        }
-    });
+        });
+    }
 
     return data;
 }

@@ -1,0 +1,9 @@
+# Fredkin3
+#
+# Famous Fredkin's replicator in von Neumann neighbourhood.
+# This is the simple rule which makes patterns self replicate.
+# After 32 steps every starting pattern is replicated 5 times.
+#
+# A rule by Edward Fredkin, 1999.
+x = 4, y = 4, rule = Fredkin3
+4A$A..A$A..A$4A!
