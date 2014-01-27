@@ -7,6 +7,14 @@ function main(n, mode) {
     n = n || 8;
     mode = mode || 'two';
 
+    var loc = location.href.split('?');
+
+    if(loc.length > 1) {
+        var settings = loc.pop().split('=');
+        n = parseInt(settings.pop());
+        mode = settings.pop();
+    }
+
     var circ = null;
     var stage = null;
 
