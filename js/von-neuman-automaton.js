@@ -188,7 +188,7 @@ function getPattern(patterni) {
 
     patterni %= patterns.length;
 
-    var rootdir = '/data';
+    var rootdir = 'data';
     var patternurl = rootdir + '/Patterns/' + patterns[patterni] + '.rle';
     var ruleurl = rootdir + '/Rules/' + patterns[patterni] + '.table';
 
