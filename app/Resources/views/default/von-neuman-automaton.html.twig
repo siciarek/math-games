@@ -1,23 +1,49 @@
-{% extends 'display.html.twig' %}
+{% extends 'cdisplay.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
 
     <style>
 
-        /*#display span {*/
+            /*#display span {*/
             /*width: 16px;*/
             /*height: 16px;*/
-        /*}*/
-        #display span._0 { background-color: transparent; }
-        #display span._1 { background-color: #0000FF; }
-        #display span._2 { background-color: #FF0000; }
-        #display span._3 { background-color: #00FF00; }
-        #display span._4 { background-color: #FFFF00; }
-        #display span._5 { background-color: #FF00FF; }
-        #display span._6 { background-color: #FFFFFF; }
-        #display span._7 { background-color: #00FFFF; }
-        #display span._8 { background-color: #FF8000; }
+            /*}*/
+        #display span._0 {
+            background-color: transparent;
+        }
+
+        #display span._1 {
+            background-color: #0000FF;
+        }
+
+        #display span._2 {
+            background-color: #FF0000;
+        }
+
+        #display span._3 {
+            background-color: #00FF00;
+        }
+
+        #display span._4 {
+            background-color: #FFFF00;
+        }
+
+        #display span._5 {
+            background-color: #FF00FF;
+        }
+
+        #display span._6 {
+            background-color: #FFFFFF;
+        }
+
+        #display span._7 {
+            background-color: #00FFFF;
+        }
+
+        #display span._8 {
+            background-color: #FF8000;
+        }
     </style>
 {% endblock %}
 
@@ -25,7 +51,7 @@
     {{ parent() }}
     <script src="js/von-neuman-automaton.js"></script>
     <script>
-        var speed = 200;
+        var speed = 100;
         var app = null;
         var display = null;
 
@@ -33,9 +59,21 @@
         pattern = isNaN(pattern) ? 0 : parseInt(pattern);
 
         $(document).ready(function () {
-            app = new VonNeumanAutomaton(180, 160, pattern);
+            app = new VonNeumanAutomaton(320, 240, pattern);
 
             display = new Display(app);
+
+            display.colmap = [
+                [0, 0, 0],
+                [0, 0, 255],
+                [255, 0, 0],
+                [0, 255, 0],
+                [255, 255, 0],
+                [255, 0, 255],
+                [255, 255, 255],
+                [0, 255, 255],
+                [255, 128, 0]
+            ];
 
             display.run(speed);
         });

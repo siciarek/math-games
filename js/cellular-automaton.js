@@ -69,7 +69,9 @@ var CellularAutomaton = function (width, height, rule, density) {
 
     this.move = function () {
 
-        if (!(this.r < this.rows)) {
+        var _continue = true;
+
+        if (!(this.r < this.rows - 1)) {
 
             console.log(this.sequence);
 
@@ -77,32 +79,35 @@ var CellularAutomaton = function (width, height, rule, density) {
                 this.rule++;
                 this.rule %= 256;
                 this.init();
-                return true;
+                _continue = true;
+            }
+            else {
+                _continue = false;
+            }
+        }
+
+        if (_continue === true) {
+            var sum = 0;
+
+            for (var c = 0; c < this.cols; c++) {
+
+                var key = 0, k = 0;
+
+                do {
+                    key |= this.grid[this.r][(this.cols + c - k + 1 ) % this.cols] << k++;
+                } while (k < 3);
+
+                var value = this.rules[key];
+
+                this.grid[this.r + 1][c] = value;
+                sum += value;
             }
 
-            return false;
+            this.sequence.push(sum);
+            this.r++;
         }
 
-        var sum = 0;
-
-        for (var c = 0; c < this.cols; c++) {
-
-            var key = 0, k = 0;
-
-            do {
-                key |= this.grid[this.r][(this.cols + c - k + 1 ) % this.cols] << k++;
-            } while (k < 3);
-
-            var value = this.rules[key];
-
-            this.grid[this.r + 1][c] = value;
-            sum += value;
-        }
-
-        this.sequence.push(sum);
-        this.r++;
-
-        return true;
+        return _continue;
     };
 
     this.init();

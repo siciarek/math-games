@@ -1,4 +1,10 @@
-{% extends 'display.html.twig' %}
+{% extends 'cdisplay.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+    #display span._1 {background-color: #333333;}
+    </style>
+{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -11,7 +17,7 @@
         $(document).ready(function () {
             $('#display').addClass('ca');
             app = new CellularAutomaton(31, 16);
-            display = new Display(app);
+            display = new Display(app, 6);
             display.run(speed);
         });
     </script>

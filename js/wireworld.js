@@ -7,7 +7,7 @@ var Wireworld = function (width, height, pattern) {
 
     pattern = pattern || 0;
 
-    this.name = 'Brian Silverman’s Wireworld';
+    this.name = 'Wireworld';
     this.pattern = pattern;
     this.step = 0;
     this.grid = [];

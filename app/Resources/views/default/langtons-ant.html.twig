@@ -1,4 +1,4 @@
-{% extends 'display.html.twig' %}
+{% extends 'cdisplay.html.twig' %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -12,9 +12,9 @@
         pattern = isNaN(pattern) ? 0 : parseInt(pattern);
 
         $(document).ready(function () {
-            app = new LangtonsAnt(161, 120, pattern);
+            app = new LangtonsAnt(320, 240, pattern);
 
-            display = new Display(app);
+            display = new Display(app, 2);
 
             display.run(speed);
         });

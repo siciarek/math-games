@@ -1,4 +1,74 @@
 
+function circle_circle_intersection(c1, c2) {
+
+    var solutions = [];
+
+    var r0 = c1.r;
+    var r1 = c2.r;
+
+    var x0 = c1.x;
+    var y0 = c1.y;
+
+    var x1 = c2.x;
+    var y1 = c2.y;
+
+    /**
+     * dx and dy are the vertical and horizontal distances between
+     * the circle centers.
+     */
+    var dx = x1 - x0;
+    var dy = y1 - y0;
+    var d = Math.sqrt(dx * dx + dy * dy);
+
+    if (d === 0 && c1.r == c2.r) {
+        throw 'Circles are coincident and there are an infinite number of solutions.';
+    }
+    else if (d > (r0 + r1)) {
+        throw 'No solution. The circles are separate.';
+    }
+    else if (d > Math.abs(r0 + r1)) {
+        throw 'No solution. One circle is contained in the other.';
+    }
+    else {
+
+        /**
+         * Determine the distance from point 0 to point 2.
+         */
+        var a = ((r0 * r0) - (r1 * r1) + (d * d)) / (2.0 * d);
+
+        /**
+         * Determine the coordinates of point 2.
+         */
+        var x2 = x0 + (dx * a / d);
+        var y2 = y0 + (dy * a / d);
+
+        /**
+         * Determine the distance from point 2 to either of the
+         * intersection points.
+         */
+        var h = Math.sqrt((r0 * r0) - (a * a));
+
+        /**
+         * There are two intersection points
+         */
+        solutions.push(
+            {
+                x: x2 - dy * (h / d),
+                y: y2 + dx * (h / d)
+            }
+        );
+
+        solutions.push(
+            {
+                x: x2 + dy * (h / d),
+                y: y2 - dx * (h / d)
+            }
+        );
+    }
+
+    return solutions;
+}
+
 function f_p(a1, a2, a3) {
 
     // Real numbers:

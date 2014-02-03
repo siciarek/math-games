@@ -9,8 +9,8 @@
         }
 
         #display span {
-            width: 12px;
-            height: 12px;
+            width: 9px;
+            height: 9px;
             border: 1px solid gray;
         }
 
@@ -41,6 +41,7 @@
 
 
             app = new LangtonsAnt(width, height, pattern);
+            app.dirWhenNotEmpty = app.N;
 
             app.getInfo = function () {
                 return 'gen. ' + this.generation + ', bits: ' + bits + ', number: ' + parseInt(this.number, 2) + ', bin: ' + this.number;
@@ -48,16 +49,14 @@
 
             app.afterMove = function () {
                 if (this.generation === 1 || this.r === 1) {
-                    var byte = [];
+                    var _byte = [];
 
                     for (var c = 0; c < this.cols / 2; c++) {
-                        byte.push(this.grid[0][c]);
+                        _byte.push(this.grid[0][c]);
                     }
 
-                    this.number = byte.join('');
+                    this.number = _byte.join('');
                 }
-
-//                this.r = 10000;
 
                 this.cursor = { r: this.r, c: this.c };
             };
@@ -65,13 +64,7 @@
             app.r = height / 2;
             app.c = width / 2;
 
-            app.computeDirection = function() {
-                this.dir += this.grid[this.r][this.c] !== 0 ? this.N : this.R;
-                this.dir += 360;
-                this.dir %= 360;
-            };
-
-            display = new Display(app);
+            display = new Display(app, 8);
 
             for(var c = 1; c <= pattern; c++) {
                 var selector = '#display div:first-child span:nth-child(' + c + ')';
@@ -79,7 +72,7 @@
             }
 
             $('#display div:nth-child(1) span:nth-child(' + bits +'), #display div:nth-child(2) span:nth-child(' + bits +')')
-                    .css('border-right', '3px solid gray')
+                    .css('border-right', '3px solid gray');
 
             display.run(speed);
         });

@@ -1,11 +1,11 @@
-{% extends 'display.html.twig' %}
+{% extends 'cdisplay.html.twig' %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="js/wireworld.js"></script>
     <script src="js/wireworld-patterns.js"></script>
     <script>
-    var speed = 200;
+    var speed = 1;
     var app = null;
     var display = null;
 
@@ -121,9 +121,17 @@
     $(document).ready(function () {
 
         app = new Wireworld(width, height, pattern);
-        display = new Display(app);
+        display = new Display(app, 2);
 
-        if (pattern === 5 || pattern === 6) {
+        display.colmap = [
+            [0, 0, 0],
+            [255, 255, 255],
+            [144, 144, 144],
+            [64, 64, 64]
+        ];
+
+        if (pattern >= 3 && pattern <= 6) {
+
             display.setName = function (name) {
 
                 var gateOptions = [
@@ -135,7 +143,7 @@
 
                 var url = location.href.replace(/\?.*$/, '');
 
-                name += ' (' + patterns[pattern] + ') [';
+                name += ' [';
                 name += (pattern === 5 || pattern === 6) ? gateOptions[digit] : digit;
                 name += ']';
 
@@ -174,16 +182,19 @@
                 }
                 submenu += '</ul>';
 
-                $('head title').text(name);
                 var li = $('li.title');
+
                 li.addClass('dropdown')
-                        .find('a')
-                        .addClass('dropdown-toggle')
-                        .attr('data-toggle', 'dropdown')
-                        .attr('title', name)
-                        .html(html)
+                .find('a')
+                .addClass('dropdown-toggle')
+                .attr('data-toggle', 'dropdown')
+                .attr('title', name)
+                .html(html);
+
                 li.append(submenu);
             };
+
+            display.setName(app.name);
         }
 
         display.run(speed);

@@ -22,6 +22,9 @@ var LangtonsAnt = function (width, height, pattern) {
     this.N = 0;
     this.U = 180;
 
+    this.dirWhenEmpty = this.R;
+    this.dirWhenNotEmpty = this.L;
+
     this.getInfo = function () {
         return 'gen. ' + this.generation;
     };
@@ -41,14 +44,14 @@ var LangtonsAnt = function (width, height, pattern) {
                 if (c > parseInt(this.cols / 4) && c < parseInt(this.cols - (this.cols / 4))
                     && r > parseInt(this.rows / 2.5) && r < parseInt(this.rows - (this.rows / 2.5))
                     ) {
-                    this.grid[r][c] = Math.random() < p[this.pattern] ? 0 : 3;
+                    this.grid[r][c] = Math.random() < p[this.pattern] ? 0 : 2;
                 }
             }
         }
     };
 
     this.computeDirection = function () {
-        this.dir += this.grid[this.r][this.c] !== 0 ? this.L : this.R;
+        this.dir += this.grid[this.r][this.c] !== 0 ? this.dirWhenNotEmpty : this.dirWhenEmpty;
         this.dir += 360;
         this.dir %= 360;
     };

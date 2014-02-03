@@ -1,11 +1,11 @@
-{% extends 'display.html.twig' %}
+{% extends 'cdisplay.html.twig' %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="js/game-of-life-patterns.js"></script>
     <script src="js/game-of-life.js"></script>
     <script>
-        var speed = 200;
+        var speed = 1;
         var app = null;
         var display = null;
 
@@ -13,7 +13,7 @@
         pattern = isNaN(pattern) ? null : parseInt(pattern);
 
         $(document).ready(function () {
-            app = new GameOfLife(160, 120);
+            app = new GameOfLife(320, 240);
 
             if (pattern !== null) {
                 app.pattern = pattern <= 0 ? 0 : pattern - 1;
@@ -22,7 +22,7 @@
                 app.init();
             }
 
-            display = new Display(app);
+            display = new Display(app, 2);
 
             display.run(speed);
         });

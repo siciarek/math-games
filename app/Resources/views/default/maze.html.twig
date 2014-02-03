@@ -1,11 +1,11 @@
-{% extends 'display.html.twig' %}
+{% extends 'cdisplay.html.twig' %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="js/game-of-life-patterns.js"></script>
     <script src="js/game-of-life.js"></script>
     <script>
-        var speed = 150;
+        var speed = 1;
         var app = null;
         var display = null;
 
@@ -28,7 +28,7 @@
                 rulestrings.push(name);
             }
 
-            app = new GameOfLife(160, 120, rulestrings[index]);
+            app = new GameOfLife(320, 240, rulestrings[index]);
             app.pause = false;
             app.pattern = basepattern;
             app.name = names[app.rulestring] + ' (' + app.rulestring + ')';
@@ -46,7 +46,11 @@
                 this.pattern = basepattern;
             };
 
-            display = new Display(app);
+            app.getInfo = function() {
+
+            };
+
+            display = new Display(app, 2);
             display.run(speed);
         });
     </script>

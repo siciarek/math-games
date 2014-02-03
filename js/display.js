@@ -145,7 +145,8 @@ var Display = function (app, reset, renderTo) {
     this.run = function (speed) {
         var self = this;
         self.interval = setInterval(function () {
-            if (self.move() === false) {
+            var result = self.move();
+            if (result === false) {
                 clearInterval(self.interval);
             }
         }, speed);

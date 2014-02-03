@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <canvas id="disp"></canvas>
+    <div class="info"></div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="js/cdisplay.js"></script>
+{% endblock %}
