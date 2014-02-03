@@ -1,57 +1,10 @@
 {% extends 'cdisplay.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-
-    <style>
-
-            /*#display span {*/
-            /*width: 16px;*/
-            /*height: 16px;*/
-            /*}*/
-        #display span._0 {
-            background-color: transparent;
-        }
-
-        #display span._1 {
-            background-color: #0000FF;
-        }
-
-        #display span._2 {
-            background-color: #FF0000;
-        }
-
-        #display span._3 {
-            background-color: #00FF00;
-        }
-
-        #display span._4 {
-            background-color: #FFFF00;
-        }
-
-        #display span._5 {
-            background-color: #FF00FF;
-        }
-
-        #display span._6 {
-            background-color: #FFFFFF;
-        }
-
-        #display span._7 {
-            background-color: #00FFFF;
-        }
-
-        #display span._8 {
-            background-color: #FF8000;
-        }
-    </style>
-{% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
     <script src="js/von-neuman-automaton.js"></script>
     <script>
-        var speed = 100;
+        var speed = 1;
         var app = null;
         var display = null;
 
@@ -61,7 +14,7 @@
         $(document).ready(function () {
             app = new VonNeumanAutomaton(320, 240, pattern);
 
-            display = new Display(app);
+            display = new Display(app, 2);
 
             display.colmap = [
                 [0, 0, 0],

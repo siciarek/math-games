@@ -8,7 +8,7 @@ var VonNeumanAutomaton = function (width, height, pattern) {
     this.cols = width;
     this.rows = height;
 
-    this.name = 'John von Neuman’s Cellular Automaton';
+    this.name = 'CA von Neuman';
     this.generations = 1000;
     this.generation = 0;
     this.r = 0;
@@ -172,11 +172,13 @@ function getPattern(patterni) {
     var patterns = [
         'Fredkin2',
         'Fredkin3',
+
         'Crystal2',
         'Crystal3a',
         'Crystal3b',
         'Galaxy',
         'Langtons-Loops',
+
         'Byl-Loop',
         'Chou-Reggia-1',
         'Chou-Reggia-2',

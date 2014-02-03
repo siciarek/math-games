@@ -7,7 +7,7 @@ var CellularAutomaton = function (width, height, rule, density) {
 
     density = density || 0;
 
-    this.name = 'Stephen Wolfram’s Elementary Cellular Automaton';
+    this.name = 'Elementary CA';
     this.rows = height;
     this.cols = width;
     this.density = density;
