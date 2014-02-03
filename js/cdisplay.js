@@ -20,55 +20,51 @@ var Display = function (app, pxsize) {
     this.pxsize = pxsize || 1;
 
     this.colmap = [
-        [255, 255, 255],
-        [0, 0, 0],
-        [144, 144, 144]
+        [250, 250, 250, 255],
+        [0, 0, 0, 255],
+        [144, 144, 144, 255]
     ];
 
     this.init = function () {
         this.setName(this.app.name);
 
-        this.disp = document.getElementById('disp');
+        this.disp = document.getElementById('display');
         this.disp.setAttribute('width', this.app.cols * this.pxsize);
         this.disp.setAttribute('height', this.app.rows * this.pxsize);
-        this.disp.setAttribute('style', 'border: 1px solid black');
 
         this.cx = this.disp.getContext('2d');
+
+        this.data = new Uint8ClampedArray(this.app.cols * this.app.rows * 4 * this.pxsize * this.pxsize);
+        this.imgData = this.cx.createImageData(this.app.cols * this.pxsize, this.app.rows * this.pxsize);
     };
 
-    this.setPixel = function (x, y, colindex) {
-        var color = this.colmap[colindex];
+    this.setPixel = function (x, y, color) {
 
-        var i = (y * this.app.cols + x) << 2;
-        this.data[i + 0] = color[0];
-        this.data[i + 1] = color[1];
-        this.data[i + 2] = color[2];
-        this.data[i + 3] = 255;
+
     };
 
     this.move = function () {
 
-        this.clear();
+        for (var row = 0; row < this.app.rows; row++) {
+            for (var col = 0; col < this.app.cols; col++) {
+                var color = this.colmap[this.app.grid[row][col]];
+                for (var y = 0; y < this.pxsize; y++) {
+                    var dy = row * this.pxsize + y;
+                    for (var x = 0; x < this.pxsize; x++) {
+                        var dx = col * this.pxsize + x;
 
-        var startrow = 0;
-        var endrow = 0;
+                        var i = (dy * this.app.cols * this.pxsize + dx) << 2;
 
-        this.data = [];
-
-        this.imgData = this.cx.createImageData(this.app.cols, this.app.rows);
-
-        for (var y = 0; y < this.app.rows; y++) {
-            for (var x = 0; x < this.app.cols; x++) {
-                this.setPixel(x, y, this.app.grid[y][x]);
+                        this.data[i + 0] = color[0];
+                        this.data[i + 1] = color[1];
+                        this.data[i + 2] = color[2];
+                        this.data[i + 3] = color[3];
+                    }
+                }
             }
         }
 
         this.imgData.data.set(this.data);
-
-        if(this.pxsize > 1) {
-            this.imgData = this.scaleImageData(this.imgData, this.pxsize);
-        }
-
         this.cx.putImageData(this.imgData, 0, 0);
 
         if (typeof this.app.beforeMove === 'function') {

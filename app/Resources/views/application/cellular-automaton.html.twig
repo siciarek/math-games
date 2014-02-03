@@ -1,22 +1,17 @@
 {% extends 'cdisplay.html.twig' %}
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-    #display span._1 {background-color: #333333;}
-    </style>
-{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="js/cellular-automaton.js"></script>
     <script>
-        var speed = 500;
+        var speed = 300;
         var app = null;
         var display = null;
 
         $(document).ready(function () {
             $('#display').addClass('ca');
             app = new CellularAutomaton(31, 16);
+
             display = new Display(app, 6);
             display.run(speed);
         });

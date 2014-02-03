@@ -13,7 +13,7 @@
         pattern = isNaN(pattern) ? null : parseInt(pattern);
 
         $(document).ready(function () {
-            app = new GameOfLife(320, 240);
+            app = new GameOfLife(480, 240);
 
             if (pattern !== null) {
                 app.pattern = pattern <= 0 ? 0 : pattern - 1;

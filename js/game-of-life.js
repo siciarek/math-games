@@ -84,9 +84,9 @@ var GameOfLife = function (width, height, rulestring) {
         var name = this.definitions[this.patterns[this.pattern]].name;
 
         return '' + (this.pattern + 1) + '/' + this.patterns.length + ''
-            + '<span style="color:black;display:inline-block;margin-left:16px;margin-right:16px">' + name + '</span>'
+            + '<span style="display:inline-block;margin-left:16px;margin-right:16px"><strong>' + name + '</strong></span>'
             + '(gen. ' + this.generation + '/' + this.generations + ')'
-            + '<br/><div style="white-space:pre;font-family: sans-serif;font-style: italic">' + description.trim() + '</div>'
+            + '<div style="font-size:13px"><em>' + description.trim() + '</em></div>'
             ;
     };
 

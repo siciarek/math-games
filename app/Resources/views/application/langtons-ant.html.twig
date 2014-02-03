@@ -4,7 +4,7 @@
     {{ parent() }}
     <script src="js/langtons-ant.js"></script>
     <script>
-        var speed = 100;
+        var speed = 1;
         var app = null;
         var display = null;
 
@@ -12,7 +12,7 @@
         pattern = isNaN(pattern) ? 0 : parseInt(pattern);
 
         $(document).ready(function () {
-            app = new LangtonsAnt(320, 240, pattern);
+            app = new LangtonsAnt(480, 240, pattern);
 
             display = new Display(app, 2);
 

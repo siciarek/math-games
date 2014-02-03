@@ -18,9 +18,9 @@ var CellularAutomaton = function (width, height, rule, density) {
     this.sequence = [];
     this.rules = {};
 
-    rule = typeof rule === 'undefined' ? null : rule;
-    this.slideshow = rule === null;
-    this.rule = this.slideshow ? 30 : rule;
+    rule = typeof rule === 'undefined' ? 30 : rule;
+    this.slideshow = true;
+    this.rule = rule;
 
     this.getInfo = function () {
         return '<span style="color:black">rule ' + this.rule + '</span> (gen. ' + this.r + ')';

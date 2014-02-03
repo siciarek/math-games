@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <canvas id="display" style="margin-top: -10px"></canvas>
+    <div class="info"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        var interval = null;
+        var speed = 500;
+        var limit = 12;
+
+        var pxsize = 3;
+        var display = null;
+        var ctx = null;
+
+        var N;
+        var grid = [];
+        var buffer = [];
+
+        var iteration = 0;
+
+        $(document).ready(function(){
+            $('#display').click(function(){
+                run();
+            });
+        });
+
+        function init()
+        {
+            $.ajax({
+                url: '/chaotic-maps/image.txt',
+                async: false,
+                success: function (response) {
+
+                    var lines = response.replace(/\r/g, '\n').replace(/\n\n/g, '\n').split('\n');
+
+                    var header = lines.shift().split(':').pop().split(',');
+                    N = parseInt(header.shift().trim());
+
+                    display = document.getElementById('display');
+                    display.setAttribute('width', N * pxsize);
+                    display.setAttribute('height', N * pxsize);
+
+                    ctx = display.getContext('2d');
+
+                    // Init grid and buffer:
+                    for (x = 0; x < N; x++) {
+                        grid[x] = [];
+                        buffer[x] = [];
+
+                        for (y = 0; y < N; y++) {
+                            grid[x][y] = 0;
+                            buffer[x][y] = 0;
+                        }
+                    }
+
+                    // Fill grid with image data:
+                    while (lines.length > 0) {
+                        var data = lines.shift().match(/^(\d+),(\d+)[^#]+(#\S+).*/);
+
+                        if (data !== null) {
+                            x = parseInt(data[2]);
+                            y = parseInt(data[1]);
+                            grid[x][y] = data[3].trim();
+                        }
+                    }
+                }
+            });
+
+            redraw();
+        }
+
+        function run() {
+            redraw();
+            interval = setInterval(function () {
+                if (move() === false) {
+                    clearInterval(interval);
+                    iteration = 0;
+                }
+            }, speed);
+        }
+
+        function redraw() {
+            for (x = 0; x < N; x++) {
+                for (y = 0; y < N; y++) {
+                    ctx.fillStyle = grid[x][y];
+                    ctx.fillRect(y * pxsize, x * pxsize, pxsize, pxsize);
+                }
+            }
+            $('.info').html('iter. ' + iteration);
+        }
+
+        function move() {
+            var result = iterate();
+            redraw();
+
+            return result;
+        }
+
+        function iterate() {
+
+            for (x = 0; x < N; x++) {
+                for (y = 0; y < N; y++) {
+                    buffer[x][y] = T(mod(2 * x + y, N), mod(x + y, N));
+                }
+            }
+
+            updateGrid();
+
+            return ++iteration < limit;
+        }
+
+        function updateGrid() {
+            for (x = 0; x < N; x++) {
+                for (y = 0; y < N; y++) {
+                    grid[x][y] = buffer[x][y];
+                }
+            }
+        }
+
+        function mod(value, N) {
+            return value % N;
+        }
+
+        function T(x, y) {
+            return grid[x][y];
+        }
+
+        init();
+    </script>
+
+{% endblock %}

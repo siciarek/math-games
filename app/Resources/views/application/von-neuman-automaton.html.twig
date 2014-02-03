@@ -4,7 +4,7 @@
     {{ parent() }}
     <script src="js/von-neuman-automaton.js"></script>
     <script>
-        var speed = 1;
+        var speed = 100;
         var app = null;
         var display = null;
 
@@ -12,20 +12,20 @@
         pattern = isNaN(pattern) ? 0 : parseInt(pattern);
 
         $(document).ready(function () {
-            app = new VonNeumanAutomaton(320, 240, pattern);
+            app = new VonNeumanAutomaton(480, 240, pattern);
 
             display = new Display(app, 2);
 
             display.colmap = [
-                [0, 0, 0],
-                [0, 0, 255],
-                [255, 0, 0],
-                [0, 255, 0],
-                [255, 255, 0],
-                [255, 0, 255],
-                [255, 255, 255],
-                [0, 255, 255],
-                [255, 128, 0]
+                [0, 0, 0, 255],
+                [0, 0, 255, 255],
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [255, 255, 0, 255],
+                [255, 0, 255, 255],
+                [255, 255, 255, 255],
+                [0, 255, 255, 255],
+                [255, 128, 0, 255]
             ];
 
             display.run(speed);
