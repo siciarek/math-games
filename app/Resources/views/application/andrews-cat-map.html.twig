@@ -9,70 +9,96 @@
     {{ parent() }}
 
     <script>
-        var interval = null;
-        var speed = 500;
-        var limit = 12;
 
-        var pxsize = 3;
+        var imgsrc = 'cat.png';
+
+        var limits = {
+            'cherry.png': 12,
+            'cat.png': 348,
+            'siciarek.jpg': 388
+        };
+
+        var limit = limits[imgsrc];
+        var interval = null;
+        var speed = 1;
+
+        var pxsize = 1;
         var display = null;
-        var ctx = null;
+        var c = null;
 
         var N;
         var grid = [];
         var buffer = [];
 
+        var imageData = null;
+        var data = null;
+
         var iteration = 0;
 
-        $(document).ready(function(){
-            $('#display').click(function(){
-                run();
-            });
-        });
+        function init() {
+            var image = new Image();
+            image.src = 'images/' + imgsrc;
+            image.onload = function () {
 
-        function init()
-        {
-            $.ajax({
-                url: '/chaotic-maps/image.txt',
-                async: false,
-                success: function (response) {
+                N = Math.min(this.width, this.height);
 
-                    var lines = response.replace(/\r/g, '\n').replace(/\n\n/g, '\n').split('\n');
+                display = document.getElementById('display');
+                display.setAttribute('width', N * pxsize);
+                display.setAttribute('height', N * pxsize);
 
-                    var header = lines.shift().split(':').pop().split(',');
-                    N = parseInt(header.shift().trim());
+                c = display.getContext('2d');
+                c.drawImage(this, 0, 0, N * pxsize, N * pxsize);
 
-                    display = document.getElementById('display');
-                    display.setAttribute('width', N * pxsize);
-                    display.setAttribute('height', N * pxsize);
+                data = new Uint8ClampedArray(N * pxsize * N * pxsize * 4);
+                imageData = c.getImageData(0, 0, N * pxsize, N * pxsize);
 
-                    ctx = display.getContext('2d');
+                for (var x = 0; x < N; x++) {
+                    grid[x] = [];
+                    buffer[x] = [];
+                    for (var y = 0; y < N; y++) {
 
-                    // Init grid and buffer:
-                    for (x = 0; x < N; x++) {
-                        grid[x] = [];
-                        buffer[x] = [];
+                        var i = (y * N + x) << 2;
 
-                        for (y = 0; y < N; y++) {
-                            grid[x][y] = 0;
-                            buffer[x][y] = 0;
-                        }
+                        var pix = [];
+                        pix[0] = imageData.data[i + 0];
+                        pix[1] = imageData.data[i + 1];
+                        pix[2] = imageData.data[i + 2];
+                        pix[3] = imageData.data[i + 3];
+
+                        grid[x][y] = pix;
+                        buffer[x][y] = null;
                     }
+                }
+            };
+        }
 
-                    // Fill grid with image data:
-                    while (lines.length > 0) {
-                        var data = lines.shift().match(/^(\d+),(\d+)[^#]+(#\S+).*/);
+        function redraw() {
 
-                        if (data !== null) {
-                            x = parseInt(data[2]);
-                            y = parseInt(data[1]);
-                            grid[x][y] = data[3].trim();
+            for (var row = 0; row < N; row++) {
+                for (var col = 0; col < N; col++) {
+
+                    var color = grid[col][row];
+
+                    for (var y = 0; y < pxsize; y++) {
+                        var dy = row * pxsize + y;
+                        for (var x = 0; x < pxsize; x++) {
+                            var dx = col * pxsize + x;
+
+                            var i = (dy * N * pxsize + dx) << 2;
+
+                            data[i + 0] = color[0];
+                            data[i + 1] = color[1];
+                            data[i + 2] = color[2];
+                            data[i + 3] = color[3];
                         }
                     }
                 }
-            });
+            }
 
-            redraw();
+            imageData.data.set(data);
+            c.putImageData(imageData, 0, 0);
         }
+
 
         function run() {
             redraw();
@@ -84,19 +110,12 @@
             }, speed);
         }
 
-        function redraw() {
-            for (x = 0; x < N; x++) {
-                for (y = 0; y < N; y++) {
-                    ctx.fillStyle = grid[x][y];
-                    ctx.fillRect(y * pxsize, x * pxsize, pxsize, pxsize);
-                }
-            }
-            $('.info').html('iter. ' + iteration);
-        }
 
         function move() {
             var result = iterate();
             redraw();
+
+            $('.info').html('iter. ' + iteration);
 
             return result;
         }
@@ -130,7 +149,14 @@
             return grid[x][y];
         }
 
-        init();
+        $(document).ready(function(){
+            $('#display').click(function(){
+                run();
+            });
+
+            init();
+        });
+
     </script>
 
 {% endblock %}
