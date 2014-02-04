@@ -103,7 +103,6 @@ function run() {
         if (move() === false) {
             clearInterval(interval);
             iteration = 0;
-            return;
         }
     }, speed);
 }
