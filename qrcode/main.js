@@ -1,14 +1,23 @@
 
-var m = 0;
 
 var messages = [
-    ['ABCDE123', 'H'],
-    ['HELLO WORLD', 'M']
+    ['HELLO WORLD', 'M'],
+    ['LOREM IPSUM DOLOR', 'M'],
+    ['TOMASZ MROWIEC', 'M'],
+    ['JACEK SICIAREK', 'M'],
+    ['FIKANDO MIKANDO', 'M'],
+    ['GRANDE FINALE', 'M'],
+    ['ABCDE123', 'H']
 ];
+
+var m = 0;
+
 var message = messages[m][0];
 var ecc = messages[m][1];
 
 var coder = new QrCode(message, ecc);
+
+console.log(coder.capacity);
 
 function drawQrCode(coder) {
 
