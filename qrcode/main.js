@@ -17,13 +17,18 @@ var message = messages[m][0];
 message = location.href;
 var params = message.split('?');
 message = params.length < 2 ? 'HELLO WORLD' : decodeURIComponent(params.pop());
-var ecc = 'M';
+var ecc = 'Q';
 
-console.log([message]);
 
 var coder = new QrCode(message, ecc);
 
-console.log(coder.capacity);
+var info = {
+    message: coder.message,
+    capacity: coder.capacity,
+    penalty: coder.penalty
+};
+
+// console.log(info);
 
 function drawQrCode(coder) {
 
@@ -73,7 +78,8 @@ function drawQrCode(coder) {
         for (var left = 0; left < grid[0].length; left++) {
             square(
                 quietZone + top * blocksize,
-                quietZone + left * blocksize, blocksize,
+                quietZone + left * blocksize,
+                blocksize,
                 colors[grid[top][left]]
             );
         }
