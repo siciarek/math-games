@@ -1,34 +1,58 @@
+var message = 'HELLO WORLD';
+var ecclevel = 'L';
+var version = 1;
+var mode = 'alphanumeric';
 
+// http://mathgames.dev/qrcode/qrcode.svg?message=HELLO%20WORLD&mode=alphanumeric&ecclevel=L&version=1
+// http://mathgames.dev/qrcode/qrcode.svg?message=http://siciarek.pl&mode=byte&ecclevel=L&version=1
+// http://mathgames.dev/qrcode/qrcode.svg?message=1234567890&mode=numeric&ecclevel=L&version=1
 
-var messages = [
-    ['HELLO WORLD', 'M'],
-    ['LOREM IPSUM DOLOR', 'M'],
-    ['TOMASZ MROWIEC', 'M'],
-    ['JACEK SICIAREK', 'M'],
-    ['FIKANDO MIKANDO', 'M'],
-    ['GRANDE FINALE', 'M'],
-    ['ABCDE123', 'H']
-];
+var getParams = function () {
+    var params = {};
+    if (location.search) {
+        var parts = location.search.slice(1).split('&');
 
-var m = 0;
+        parts.forEach(function (part) {
+            var pair = part.split('=');
+            pair[0] = decodeURIComponent(pair[0]);
+            pair[1] = decodeURIComponent(pair[1]);
+            params[pair[0]] = (pair[1] !== 'undefined') ?
+                              pair[1] : true;
+        });
+    }
+    return params;
+};
 
-var message = messages[m][0];
+var params = getParams();
 
-message = location.href;
-var params = message.split('?');
-message = params.length < 2 ? 'HELLO WORLD' : decodeURIComponent(params.pop());
-var ecc = 'Q';
+if(params.hasOwnProperty('message')) {
+    message = params['message'];
+}
 
+if(params.hasOwnProperty('version')) {
+    version = parseInt(params['version']);
+}
 
-var coder = new QrCode(message, ecc);
+if(params.hasOwnProperty('ecclevel')) {
+    ecclevel = params['ecclevel'];
+}
+
+if(params.hasOwnProperty('mode')) {
+    mode = params['mode'];
+}
+
+var coder = new QrCode(message, ecclevel, version, mode);
 
 var info = {
     message: coder.message,
     capacity: coder.capacity,
+    mode: coder.mode,
+    version: coder.V,
+    ecclevel: coder.eccLevel,
     penalty: coder.penalty
 };
 
-// console.log(info);
+console.log(info);
 
 function drawQrCode(coder) {
 

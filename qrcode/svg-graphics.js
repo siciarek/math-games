@@ -4,7 +4,7 @@ var doc = svg.ownerDocument;
 var mode = 'crispEdges';
 
 function init(_mode) {
-    _mode = _mode || mode;
+    _mode = _mode || 'crispEdges';
     mode = _mode;
     clear();
 }
@@ -102,5 +102,3 @@ function line(from, to, cls) {
     var canvas = svg.getElementById('canvas');
     canvas.appendChild(c);
 }
-
-init();

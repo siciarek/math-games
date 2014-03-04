@@ -16,6 +16,14 @@ var QrCodeErrorCorrection = function () {
         this.log.push([i, a]);
         this.antilog.push([a, i]);
     }
+
+    this.pns = {
+        7: [0, 87, 229, 146, 149, 238, 102, 21],
+        10: [0, 251, 67, 46, 61, 118, 70, 64, 94, 32, 45],
+        13: [0, 74, 152, 176, 100, 86, 100, 106, 104, 130, 218, 206, 140, 78],
+        17: [0, 43, 139, 206, 78, 43, 239, 123, 206, 214, 147, 24, 99, 150, 39, 243, 163, 136],
+        22: [0, 210, 171, 247, 242, 93, 230, 14, 109, 221, 53, 200, 74, 8, 172, 98, 80, 219, 134, 160, 105, 165, 231]
+    };
 };
 
 QrCodeErrorCorrection.prototype.constructor = QrCodeErrorCorrection;
@@ -44,32 +52,37 @@ QrCodeErrorCorrection.prototype.int2exp = function (int) {
  */
 QrCodeErrorCorrection.prototype.getGeneratorPn = function (degree) {
 
-    var pns = {
-       10: 'α0x10 + α251x9 + α67x8 + α46x7 + α61x6 + α118x5 + α70x4 + α64x3 + α94x2 + α32x + α45',
-       13: 'α0x13 + α74x12 + α152x11 + α176x10 + α100x9 + α86x8 + α100x7 + α106x6 + α104x5 + α130x4 + α218x3 + α206x2 + α140x + α78' 
-    };
+//    console.log({ degree: degree });
+//
+//    var pnstemp = {
+//        7: 'α0x7 + α87x6 + α229x5 + α146x4 + α149x3 + α238x2 + α102x + α21',
+//        10: 'α0x10 + α251x9 + α67x8 + α46x7 + α61x6 + α118x5 + α70x4 + α64x3 + α94x2 + α32x + α45',
+//        13: 'α0x13 + α74x12 + α152x11 + α176x10 + α100x9 + α86x8 + α100x7 + α106x6 + α104x5 + α130x4 + α218x3 + α206x2 + α140x + α78',
+//        17: 'α0x17 + α43x16 + α139x15 + α206x14 + α78x13 + α43x12 + α239x11 + α123x10 + α206x9 + α214x8 + α147x7 + α24x6 + α99x5 + α150x4 + α39x3 + α243x2 + α163x + α136',
+//        22: 'α0x22 + α210x21 + α171x20 + α247x19 + α242x18 + α93x17 + α230x16 + α14x15 + α109x14 + α221x13 + α53x12 + α200x11 + α74x10 + α8x9 + α172x8 + α98x7 + α80x6 + α219x5 + α134x4 + α160x3 + α105x2 + α165x + α231'
+//    };
+//
+//    var pns = {};
+//
+//    for (var key in pnstemp) {
+//        var xgenpn = pnstemp[key];
+//        xgenpn = xgenpn.replace(/x\d*/g, '');
+//        xgenpn = xgenpn.replace(/α/g, '');
+//        xgenpn = xgenpn.replace(/\s*/g, '');
+//        var tmp = xgenpn.split('+');
+//
+//        pns[key] = [];
+//
+//        while (tmp.length > 0) {
+//            var v = parseInt(tmp.shift());
+//            pns[key].push(v);
+//        }
+//    }
 
-    var xgenpn = pns[degree];
-
-    xgenpn = xgenpn.replace(/x\d*/g, '');
-    xgenpn = xgenpn.replace(/α/g, '');
-    xgenpn = xgenpn.replace(/\s*/g, '');
-    var tmp = xgenpn.split('+');
-    var genpn = [];
-
-    while (tmp.length > 0) {
-        var v = parseInt(tmp.shift());
-        genpn.push(v);
-    }
-
-    // console.log(genpn);
-
-    return genpn;
+    return this.pns[degree];
 };
 
 QrCodeErrorCorrection.prototype.getCode = function (data, dataWordsCount, eccWordsCount) {
-
-    // console.log([dataWordsCount, eccWordsCount]);
 
     var i;
     var result = [];
@@ -92,6 +105,10 @@ QrCodeErrorCorrection.prototype.getCode = function (data, dataWordsCount, eccWor
         result.shift();
     }
 
+    console.log([dataWordsCount, eccWordsCount]);
+    console.log(data);
+    console.log(result);
+
     return result;
 };
 
@@ -113,10 +130,8 @@ QrCodeErrorCorrection.prototype.mulPn = function (fst, sec) {
         var fsa = fs.match(/[ax]\d+/g);
         var sca = sc.match(/[ax]\d+/g);
 
-        var aexp = (parseInt(fsa[0].replace(/\D/, '')) +
-            parseInt(sca[0].replace(/\D/, '')));
-        var xexp = (parseInt(fsa[1].replace(/\D/, '')) +
-            parseInt(sca[1].replace(/\D/, '')));
+        var aexp = parseInt(fsa[0].replace(/\D/, '')) + parseInt(sca[0].replace(/\D/, ''));
+        var xexp = parseInt(fsa[1].replace(/\D/, '')) + parseInt(sca[1].replace(/\D/, ''));
 
         res2.push([
             'a' + aexp,

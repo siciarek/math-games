@@ -3,7 +3,6 @@ var svg = document.getElementsByTagNameNS(ns, 'svg')[0];
 var doc = svg.ownerDocument;
 var size = parseInt(svg.getAttribute('viewBox').split(' ').pop());
 
-
 function init() {
     clear();
 }
@@ -11,7 +10,7 @@ function init() {
 function clear() {
     circles = [];
 
-    if(svg.getElementById('canvas')) {
+    if (svg.getElementById('canvas')) {
         svg.removeChild(svg.getElementById('canvas'));
     }
 
@@ -21,26 +20,26 @@ function clear() {
     svg.appendChild(g);
 }
 
-function text(string, x, y) {
+function text(string, x, y, color) {
+    color = color || '#000000';
     var element = doc.createElementNS(ns, 'text');
     element.setAttribute('x', x);
     element.setAttribute('y', y);
-    element.text(string);
+    element.setAttribute('style', 'font-size:7px;text-anchor:middle;font-family:sans-serif;fill:' + color);
+    element.appendChild(doc.createTextNode(string));
 
     var canvas = svg.getElementById('canvas');
     canvas.appendChild(element);
 }
 
-function rectangle(top, left, width, height, cls) {
-
-    cls = cls || 'rectangle';
+function rectangle(top, left, width, height, color) {
 
     var element = doc.createElementNS(ns, 'rect');
     element.setAttribute('x', top);
     element.setAttribute('y', left);
     element.setAttribute('width', width);
     element.setAttribute('height', height);
-    element.setAttribute('class', cls);
+    element.setAttribute('fill', color);
 
     var canvas = svg.getElementById('canvas');
     canvas.appendChild(element);
@@ -54,7 +53,7 @@ function square(top, left, size, cls) {
 
 function circle(cx, cy, r, cls) {
 
-    if(typeof cx === 'function' && typeof cx.constructor === 'function') {
+    if (typeof cx === 'function' && typeof cx.constructor === 'function') {
         var temp
     }
 
@@ -91,7 +90,7 @@ function line(from, to, cls) {
     var c = doc.createElementNS(ns, 'path');
     c.setAttribute('d', d);
 
-    if(cls !== null) {
+    if (cls !== null) {
         c.setAttribute('class', cls);
     }
 

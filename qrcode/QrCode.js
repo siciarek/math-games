@@ -1,4 +1,4 @@
-var QrCode = function (message, eccLevel, mode) {
+var QrCode = function (message, eccLevel, version, mode) {
 
     this.UP = -1;
     this.DOWN = 1;
@@ -24,7 +24,7 @@ var QrCode = function (message, eccLevel, mode) {
 
     this.maskPattern = 0;
 
-    this.setDataModule = function (value, index) {
+    this.setDataModule = function (value, index, version) {
 
         var x = this.datax;
         var y = this.datay;
@@ -101,7 +101,6 @@ var QrCode = function (message, eccLevel, mode) {
 
     this.setDataArea = function () {
 
-
         var datastr = '';
 
         for (var i = 0; i < this.data.length; i++) {
@@ -116,7 +115,6 @@ var QrCode = function (message, eccLevel, mode) {
 
         var data = datastr.split('');
 
-
         for (i = 0; i < data.length; i++) {
             this.setDataModule(data[i], i);
         }
@@ -124,6 +122,7 @@ var QrCode = function (message, eccLevel, mode) {
 
     eccLevel = eccLevel || 'Q';
     mode = mode || 'alphanumeric';
+    version = version || 1;
 
     this.message = message;
     this.eccLevel = eccLevel;
@@ -133,11 +132,12 @@ var QrCode = function (message, eccLevel, mode) {
     this.eval = new QrCodeEvaluation();
     this.ecc = new QrCodeErrorCorrection();
 
-    this.V = 0;
-    this.size = 0;
-
-    this.datay = 0;
-    this.datax = 0;
+    this.V = version;
+    var list = this.config.characterCapacities[this.V][this.eccLevel];
+    this.capacity = list[this.mode];
+    this.size = (((this.V - 1) * 4) + 21);
+    this.datay = this.size - 1;
+    this.datax = this.size - 1;
 
     this.data = [];
     this.matrix = [];
@@ -234,15 +234,15 @@ var QrCode = function (message, eccLevel, mode) {
 
     this.encodeData = function () {
 
+        var datastra = [];
+
+        var mode = this.config.dataModeBitStrings[this.mode];
+        var temp = this.config.wordSizes[this.mode];
+        var wordSize = 0;
+        var terminator = '0000';
+
         switch (this.mode) {
-            case 'numeric':
-
-                break;
-
-            case 'alphanumeric':
-                var mode = this.config.dataModeBitStrings[this.mode];
-                var temp = this.config.wordSizes[this.mode];
-                var wordSize = 0;
+            case 'byte':
 
                 for (var range in temp) {
                     if (temp.hasOwnProperty(range)) {
@@ -260,7 +260,71 @@ var QrCode = function (message, eccLevel, mode) {
                     msglen = '0' + msglen;
                 }
 
-                var datastra = [mode, msglen];
+                datastra = [mode, msglen];
+
+                temp = this.message.split('');
+
+                while (temp.length > 0) {
+                    var _byte = temp.shift();
+                    var _bytechc= _byte.charCodeAt(0);
+                    var _bits = _bytechc.toString(2);
+
+                    while (_bits.length < 8) {
+                        _bits = '0' + _bits;
+                    }
+
+                    datastra.push(_bits);
+                }
+
+//                terminator = '0000';
+//                datastra.push(terminator);
+
+                break;
+
+            case 'numeric':
+                temp = this.message.split('');
+                var xtemp = [];
+                var x = 0, y = 0;
+                while(temp.length) {
+
+                    if(typeof xtemp[y] === 'undefined') {
+                        xtemp[y] = [];
+                    }
+
+                    xtemp[y] += temp.shift();
+                    x++;
+                    if(x % 3 === 0) {
+                        y++;
+                    }
+                }
+                temp = [];
+                while(xtemp.length > 0) {
+                    var v = xtemp.shift();
+                    temp.push(parseInt(v).toString(2));
+                }
+
+                console.log(xtemp);
+                break;
+
+            case 'alphanumeric':
+
+                for (range in temp) {
+                    if (temp.hasOwnProperty(range)) {
+                        var ran = range.split('-');
+                        if (this.V >= parseInt(ran[0]) && this.V <= parseInt(ran[1])) {
+                            wordSize = temp[range];
+                            break;
+                        }
+                    }
+                }
+
+                msglen = this.message.length.toString(2);
+
+                while (msglen.length < wordSize) {
+                    msglen = '0' + msglen;
+                }
+
+                datastra = [mode, msglen];
 
                 temp = this.message.split('');
 
@@ -278,21 +342,24 @@ var QrCode = function (message, eccLevel, mode) {
                     datastra.push(wordstr);
                 }
 
+                datastra.push(terminator);
+
                 break;
             default:
                 break;
         }
 
-        var terminator = '0000';
-        datastra.push(terminator);
-
-        var dataWordsCount = parseInt(this.config.dataSizeInfo[this.V + '-' + this.eccLevel][0]);
+        var dataWordsCount = parseInt(this.config.dataSizeInfo[this.V + '-' + this.eccLevel][0])
         var eccWordsCount = parseInt(this.config.dataSizeInfo[this.V + '-' + this.eccLevel][1]);
-        var dataBitsCount = dataWordsCount * 8;
 
+        var dataBitsCount = dataWordsCount * (this.mode === 'byte' ? 9 : 8);
         var datastr = datastra.join('');
 
+        console.log(datastr.length);
+
         datastr = datastr.substring(0, dataBitsCount);
+
+        console.log(datastr.length);
 
         var bitwords = [];
 
@@ -303,7 +370,6 @@ var QrCode = function (message, eccLevel, mode) {
             bitwords.push(chunk);
         }
 
-
         var last = bitwords.pop();
 
         while (last.length < 8) {
@@ -311,7 +377,6 @@ var QrCode = function (message, eccLevel, mode) {
         }
 
         bitwords.push(last);
-
 
         var fillers = ['11101100', '00010001'];
 
@@ -321,19 +386,11 @@ var QrCode = function (message, eccLevel, mode) {
             bitwords.push(fillers[x++ % fillers.length]);
         }
 
-
-        var bitwordsnumbers = [];
-
         for (var b = 0; b < bitwords.length; b++) {
-            bitwordsnumbers.push(parseInt(bitwords[b], 2));
+            this.data.push(parseInt(bitwords[b], 2));
         }
 
-        for (var b = 0; b < bitwordsnumbers.length; b++) {
-            this.data.push(bitwordsnumbers[b]);
-        }
-
-
-        var ecc = this.ecc.getCode(bitwordsnumbers, dataWordsCount, eccWordsCount);
+        var ecc = this.ecc.getCode(this.data, dataWordsCount, eccWordsCount);
 
         while (ecc.length > 0) {
             this.data.push(ecc.shift());
@@ -341,19 +398,7 @@ var QrCode = function (message, eccLevel, mode) {
     };
 
     this.setUpProperVersion = function () {
-        for (var ver in this.config.characterCapacities) {
-            if (this.config.characterCapacities.hasOwnProperty(ver)) {
-                var list = this.config.characterCapacities[ver][this.eccLevel];
-                if (this.message.length <= list[this.mode]) {
-                    this.V = ver;
-                    this.capacity = list[this.mode];
-                    this.size = (((this.V - 1) * 4) + 21);
-                    this.datay = this.size - 1;
-                    this.datax = this.size - 1;
-                    return;
-                }
-            }
-        }
+
     };
 
     this.getMode = function () {
