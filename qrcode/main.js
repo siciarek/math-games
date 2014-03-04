@@ -13,7 +13,13 @@ var messages = [
 var m = 0;
 
 var message = messages[m][0];
-var ecc = messages[m][1];
+
+message = location.href;
+var params = message.split('?');
+message = params.length < 2 ? 'HELLO WORLD' : decodeURIComponent(params.pop());
+var ecc = 'M';
+
+console.log([message]);
 
 var coder = new QrCode(message, ecc);
 
