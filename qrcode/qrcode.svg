@@ -4,6 +4,9 @@
     width="100%" height="100%" style="background-color: green">
     <script type="text/ecmascript" xlink:href="svg-graphics.js"/>
     <script type="text/ecmascript" xlink:href="QrCodeConfig.js"/>
+    <script type="text/ecmascript" xlink:href="QrCodeDataAnalyzer.js"/>
+    <script type="text/ecmascript" xlink:href="QrCodeDataEncoder.js"/>
+    <script type="text/ecmascript" xlink:href="QrCodeTiler.js"/>
     <script type="text/ecmascript" xlink:href="QrCodeEvaluation.js"/>
     <script type="text/ecmascript" xlink:href="QrCodeErrorCorrection.js"/>
     <script type="text/ecmascript" xlink:href="QrCode.js"/>

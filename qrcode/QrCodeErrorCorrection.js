@@ -105,7 +105,7 @@ QrCodeErrorCorrection.prototype.getCode = function (data, dataWordsCount, eccWor
         result.shift();
     }
 
-    console.log([dataWordsCount, eccWordsCount]);
+    console.log({dwc: dataWordsCount, ecc: eccWordsCount});
     console.log(data);
     console.log(result);
 

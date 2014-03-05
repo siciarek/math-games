@@ -84,8 +84,14 @@ var QrCode = function (message, eccLevel, version, mode) {
                         y = this.datay + (this.datadiry === this.UP ? -2 : 2);
                         break;
                     case this.ALIGNMENT:
+                        if(this.datadiry === this.UP && this.matrix[y][x - 1] === this.UNDEFINDED) {
+                           x = this.datax - 1;
+                           y = this.datay - 1;
+                           break;
+                        }
                         x = this.datax;
                         y = this.datay + (this.datadiry === this.UP ? -6 : 6);
+                
                         break;
                     default:
                         return;
@@ -102,6 +108,8 @@ var QrCode = function (message, eccLevel, version, mode) {
 
         this.datay = y;
     };
+
+    var lim = 120;
 
     this.setDataArea = function () {
 
@@ -120,6 +128,8 @@ var QrCode = function (message, eccLevel, version, mode) {
         var data = datastr.split('');
 
         for (i = 0; i < data.length; i++) {
+            if(i > lim) break;
+
             this.setDataModule(data[i], i);
         }
     };
@@ -359,11 +369,7 @@ var QrCode = function (message, eccLevel, version, mode) {
         var dataBitsCount = dataWordsCount * (this.mode === 'byte' ? 9 : 8);
         var datastr = datastra.join('');
 
-        console.log(datastr.length);
-
         datastr = datastr.substring(0, dataBitsCount);
-
-        console.log(datastr.length);
 
         var bitwords = [];
 
