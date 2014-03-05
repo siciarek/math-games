@@ -6,6 +6,7 @@ var mode = 'alphanumeric';
 // http://mathgames.dev/qrcode/qrcode.svg?message=HELLO%20WORLD&mode=alphanumeric&ecclevel=L&version=1
 // http://mathgames.dev/qrcode/qrcode.svg?message=http://siciarek.pl&mode=byte&ecclevel=L&version=1
 // http://mathgames.dev/qrcode/qrcode.svg?message=1234567890&mode=numeric&ecclevel=L&version=1
+// http://mathgames.dev/qrcode/qrcode.svg?message=HELLO%20WORLD&mode=alphanumeric&ecclevel=L&version=2
 
 var getParams = function () {
     var params = {};

@@ -83,6 +83,10 @@ var QrCode = function (message, eccLevel, version, mode) {
                         x = this.datax;
                         y = this.datay + (this.datadiry === this.UP ? -2 : 2);
                         break;
+                    case this.ALIGNMENT:
+                        x = this.datax;
+                        y = this.datay + (this.datadiry === this.UP ? -6 : 6);
+                        break;
                     default:
                         return;
                 }
