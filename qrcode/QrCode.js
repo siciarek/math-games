@@ -24,12 +24,14 @@ var QrCode = function (message, eccLevel, version, mode) {
 
     this.maskPattern = 0;
 
-    this.setDataModule = function (value, index, version) {
+	this.al = false;
+	
+    this.setDataModule = function (value, index) {
 
         var x = this.datax;
         var y = this.datay;
 
-        if (index > 0) {
+        if (index > 0 && this.al === false) {
             x += index % 2 === 0 ? 0 : this.datadirx;
             y += index % 2 === 0 ? this.datadiry : 0;
         }
@@ -53,7 +55,7 @@ var QrCode = function (message, eccLevel, version, mode) {
             }
         }
         else {
-            var mval = this.mask[y][x];
+            var mval = this.al === true ? this.ALIGNMENT : this.mask[y][x];
 
             if (mval !== this.UNDEFINDED) {
                 switch (mval) {
@@ -77,18 +79,24 @@ var QrCode = function (message, eccLevel, version, mode) {
                             this.datax -= 2;
                             x = this.datax;
                             y = this.datay;
-                        }
+                        }	
                         break;
                     case this.TOP_TIMER:
                         x = this.datax;
                         y = this.datay + (this.datadiry === this.UP ? -2 : 2);
-                        break;
+                        break;s
                     case this.ALIGNMENT:
                         if(this.datadiry === this.UP && this.matrix[y][x - 1] === this.UNDEFINDED) {
-                           x = this.datax - 1;
-                           y = this.datay - 1;
+                           this.datay -= (index % 2 === 0 ? 1 : 1);
+                           this.datax -= (this.al == false && index % 2 === 0 ? 1 : 0);
+					       this.al = true;
+
+						   y = this.datay;
+	                       x = this.datax;
+						   
                            break;
                         }
+						
                         x = this.datax;
                         y = this.datay + (this.datadiry === this.UP ? -6 : 6);
                 
@@ -98,6 +106,8 @@ var QrCode = function (message, eccLevel, version, mode) {
                 }
             }
         }
+		
+		
 
         if (parseInt(value) === 1) {
             this.setFullModule(x, y, 'data');
@@ -106,10 +116,16 @@ var QrCode = function (message, eccLevel, version, mode) {
             this.setEmptyModule(x, y, 'data');
         }
 
+		if(this.al === true && this.matrix[y - 1][x + 1] === this.UNDEFINDED) {
+		   this.al = false;
+	       this.datax += 1;
+		}
+
         this.datay = y;
     };
 
-    var lim = 120;
+	var off = 7; // 3;
+    var lim = 115 + off;
 
     this.setDataArea = function () {
 
@@ -128,7 +144,7 @@ var QrCode = function (message, eccLevel, version, mode) {
         var data = datastr.split('');
 
         for (i = 0; i < data.length; i++) {
-            if(i > lim) break;
+            //if(this.V > 1 && i > lim) break;
 
             this.setDataModule(data[i], i);
         }
@@ -760,3 +776,4 @@ var QrCode = function (message, eccLevel, version, mode) {
 
     this.encode();
 };
+
