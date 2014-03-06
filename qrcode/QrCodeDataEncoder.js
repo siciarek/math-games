@@ -79,7 +79,6 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
                     bin = '0' + bin;
                 }
             }
-
             bitdata.push(bin);
         }
     }
@@ -87,11 +86,6 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
     var bitstring = bitdata.join('');
     var codewords = [];
     var diff = numberOfDataBits - bitstring.length;
-
-    console.log([bitstring.length, diff]);
-    console.log(bitdata);
-    console.log(bitstring);
-
 
     if(diff > 4) {
         bitstring += terminator;
@@ -103,22 +97,16 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
         }
     }
 
-    console.log(bitstring);
-
     // Add More 0s to Make the Length a Multiple of 8
     while(bitstring.length % 8 > 0) {
         bitstring += '0';
     }
-
-    console.log(bitstring);
 
     // Add Pad Bytes if the String is Still too Short
     var b = 0;
     while(bitstring.length / 8 < numberOfDataCodewords) {
         bitstring += padBytes[b++ % padBytes.length];
     }
-
-    console.log([bitstring.length, bitstring]);
 
     var start = 0;
     var octet = null;
@@ -129,180 +117,12 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
         codewords.push(octet);
     }
 
-    console.log(codewords);
-    console.log(codewords.length);
-
     while(codewords.length) {
         octet = codewords.shift();
         data.push(parseInt(octet, 2));
     }
 
     var ecc = this.ec.getCode(data, numberOfDataCodewords, numberOfEcCodewords);
-    data = data.concat(ecc);
 
-    return data;
-
-    var datastra = [];
-
-    switch (this.mode) {
-        case 'byte':
-
-            for (var range in temp) {
-                if (temp.hasOwnProperty(range)) {
-                    var ran = range.split('-');
-                    if (version >= parseInt(ran[0]) && version <= parseInt(ran[1])) {
-                        wordSize = temp[range];
-                        break;
-                    }
-                }
-            }
-
-            var msglen = message.length.toString(2);
-
-            while (msglen.length < wordSize) {
-                msglen = '0' + msglen;
-            }
-
-            datastra = [mode, msglen];
-
-            temp = message.split('');
-
-            while (temp.length > 0) {
-                var _byte = temp.shift();
-                var _bytechc = _byte.charCodeAt(0);
-                var _bits = _bytechc.toString(2);
-
-                while (_bits.length < 8) {
-                    _bits = '0' + _bits;
-                }
-
-                datastra.push(_bits);
-            }
-
-//                terminator = '0000';
-//                datastra.push(terminator);
-
-            break;
-
-        case 'numeric':
-            temp = message.split('');
-            var xtemp = [];
-            var x = 0, y = 0;
-            while (temp.length) {
-
-                if (typeof xtemp[y] === 'undefined') {
-                    xtemp[y] = [];
-                }
-
-                xtemp[y] += temp.shift();
-                x++;
-                if (x % 3 === 0) {
-                    y++;
-                }
-            }
-            temp = [];
-            while (xtemp.length > 0) {
-                var v = xtemp.shift();
-                temp.push(parseInt(v).toString(2));
-            }
-
-            console.log(xtemp);
-            break;
-
-        case 'alphanumeric':
-
-            for (range in temp) {
-                if (temp.hasOwnProperty(range)) {
-                    var ran = range.split('-');
-                    if (version >= parseInt(ran[0]) && version <= parseInt(ran[1])) {
-                        wordSize = temp[range];
-                        break;
-                    }
-                }
-            }
-
-            msglen = message.length.toString(2);
-
-            while (msglen.length < wordSize) {
-                msglen = '0' + msglen;
-            }
-
-            datastra = [mode, msglen];
-
-            temp = message.split('');
-
-            for (var c = 0; c < temp.length; c += 2) {
-                var first = typeof temp[c] !== 'undefined' ? this.config.valuesTable[this.mode][temp[c]] : 0;
-                var second = typeof temp[c + 1] !== 'undefined' ? this.config.valuesTable[this.mode][temp[c + 1]] : 0;
-                var word = second === 0 ? first : (45 * first + second);
-                var wordstr = word.toString(2);
-                var wlen = second === 0 ? 6 : 11;
-
-                while (wordstr.length < wlen) {
-                    wordstr = '0' + wordstr;
-                }
-
-                datastra.push(wordstr);
-            }
-
-            datastra.push(terminator);
-
-            break;
-        default:
-            break;
-    }
-
-    var dataWordsCount = parseInt(this.config.dataSizeInfo[version + '-' + this.eccLevel][0])
-    var eccWordsCount = parseInt(this.config.dataSizeInfo[version + '-' + this.eccLevel][1]);
-
-    var dataBitsCount = dataWordsCount * 8;
-
-    var datastr = datastra.join('');
-
-    datastr += '000000000000000000000000';
-
-    if (dataBitsCount < datastr.length) {
-        datastr = datastr.substring(0, dataBitsCount);
-    }
-
-    console.log([dataBitsCount, datastr.length, '*']);
-
-    var bitwords = [];
-
-    while (datastr.length > 0) {
-        var chunk = datastr.substring(0, 8);
-        var rx = new RegExp('^' + chunk);
-        datastr = datastr.replace(rx, '');
-        bitwords.push(chunk);
-    }
-
-    var last = bitwords.pop();
-
-    while (last.length < 8) {
-        last += '0';
-    }
-
-    bitwords.push(last);
-
-    var fillers = ['11101100', '00010001'];
-
-    var x = 0;
-
-    while (bitwords.length <= dataWordsCount) {
-        bitwords.push(fillers[x++ % 2]);
-    }
-
-    while (bitwords.length > 0) {
-        data.push(parseInt(bitwords.shift(), 2));
-    }
-
-    console.log({dwc: dataWordsCount, ecc: eccWordsCount});
-
-    var ecc = this.ec.getCode(data, dataWordsCount, eccWordsCount);
-
-    while (ecc.length > 0) {
-        data.push(ecc.shift());
-    }
-
-    return data;
+    return data.concat(ecc);
 };

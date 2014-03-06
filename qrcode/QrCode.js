@@ -21,8 +21,6 @@ var QrCode = function (message, eccLevel, version, mode) {
 
         var dl = data.length;
 
-        console.log(dl);
-
         i = 0;
 
         while(data.length > 0) {
