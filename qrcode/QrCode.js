@@ -1,5 +1,80 @@
 var QrCode = function (message, eccLevel, version, mode) {
 
+    var off = 230; // 3;
+    var lim = 115 + off;
+
+    this.setDataArea = function () {
+
+        var datastr = '';
+
+        for (var i = 0; i < this.data.length; i++) {
+            var val = this.data[i].toString(2);
+
+            while (val.length < 8) {
+                val = '0' + val;
+            }
+
+            datastr += val;
+        }
+
+        var data = datastr.split('');
+
+        var dl = data.length;
+
+        console.log(dl);
+
+        i = 0;
+
+        while(data.length > 0) {
+//            if(this.V > 1 && i > lim) {
+//                break;
+//            }
+//
+//            console.log(dl - data.length - i);
+
+            this.setDataModule(data.shift(), i++);
+        }
+    };
+
+    this.encode = function () {
+
+        this.setFinderPatterns();
+        this.setSeparators();
+        this.setTimingPatterns();
+        this.setDarkModule();
+        this.setAlignmentPatterns();
+
+        this.setFormatInformationArea(true);
+        this.setVersionInformationArea(true);
+
+        this.encodeData();
+        this.setDataArea();
+
+//        return false;
+
+        var tempres = [];
+
+        for (var p = 0; p < 8; p++) {
+            var result = this.applyMask(p);
+            tempres.push(result);
+            this.evaluation[result] = p;
+        }
+
+
+        this.penalty = this.evaluation[tempres.sort().shift()];
+        this.applyMask(this.penalty, true);
+
+        this.setFormatInformationArea();
+        this.setVersionInformationArea();
+    };
+
+    this.analyzer = new QrCodeDataAnalyzer();
+    this.encoder = new QrCodeDataEncoder();
+    this.tiler = new QrCodeTiler();
+    this.config = new QrCodeConfig();
+    this.eval = new QrCodeEvaluation();
+    this.ec = new QrCodeErrorCorrection();
+
     this.UP = -1;
     this.DOWN = 1;
 
@@ -24,9 +99,9 @@ var QrCode = function (message, eccLevel, version, mode) {
 
     this.maskPattern = 0;
 
-	this.al = false;
-	
-    this.setDataModule = function (value, index) {
+    this.al = false;
+
+    this.setDataModule = function (value, index, dx, dy) {
 
         var x = this.datax;
         var y = this.datay;
@@ -79,35 +154,34 @@ var QrCode = function (message, eccLevel, version, mode) {
                             this.datax -= 2;
                             x = this.datax;
                             y = this.datay;
-                        }	
+                        }
                         break;
                     case this.TOP_TIMER:
                         x = this.datax;
                         y = this.datay + (this.datadiry === this.UP ? -2 : 2);
-                        break;s
+                        break;
+                        s
                     case this.ALIGNMENT:
-                        if(this.datadiry === this.UP && this.matrix[y][x - 1] === this.UNDEFINDED) {
-                           this.datay -= (index % 2 === 0 ? 1 : 1);
-                           this.datax -= (this.al == false && index % 2 === 0 ? 1 : 0);
-					       this.al = true;
+                        if (this.datadiry === this.UP && this.matrix[y][x - 1] === this.UNDEFINDED) {
+                            this.datay -= (index % 2 === 0 ? 1 : 1);
+                            this.datax -= (this.al == false && index % 2 === 0 ? 1 : 0);
+                            this.al = true;
 
-						   y = this.datay;
-	                       x = this.datax;
-						   
-                           break;
+                            y = this.datay;
+                            x = this.datax;
+
+                            break;
                         }
-						
+
                         x = this.datax;
                         y = this.datay + (this.datadiry === this.UP ? -6 : 6);
-                
+
                         break;
                     default:
                         return;
                 }
             }
         }
-		
-		
 
         if (parseInt(value) === 1) {
             this.setFullModule(x, y, 'data');
@@ -116,38 +190,12 @@ var QrCode = function (message, eccLevel, version, mode) {
             this.setEmptyModule(x, y, 'data');
         }
 
-		if(this.al === true && this.matrix[y - 1][x + 1] === this.UNDEFINDED) {
-		   this.al = false;
-	       this.datax += 1;
-		}
+        if (this.al === true && this.matrix[y - 1][x + 1] === this.UNDEFINDED) {
+            this.al = false;
+            this.datax += 1;
+        }
 
         this.datay = y;
-    };
-
-	var off = 7; // 3;
-    var lim = 115 + off;
-
-    this.setDataArea = function () {
-
-        var datastr = '';
-
-        for (var i = 0; i < this.data.length; i++) {
-            var val = this.data[i].toString(2);
-
-            while (val.length < 8) {
-                val = '0' + val;
-            }
-
-            datastr += val;
-        }
-
-        var data = datastr.split('');
-
-        for (i = 0; i < data.length; i++) {
-            //if(this.V > 1 && i > lim) break;
-
-            this.setDataModule(data[i], i);
-        }
     };
 
     eccLevel = eccLevel || 'Q';
@@ -158,16 +206,15 @@ var QrCode = function (message, eccLevel, version, mode) {
     this.eccLevel = eccLevel;
     this.mode = mode;
 
-    this.config = new QrCodeConfig();
-    this.eval = new QrCodeEvaluation();
-    this.ecc = new QrCodeErrorCorrection();
-
     this.V = version;
     var list = this.config.characterCapacities[this.V][this.eccLevel];
     this.capacity = list[this.mode];
     this.size = (((this.V - 1) * 4) + 21);
     this.datay = this.size - 1;
     this.datax = this.size - 1;
+
+    this.penalty = 10000;
+    this.evaluation = {};
 
     this.data = [];
     this.matrix = [];
@@ -193,40 +240,6 @@ var QrCode = function (message, eccLevel, version, mode) {
         separator: this.SEPARATOR,
         data: this.DATA
     };
-
-    this.encode = function () {
-        this.setUpProperVersion();
-
-        this.setFinderPatterns();
-        this.setSeparators();
-        this.setTimingPatterns();
-        this.setDarkModule();
-        this.setAlignmentPatterns();
-
-        this.setFormatInformationArea(true);
-        this.setVersionInformationArea(true);
-
-        this.encodeData();
-        this.setDataArea();
-
-        var tempres = [];
-
-        for (var p = 0; p < 8; p++) {
-            var result = this.applyMask(p);
-            tempres.push(result);
-            this.evaluation[result] = p;
-        }
-
-        this.penalty = this.evaluation[tempres.sort().shift()];
-        this.applyMask(this.penalty, true);
-
-        this.setFormatInformationArea();
-        this.setVersionInformationArea();
-    };
-
-    this.penalty = 10000;
-
-    this.evaluation = {};
 
     this.applyMask = function (number, final) {
 
@@ -263,172 +276,15 @@ var QrCode = function (message, eccLevel, version, mode) {
     };
 
     this.encodeData = function () {
-
-        var datastra = [];
-
-        var mode = this.config.dataModeBitStrings[this.mode];
-        var temp = this.config.wordSizes[this.mode];
-        var wordSize = 0;
-        var terminator = '0000';
-
-        switch (this.mode) {
-            case 'byte':
-
-                for (var range in temp) {
-                    if (temp.hasOwnProperty(range)) {
-                        var ran = range.split('-');
-                        if (this.V >= parseInt(ran[0]) && this.V <= parseInt(ran[1])) {
-                            wordSize = temp[range];
-                            break;
-                        }
-                    }
-                }
-
-                var msglen = this.message.length.toString(2);
-
-                while (msglen.length < wordSize) {
-                    msglen = '0' + msglen;
-                }
-
-                datastra = [mode, msglen];
-
-                temp = this.message.split('');
-
-                while (temp.length > 0) {
-                    var _byte = temp.shift();
-                    var _bytechc= _byte.charCodeAt(0);
-                    var _bits = _bytechc.toString(2);
-
-                    while (_bits.length < 8) {
-                        _bits = '0' + _bits;
-                    }
-
-                    datastra.push(_bits);
-                }
-
-//                terminator = '0000';
-//                datastra.push(terminator);
-
-                break;
-
-            case 'numeric':
-                temp = this.message.split('');
-                var xtemp = [];
-                var x = 0, y = 0;
-                while(temp.length) {
-
-                    if(typeof xtemp[y] === 'undefined') {
-                        xtemp[y] = [];
-                    }
-
-                    xtemp[y] += temp.shift();
-                    x++;
-                    if(x % 3 === 0) {
-                        y++;
-                    }
-                }
-                temp = [];
-                while(xtemp.length > 0) {
-                    var v = xtemp.shift();
-                    temp.push(parseInt(v).toString(2));
-                }
-
-                console.log(xtemp);
-                break;
-
-            case 'alphanumeric':
-
-                for (range in temp) {
-                    if (temp.hasOwnProperty(range)) {
-                        var ran = range.split('-');
-                        if (this.V >= parseInt(ran[0]) && this.V <= parseInt(ran[1])) {
-                            wordSize = temp[range];
-                            break;
-                        }
-                    }
-                }
-
-                msglen = this.message.length.toString(2);
-
-                while (msglen.length < wordSize) {
-                    msglen = '0' + msglen;
-                }
-
-                datastra = [mode, msglen];
-
-                temp = this.message.split('');
-
-                for (var c = 0; c < temp.length; c += 2) {
-                    var first = typeof temp[c] !== 'undefined' ? this.config.valuesTable[this.mode][temp[c]] : 0;
-                    var second = typeof temp[c + 1] !== 'undefined' ? this.config.valuesTable[this.mode][temp[c + 1]] : 0;
-                    var word = second === 0 ? first : (45 * first + second);
-                    var wordstr = word.toString(2);
-                    var wlen = second === 0 ? 6 : 11;
-
-                    while (wordstr.length < wlen) {
-                        wordstr = '0' + wordstr;
-                    }
-
-                    datastra.push(wordstr);
-                }
-
-                datastra.push(terminator);
-
-                break;
-            default:
-                break;
-        }
-
-        var dataWordsCount = parseInt(this.config.dataSizeInfo[this.V + '-' + this.eccLevel][0])
-        var eccWordsCount = parseInt(this.config.dataSizeInfo[this.V + '-' + this.eccLevel][1]);
-
-        var dataBitsCount = dataWordsCount * (this.mode === 'byte' ? 9 : 8);
-        var datastr = datastra.join('');
-
-        datastr = datastr.substring(0, dataBitsCount);
-
-        var bitwords = [];
-
-        while (datastr.length > 0) {
-            var chunk = datastr.substring(0, 8);
-            var rx = new RegExp('^' + chunk);
-            datastr = datastr.replace(rx, '');
-            bitwords.push(chunk);
-        }
-
-        var last = bitwords.pop();
-
-        while (last.length < 8) {
-            last += '0';
-        }
-
-        bitwords.push(last);
-
-        var fillers = ['11101100', '00010001'];
-
-        var x = 0;
-
-        while (bitwords.length < dataWordsCount) {
-            bitwords.push(fillers[x++ % fillers.length]);
-        }
-
-        for (var b = 0; b < bitwords.length; b++) {
-            this.data.push(parseInt(bitwords[b], 2));
-        }
-
-        var ecc = this.ecc.getCode(this.data, dataWordsCount, eccWordsCount);
-
-        while (ecc.length > 0) {
-            this.data.push(ecc.shift());
-        }
-    };
-
-    this.setUpProperVersion = function () {
-
+        this.data = this.encoder.encode(this.message, this.getVersion(), this.getMode(), this.getEccLevel());
     };
 
     this.getMode = function () {
         return this.mode;
+    };
+
+    this.getVersion = function () {
+        return this.V;
     };
 
     this.getEccLevel = function () {
@@ -445,112 +301,6 @@ var QrCode = function (message, eccLevel, version, mode) {
 
     this.getTypeInformationBits = function (eccLevel, maskPattern) {
         return this.config.typeInformationBits[eccLevel][maskPattern];
-    };
-
-    this.setFormatInformationArea = function (reserve) {
-
-        if (typeof reserve === 'undefined') {
-            reserve = false;
-        }
-
-        var eccLevel = this.getEccLevel();
-        var maskPattern = this.getMaskPattern();
-
-        var temp = this.getTypeInformationBits(eccLevel, maskPattern).split('');
-        var bits = [
-            [],
-            []
-        ];
-
-        var val = 0;
-        var x = 0;
-        var y = 0;
-
-        while (temp.length > 0) {
-            val = parseInt(temp.shift());
-            val = reserve === false ? val : 0;
-            bits[0].push(val);
-            bits[1].push(val);
-        }
-
-        x = 8;
-        y = 0;
-        for (; y < 8; y++) {
-            if (y !== 6) {
-                val = bits[0].pop();
-                val === 1 ? this.setFullModule(x, y, 'format') : this.setEmptyModule(x, y, 'format');
-            }
-        }
-
-        x = 8;
-        y = 8;
-        for (; x >= 0; x--) {
-            if (x !== 6) {
-                val = bits[0].pop();
-                val === 1 ? this.setFullModule(x, y, 'format') : this.setEmptyModule(x, y, 'format');
-            }
-        }
-
-        x = this.size - 1;
-        y = 8;
-        for (; x >= this.size - 8; x--) {
-            val = bits[1].pop();
-            val === 1 ? this.setFullModule(x, y, 'format') : this.setEmptyModule(x, y, 'format');
-        }
-
-        x = 8;
-        y = (4 * this.V) + 9 + 1;
-        for (; y < this.size; y++) {
-            val = bits[1].pop();
-            val === 1 ? this.setFullModule(x, y, 'format') : this.setEmptyModule(x, y, 'format');
-        }
-    };
-
-    this.setVersionInformationArea = function (reserve) {
-        if (this.V < 7) {
-            return false;
-        }
-
-        if (typeof reserve === 'undefined') {
-            reserve = false;
-        }
-
-        var temp = this.getVersionInformationString().split('');
-        var bits = [
-            [],
-            []
-        ];
-        var val = 0;
-        var x = 0;
-        var y = 0;
-        var i = 0;
-
-        while (temp.length > 0) {
-            val = parseInt(temp.shift());
-            val = reserve === false ? val : 0;
-            bits[0].push(val);
-            bits[1].push(val);
-        }
-
-        y = 0;
-        x = this.size - 11;
-
-        for (; y < 6; y++) {
-            for (i = 0; i < 3; i++) {
-                bits[0].pop() == 1 ? this.setFullModule(x + i, y, 'version') : this.setEmptyModule(x + i, y, 'version');
-            }
-        }
-
-        y = this.size - 11;
-        x = 0;
-
-        for (; x < 6; x++) {
-            for (i = 0; i < 3; i++) {
-                bits[1].pop() == 1 ? this.setFullModule(x, y + i, 'version') : this.setEmptyModule(x, y + i, 'version');
-            }
-        }
-
-        return true;
     };
 
     this.setFinderPattern = function (top, left) {
@@ -596,6 +346,42 @@ var QrCode = function (message, eccLevel, version, mode) {
                 this.setFullModule((left + x), (top + y), 'finder');
             }
         }
+    };
+
+    this.setModule = function (x, y, value, maskValue) {
+        value = value || 'undefined';
+        maskValue = maskValue || 'undefined';
+
+        if (typeof this.matrix[y] === 'undefined') {
+            var row = [];
+
+            for (var c = 0; c < this.size; c++) {
+                row[c] = this.values['undefined'];
+            }
+            this.matrix[y] = row;
+        }
+
+        if (typeof this.mask[y] === 'undefined') {
+            var mrow = [];
+
+            for (var mc = 0; mc < this.size; mc++) {
+                mrow[mc] = this.maskValues['undefined'];
+            }
+            this.mask[y] = mrow;
+        }
+
+        this.matrix[y][x] = this.values[value];
+        this.mask[y][x] = this.maskValues[maskValue];
+    };
+
+    this.setFullModule = function (x, y, maskValue) {
+        maskValue = maskValue || 'undefined';
+        this.setModule(x, y, 'full', maskValue);
+    };
+
+    this.setEmptyModule = function (x, y, maskValue) {
+        maskValue = maskValue || 'undefined';
+        this.setModule(x, y, 'empty', maskValue);
     };
 
     this.setFinderPatterns = function () {
@@ -737,42 +523,115 @@ var QrCode = function (message, eccLevel, version, mode) {
 
         this.setFullModule(x, y, 'dark_module');
     };
+    this.setFormatInformationArea = function (reserve) {
 
-    this.setModule = function (x, y, value, maskValue) {
-        value = value || 'undefined';
-        maskValue = maskValue || 'undefined';
-
-        if (typeof this.matrix[y] === 'undefined') {
-            var row = [];
-
-            for (var c = 0; c < this.size; c++) {
-                row[c] = this.values['undefined'];
-            }
-            this.matrix[y] = row;
+        if (typeof reserve === 'undefined') {
+            reserve = false;
         }
 
-        if (typeof this.mask[y] === 'undefined') {
-            var mrow = [];
+        var eccLevel = this.getEccLevel();
+        var maskPattern = this.getMaskPattern();
 
-            for (var mc = 0; mc < this.size; mc++) {
-                mrow[mc] = this.maskValues['undefined'];
-            }
-            this.mask[y] = mrow;
+        var temp = this.getTypeInformationBits(eccLevel, maskPattern).split('');
+        var bits = [
+            [],
+            []
+        ];
+
+        var val = 0;
+        var x = 0;
+        var y = 0;
+
+        while (temp.length > 0) {
+            val = parseInt(temp.shift());
+            val = reserve === false ? val : 0;
+            bits[0].push(val);
+            bits[1].push(val);
         }
 
-        this.matrix[y][x] = this.values[value];
-        this.mask[y][x] = this.maskValues[maskValue];
+        x = 8;
+        y = 0;
+        for (; y < 8; y++) {
+            if (y !== 6) {
+                val = bits[0].pop();
+                val === 1 ? this.setFullModule(x, y, 'format') : this.setEmptyModule(x, y, 'format');
+            }
+        }
+
+        x = 8;
+        y = 8;
+        for (; x >= 0; x--) {
+            if (x !== 6) {
+                val = bits[0].pop();
+                val === 1 ? this.setFullModule(x, y, 'format') : this.setEmptyModule(x, y, 'format');
+            }
+        }
+
+        x = this.size - 1;
+        y = 8;
+        for (; x >= this.size - 8; x--) {
+            val = bits[1].pop();
+            val === 1 ? this.setFullModule(x, y, 'format') : this.setEmptyModule(x, y, 'format');
+        }
+
+        x = 8;
+        y = (4 * this.V) + 9 + 1;
+        for (; y < this.size; y++) {
+            val = bits[1].pop();
+            val === 1 ? this.setFullModule(x, y, 'format') : this.setEmptyModule(x, y, 'format');
+        }
     };
 
-    this.setFullModule = function (x, y, maskValue) {
-        maskValue = maskValue || 'undefined';
-        this.setModule(x, y, 'full', maskValue);
+    this.setVersionInformationArea = function (reserve) {
+        if (this.V < 7) {
+            return false;
+        }
+
+        if (typeof reserve === 'undefined') {
+            reserve = false;
+        }
+
+        var temp = this.getVersionInformationString().split('');
+        var bits = [
+            [],
+            []
+        ];
+        var val = 0;
+        var x = 0;
+        var y = 0;
+        var i = 0;
+
+        while (temp.length > 0) {
+            val = parseInt(temp.shift());
+            val = reserve === false ? val : 0;
+            bits[0].push(val);
+            bits[1].push(val);
+        }
+
+        y = 0;
+        x = this.size - 11;
+
+        for (; y < 6; y++) {
+            for (i = 0; i < 3; i++) {
+                bits[0].pop() == 1 ? this.setFullModule(x + i, y, 'version') : this.setEmptyModule(x + i, y, 'version');
+            }
+        }
+
+        y = this.size - 11;
+        x = 0;
+
+        for (; x < 6; x++) {
+            for (i = 0; i < 3; i++) {
+                bits[1].pop() == 1 ? this.setFullModule(x, y + i, 'version') : this.setEmptyModule(x, y + i, 'version');
+            }
+        }
+
+        return true;
     };
 
-    this.setEmptyModule = function (x, y, maskValue) {
-        maskValue = maskValue || 'undefined';
-        this.setModule(x, y, 'empty', maskValue);
-    };
+
+
+
 
     this.encode();
 };

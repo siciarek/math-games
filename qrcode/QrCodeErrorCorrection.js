@@ -21,6 +21,7 @@ var QrCodeErrorCorrection = function () {
         7: [0, 87, 229, 146, 149, 238, 102, 21],
         10: [0, 251, 67, 46, 61, 118, 70, 64, 94, 32, 45],
         13: [0, 74, 152, 176, 100, 86, 100, 106, 104, 130, 218, 206, 140, 78],
+        15: [0, 8, 183, 61, 91, 202, 37, 51, 58, 58, 237, 140, 124, 5, 99, 105],
         17: [0, 43, 139, 206, 78, 43, 239, 123, 206, 214, 147, 24, 99, 150, 39, 243, 163, 136],
         22: [0, 210, 171, 247, 242, 93, 230, 14, 109, 221, 53, 200, 74, 8, 172, 98, 80, 219, 134, 160, 105, 165, 231]
     };
@@ -105,7 +106,6 @@ QrCodeErrorCorrection.prototype.getCode = function (data, dataWordsCount, eccWor
         result.shift();
     }
 
-    console.log({dwc: dataWordsCount, ecc: eccWordsCount});
     console.log(data);
     console.log(result);
 
