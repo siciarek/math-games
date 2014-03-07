@@ -77,12 +77,13 @@ GeneratorPolynominal.prototype.multiply = function (fst, sec) {
                 sc = this.exp2int(sc);
 
                 var intg = fs ^ sc;
-                aexp = intg > 0 ? this.int2exp(intg) : 0;
+				aexp = this.int2exp(intg);
             }
             else {
                 aexp = fs;
             }
 
+			aexp %= 255;
             res.push(aexp + this.symbol + xexp);
         }
     }
@@ -93,8 +94,8 @@ GeneratorPolynominal.prototype.multiply = function (fst, sec) {
 GeneratorPolynominal.prototype.polynominal = function (degree) {
     var pn = [];
 
-    var result = ['0' + this.symbol + '1', '0' + this.symbol + '0'];
     var exp = 1;
+    var result = ['0' + this.symbol + '1', '0' + this.symbol + '0'];
 
     do {
         var second = ['0' + this.symbol + '1', exp + this.symbol + '0'];

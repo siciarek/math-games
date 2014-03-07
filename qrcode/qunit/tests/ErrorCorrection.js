@@ -28,6 +28,6 @@ test('Error Correction Test', function () {
     while (errorCorrectionDataProvider.length > 0) {
         var test = errorCorrectionDataProvider.shift();
         var actual = ec.getCode(test.input.data, test.input.ecc);
-        deepEqual(actual, test.expected);
+        deepEqual(actual, test.expected, 'ECC length ' + test.input.ecc);
     }
 });

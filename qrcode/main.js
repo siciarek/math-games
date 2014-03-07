@@ -1,6 +1,6 @@
 var message = 'HELLO WORLD';
-var ecclevel = 'L';
-var version = 2;
+var ecclevel = 'Q';
+var version = 1;
 var mode = 'alphanumeric';
 
 // http://mathgames.dev/qrcode/qrcode.svg?message=HELLO%20WORLD&mode=alphanumeric&ecclevel=L&version=1
@@ -100,15 +100,13 @@ function drawQrCode(coder) {
         colors[0]
     );
 
-
     for (var top = 0; top < grid.length; top++) {
         for (var left = 0; left < grid[0].length; left++) {
             square(
                 quietZone + top * blocksize,
                 quietZone + left * blocksize,
                 blocksize, 
-				colors[grid[top][left]]
-                // coder.mask[top][left] === coder.ALIGNMENT ? colors[301] : colors[grid[top][left]]
+				false && coder.mask[top][left] === coder.DATA ? colors[301] : colors[grid[top][left]]
             );
         }
     }

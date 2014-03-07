@@ -5,6 +5,109 @@ var QrCodeDataEncoder = function () {
 
 QrCodeDataEncoder.prototype.constructor = QrCodeDataEncoder;
 
+QrCodeDataEncoder.prototype.encodeNumeric = function(message) {
+	var data = [];
+    var characters = message.split('');
+
+	return data;
+};
+
+QrCodeDataEncoder.prototype.encodeAlphanumeric = function(message) {
+	var data = [];
+    var characters = message.split('');
+    
+	var valuesTable = {
+        '0': 0,
+        '1': 1,
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        '6': 6,
+        '7': 7,
+        '8': 8,
+        '9': 9,
+        'A': 10,
+        'B': 11,
+        'C': 12,
+        'D': 13,
+        'E': 14,
+        'F': 15,
+        'G': 16,
+        'H': 17,
+        'I': 18,
+        'J': 19,
+        'K': 20,
+        'L': 21,
+        'M': 22,
+        'N': 23,
+        'O': 24,
+        'P': 25,
+        'Q': 26,
+        'R': 27,
+        'S': 28,
+        'T': 29,
+        'U': 30,
+        'V': 31,
+        'W': 32,
+        'X': 33,
+        'Y': 34,
+        'Z': 35,
+        ' ': 36,
+        '$': 37,
+        '%': 38,
+        '*': 39,
+        '+': 40,
+        '-': 41,
+        '.': 42,
+        '/': 43,
+        ':': 44
+    };
+	
+	var numbers = characters.map(function(e) { return valuesTable[e]; });
+    
+	var alphanumericWordLength = 11;
+
+    for (var n = 0; n < numbers.length; n += 2) {
+        var encoded = 0;
+        var bin = null;
+
+        if (n + 1 < numbers.length) {
+            encoded = 45 * numbers[n] + numbers[n + 1];
+            bin = encoded.toString(2);
+            while (bin.length < alphanumericWordLength) {
+                bin = '0' + bin;
+            }
+        }
+        else {
+            encoded = numbers[n];
+            bin = encoded.toString(2);
+            while (bin.length < Math.ceil(alphanumericWordLength / 2)) {
+                bin = '0' + bin;
+            }
+        }
+        
+		data.push(bin);
+    }
+
+	return data;
+};
+
+QrCodeDataEncoder.prototype.encodeByte = function(message) {
+	var data = [];
+    var characters = message.split('');
+
+	data = characters.map(function(e) {
+        var _byte = e.charAt(0).toString(2);
+		while(_byte.length < 8) {
+            _byte = '0' + _byte;
+		}
+		return _byte;
+    });
+    
+	return data;
+};
+
 QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
     var data = [];
     var bitdata = [];
@@ -54,34 +157,18 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
 
     bitdata = bitdata.concat([modeIndicator, characterCountIndicator]);
 
-    if (this.mode === 'alphanumeric') {
-        var characters = message.split('');
-        var numbers = characters.map(function (e) {
-            return this.config.valuesTable[this.mode][e]
-        }, this);
-        var alphanumericWordLength = 11;
-
-        for (var n = 0; n < numbers.length; n += 2) {
-            var encoded = 0;
-            var bin = null;
-
-            if (n + 1 < numbers.length) {
-                encoded = 45 * numbers[n] + numbers[n + 1];
-                bin = encoded.toString(2);
-                while (bin.length < alphanumericWordLength) {
-                    bin = '0' + bin;
-                }
-            }
-            else {
-                encoded = numbers[n];
-                bin = encoded.toString(2);
-                while (bin.length < Math.ceil(alphanumericWordLength / 2)) {
-                    bin = '0' + bin;
-                }
-            }
-            bitdata.push(bin);
-        }
-    }
+    if (this.mode === 'numeric') {		
+		bitdata = bitdata.concat(this.encodeNumeric(message));
+	}
+    if (this.mode === 'alphanumeric') {		
+		bitdata = bitdata.concat(this.encodeAlphanumeric(message));
+	}
+    else if (this.mode === 'byte') {		
+		bitdata = bitdata.concat(this.encodeByte(message));
+	}
+	else {
+	
+	}
 
     var bitstring = bitdata.join('');
     var codewords = [];
@@ -121,8 +208,6 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
         octet = codewords.shift();
         data.push(parseInt(octet, 2));
     }
-
-    var ecc = this.ec.getCode(data, numberOfEcCodewords);
-
-    return data.concat(ecc);
+	
+    return data;
 };

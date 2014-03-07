@@ -48,8 +48,6 @@ var QrCode = function (message, eccLevel, version, mode) {
         this.encodeData();
         this.setDataArea();
 
-//        return false;
-
         var tempres = [];
 
         for (var p = 0; p < 8; p++) {
@@ -274,7 +272,11 @@ var QrCode = function (message, eccLevel, version, mode) {
     };
 
     this.encodeData = function () {
-        this.data = this.encoder.encode(this.message, this.getVersion(), this.getMode(), this.getEccLevel());
+        var data = this.encoder.encode(this.message, this.getVersion(), this.getMode(), this.getEccLevel());
+		var numberOfEcCodewords = parseInt(this.config.dataSizeInfo['' + this.getVersion() + '-' + this.getEccLevel()][1]);
+
+		var ecc = this.ec.getCode(data, numberOfEcCodewords);
+        this.data = data.concat(ecc);
     };
 
     this.getMode = function () {
@@ -521,6 +523,7 @@ var QrCode = function (message, eccLevel, version, mode) {
 
         this.setFullModule(x, y, 'dark_module');
     };
+
     this.setFormatInformationArea = function (reserve) {
 
         if (typeof reserve === 'undefined') {
@@ -530,7 +533,12 @@ var QrCode = function (message, eccLevel, version, mode) {
         var eccLevel = this.getEccLevel();
         var maskPattern = this.getMaskPattern();
 
-        var temp = this.getTypeInformationBits(eccLevel, maskPattern).split('');
+        var temp = this.getTypeInformationBits(eccLevel, maskPattern);
+		
+	    console.log([temp, temp.length]);
+		
+		temp = temp.split('');
+		
         var bits = [
             [],
             []
