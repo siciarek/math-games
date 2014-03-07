@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="100%" height="100%" style="background-color: black">
+     style="background-color: black">
     <script type="text/ecmascript" xlink:href="svg-graphics.js"/>
-    <script type="text/ecmascript" xlink:href="GeneratorPolynominal.js"/>
-    <script type="text/ecmascript" xlink:href="QrCodeConfig.js"/>
-    <script type="text/ecmascript" xlink:href="QrCodeDataAnalyzer.js"/>
-    <script type="text/ecmascript" xlink:href="QrCodeDataEncoder.js"/>
-    <script type="text/ecmascript" xlink:href="QrCodeTiler.js"/>
-    <script type="text/ecmascript" xlink:href="QrCodeEvaluation.js"/>
-    <script type="text/ecmascript" xlink:href="QrCodeErrorCorrection.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/GeneratorPolynominal.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/Config.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/DataAnalyzer.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/DataEncoder.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/Tiler.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/Evaluation.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/ErrorCorrection.js"/>
     <script type="text/ecmascript" xlink:href="QrCode.js"/>
     <script type="text/ecmascript" xlink:href="main.js"/>
 </svg>

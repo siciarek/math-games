@@ -1,7 +1,15 @@
 var message = 'HELLO WORLD';
-var ecclevel = 'Q';
+var ecclevel = 'M';
 var version = 1;
 var mode = 'alphanumeric';
+
+if(1) {
+// http://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Wikipedia_mobile_en.svg/296px-Wikipedia_mobile_en.svg.png
+message = 'Hello, World!';
+mode = 'byte';
+version = 2;
+ecclevel = 'M';
+}
 
 // http://mathgames.dev/qrcode/qrcode.svg?message=HELLO%20WORLD&mode=alphanumeric&ecclevel=L&version=1
 // http://mathgames.dev/qrcode/qrcode.svg?message=http://siciarek.pl&mode=byte&ecclevel=L&version=1
@@ -65,7 +73,7 @@ function drawQrCode(coder) {
     var quietZoneSize = 4;
 
     var imgsize = 512;
-    var blocksize = imgsize / (coder.size + 2 * quietZoneSize);
+    var blocksize = 8; //imgsize / (coder.size + 2 * quietZoneSize);
 
     var quietZone = quietZoneSize * blocksize;
 
@@ -91,7 +99,6 @@ function drawQrCode(coder) {
         1000: 'cyan'
     };
 
-    svg.setAttribute('viewBox', [0, 0, imgsize, imgsize].join(' '));
 
     square(
         0,
