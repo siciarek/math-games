@@ -5,21 +5,16 @@ var QrCodeErrorCorrection = function () {
 
 QrCodeErrorCorrection.prototype.constructor = QrCodeErrorCorrection;
 
-QrCodeErrorCorrection.prototype.getCode = function (data, dataWordsCount, eccWordsCount) {
+QrCodeErrorCorrection.prototype.getCode = function (data, numberOfEcCodewords) {
 
-    var i;
+    var genpn = this.gen.polynominal(numberOfEcCodewords);
     var result = [];
+    result = result.concat(data);
 
-    var genpn = this.gen.polynominal(eccWordsCount);
+    for (var s = 0; s < data.length; s++) {
+        var lterm = this.gen.int2exp(result[0]) % 255;
 
-    for (i = 0; i < data.length; i++) {
-        result.push(data[i]);
-    }
-
-    for (var s = 0; s < dataWordsCount; s++) {
-        var lterm = this.gen.int2exp(result[0]);
-
-        for (i = 0; i < genpn.length; i++) {
+        for (var i = 0; i < genpn.length; i++) {
             var exp = (genpn[i] + lterm) % 255;
             exp = this.gen.exp2int(exp);
             result[i] = result[i] ^ exp;

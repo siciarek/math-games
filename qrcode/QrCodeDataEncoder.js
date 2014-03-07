@@ -122,7 +122,7 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
         data.push(parseInt(octet, 2));
     }
 
-    var ecc = this.ec.getCode(data, numberOfDataCodewords, numberOfEcCodewords);
+    var ecc = this.ec.getCode(data, numberOfEcCodewords);
 
     return data.concat(ecc);
 };
