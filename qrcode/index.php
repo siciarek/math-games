@@ -12,6 +12,14 @@
     $params = array_merge($params, $_GET);
     $size = $params['blocksize'] * (($params['version'] - 1) * 4 + 21 + (2 * 4));
 ?>
+<?php
+$params['mask'] = -1;
+$pstring = http_build_query($params);
+?>
+<iframe frameborder="0" width="<?php echo $size ?>" height="<?php echo $size ?>" src="qrcode.svg?<?php echo $pstring; ?>"></iframe>
+
+<br/>
+
 <?php foreach(range(0, 7) as $mask):
     $params['mask'] = $mask;
     $pstring = http_build_query($params);
