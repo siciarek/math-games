@@ -31,7 +31,7 @@ var dataEncoderDataProvider = [
 ];
 
 test('Data Encoder Test', function () {
-    var de = new QrCodeDataEncoder();
+    var de = new DataEncoder();
 
     while (dataEncoderDataProvider.length > 0) {
         var test = dataEncoderDataProvider.shift();

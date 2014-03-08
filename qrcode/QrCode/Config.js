@@ -1,8 +1,8 @@
-var QrCodeConfig = function () {
+var Config = function () {
 
 };
-QrCodeConfig.prototype.constructor = QrCodeConfig;
-QrCodeConfig.prototype.remainderBits = {
+Config.prototype.constructor = Config;
+Config.prototype.remainderBits = {
     1: 0,
     2: 7,
     3: 7,
@@ -44,7 +44,7 @@ QrCodeConfig.prototype.remainderBits = {
     39: 0,
     40: 0
 };
-QrCodeConfig.prototype.maskPatterns = {
+Config.prototype.maskPatterns = {
     '000': function (row, column) {
         return (row + column) % 2 == 0;
     },
@@ -70,7 +70,7 @@ QrCodeConfig.prototype.maskPatterns = {
         return (((row + column) % 2) + ((row * column) % 3)) % 2 == 0;
     }
 };
-QrCodeConfig.prototype.dataSizeInfo = {
+Config.prototype.dataSizeInfo = {
     "1-L": ["19", "7", "1", "19", "(19*1) = 19"],
     "1-M": ["16", "10", "1", "16", "(16*1) = 16"],
     "1-Q": ["13", "13", "1", "13", "(13*1) = 13"],
@@ -232,14 +232,14 @@ QrCodeConfig.prototype.dataSizeInfo = {
     "40-Q": ["1666", "30", "34", "24", "34", "25", "(24*34) + (25*34) = 1666"],
     "40-H": ["1276", "30", "20", "15", "61", "16", "(15*20) + (16*61) = 1276"]
 };
-QrCodeConfig.prototype.dataModeBitStrings = {
+Config.prototype.dataModeBitStrings = {
     numeric: '0001',
     alphanumeric: '0010',
     binary: '0100',
     kanji: '1000',
     eci: '0111'
 };
-QrCodeConfig.prototype.wordSizes = {
+Config.prototype.wordSizes = {
     numeric: {
         '1-9': 10,
         '10-26': 12,
@@ -261,7 +261,7 @@ QrCodeConfig.prototype.wordSizes = {
         '27-40': 12
     }
 };
-QrCodeConfig.prototype.alignmentPatternLocations = {
+Config.prototype.alignmentPatternLocations = {
     1: [],
     2: [6, 18],
     3: [6, 22],
@@ -303,7 +303,7 @@ QrCodeConfig.prototype.alignmentPatternLocations = {
     39: [6, 26, 54, 82, 110, 138, 166],
     40: [6, 30, 58, 86, 114, 142, 170]
 };
-QrCodeConfig.prototype.characterCapacities = {
+Config.prototype.characterCapacities = {
     1: {
         L: {
             numeric: 41,
@@ -1345,7 +1345,7 @@ QrCodeConfig.prototype.characterCapacities = {
         }
     }
 };
-QrCodeConfig.prototype.typeInformationBits = {
+Config.prototype.typeInformationBits = {
     L: [
         '111011111000100',
         '111001011110011',
@@ -1387,7 +1387,7 @@ QrCodeConfig.prototype.typeInformationBits = {
         '000100000111011'
     ]
 };
-QrCodeConfig.prototype.versionInformationStrings = {
+Config.prototype.versionInformationStrings = {
     7: '000111110010010100',
     8: '001000010110111100',
     9: '001001101010011001',

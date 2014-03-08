@@ -1,4 +1,4 @@
-var QrCodeTiler = function(coder) {
+var Tiler = function(coder) {
     this.coder = coder;
 
     this.datay = this.coder.size - 1;
@@ -20,12 +20,12 @@ var QrCodeTiler = function(coder) {
     this.check = [];
 };
 
-QrCodeTiler.prototype.constructor = QrCodeTiler;
+Tiler.prototype.constructor = Tiler;
 
-QrCodeTiler.prototype.coder = {};
+Tiler.prototype.coder = {};
 
 
-QrCodeTiler.prototype.remainder = function() {
+Tiler.prototype.remainder = function() {
     var rb = this.coder.config.remainderBits[this.coder.V];
     var remainder = '';
     while(rb-- > 0) {
@@ -33,7 +33,7 @@ QrCodeTiler.prototype.remainder = function() {
     }
 };
 
-QrCodeTiler.prototype.setArea = function () {
+Tiler.prototype.setArea = function () {
 
     var bytes = this.coder.data.map(function (e) {
         var val = e.toString(2);
@@ -63,7 +63,7 @@ QrCodeTiler.prototype.setArea = function () {
     console.log({ AFTER: this.check.length });
 };
 
-QrCodeTiler.prototype.setModule = function (value, index) {
+Tiler.prototype.setModule = function (value, index) {
 
     var x = this.datax;
     var y = this.datay;

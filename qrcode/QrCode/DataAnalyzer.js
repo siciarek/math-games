@@ -1,6 +1,6 @@
-var QrCodeDataAnalyzer = function () {
-    this.config = new QrCodeConfig();
-    this.encoder = new QrCodeDataEncoder();
+var DataAnalyzer = function () {
+    this.config = new Config();
+    this.encoder = new DataEncoder();
     this.modes = {
         numeric: function (message, self) {
             return message.match(/^\d+$/) !== null;
@@ -21,9 +21,9 @@ var QrCodeDataAnalyzer = function () {
     };
 };
 
-QrCodeDataAnalyzer.prototype.constructor = QrCodeDataAnalyzer;
+DataAnalyzer.prototype.constructor = DataAnalyzer;
 
-QrCodeDataAnalyzer.prototype.analyze = function (message) {
+DataAnalyzer.prototype.analyze = function (message) {
     var result = {
         mode: null
     };

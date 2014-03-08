@@ -68,15 +68,15 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
     this.DATA = 1000;
 
     this.setDataArea = function () {
-        this.tiler = new QrCodeTiler(this);
+        this.tiler = new Tiler(this);
         this.tiler.setArea();
     };
 
-    this.config = new QrCodeConfig();
-    this.analyzer = new QrCodeDataAnalyzer();
-    this.encoder = new QrCodeDataEncoder();
-    this.eval = new QrCodeEvaluation();
-    this.ec = new QrCodeErrorCorrection();
+    this.config = new Config();
+    this.analyzer = new DataAnalyzer();
+    this.encoder = new DataEncoder();
+    this.eval = new Evaluation();
+    this.ec = new ErrorCorrection();
 
     this.maskPattern = 0;
 

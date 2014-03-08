@@ -23,7 +23,7 @@ var errorCorrectionDataProvider = [
 ];
 
 test('Error Correction Test', function () {
-    var ec = new QrCodeErrorCorrection();
+    var ec = new ErrorCorrection();
 
     while (errorCorrectionDataProvider.length > 0) {
         var test = errorCorrectionDataProvider.shift();

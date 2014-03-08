@@ -1,10 +1,10 @@
-var QrCodeEvaluation = function () {
+var Evaluation = function () {
 
 };
 
-QrCodeEvaluation.prototype.constructor = QrCodeEvaluation;
+Evaluation.prototype.constructor = Evaluation;
 
-QrCodeEvaluation.prototype.evaluate = function (data) {
+Evaluation.prototype.evaluate = function (data) {
     var result = [];
     var total = 0;
 
@@ -18,7 +18,7 @@ QrCodeEvaluation.prototype.evaluate = function (data) {
     return total;
 };
 
-QrCodeEvaluation.prototype.rules = {
+Evaluation.prototype.rules = {
 
     1: function (data) {
         /**

@@ -1,18 +1,18 @@
-var QrCodeDataEncoder = function () {
-    this.config = new QrCodeConfig();
-    this.ec = new QrCodeErrorCorrection();
+var DataEncoder = function () {
+    this.config = new Config();
+    this.ec = new ErrorCorrection();
 };
 
-QrCodeDataEncoder.prototype.constructor = QrCodeDataEncoder;
+DataEncoder.prototype.constructor = DataEncoder;
 
-QrCodeDataEncoder.prototype.encodeNumeric = function(message) {
+DataEncoder.prototype.encodeNumeric = function(message) {
 	var data = [];
     var characters = message.split('');
 
 	return data;
 };
 
-QrCodeDataEncoder.prototype.alphanumericCharsTable = {
+DataEncoder.prototype.alphanumericCharsTable = {
     '0': 0,
     '1': 1,
     '2': 2,
@@ -60,7 +60,7 @@ QrCodeDataEncoder.prototype.alphanumericCharsTable = {
     ':': 44
 };
 
-QrCodeDataEncoder.prototype.encodeAlphanumeric = function(message) {
+DataEncoder.prototype.encodeAlphanumeric = function(message) {
 	var data = [];
     var characters = message.split('');
 
@@ -94,7 +94,7 @@ QrCodeDataEncoder.prototype.encodeAlphanumeric = function(message) {
 	return data;
 };
 
-QrCodeDataEncoder.prototype.encodeBinary = function(message) {
+DataEncoder.prototype.encodeBinary = function(message) {
 	var data = [];
     var characters = message.split('');
 
@@ -112,7 +112,7 @@ QrCodeDataEncoder.prototype.encodeBinary = function(message) {
 	return data;
 };
 
-QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
+DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
     var data = [];
     var bitdata = [];
 

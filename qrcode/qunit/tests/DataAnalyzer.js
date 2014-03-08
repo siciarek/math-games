@@ -10,7 +10,7 @@ var dataAnalyzerDataProvider = [
 ];
 
 test('Data Analyzer Test', function () {
-    var da = new QrCodeDataAnalyzer();
+    var da = new DataAnalyzer();
 
     while (dataAnalyzerDataProvider.length > 0) {
         var test = dataAnalyzerDataProvider.shift();

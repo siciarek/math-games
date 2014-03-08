@@ -1,11 +1,11 @@
-var QrCodeErrorCorrection = function () {
-    this.config = new QrCodeConfig();
+var ErrorCorrection = function () {
+    this.config = new Config();
     this.gen = new GeneratorPolynominal();
 };
 
-QrCodeErrorCorrection.prototype.constructor = QrCodeErrorCorrection;
+ErrorCorrection.prototype.constructor = ErrorCorrection;
 
-QrCodeErrorCorrection.prototype.getCode = function (data, numberOfEcCodewords) {
+ErrorCorrection.prototype.getCode = function (data, numberOfEcCodewords) {
 
     var genpn = this.gen.polynominal(numberOfEcCodewords);
     var result = [];
