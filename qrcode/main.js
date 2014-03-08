@@ -1,14 +1,18 @@
 var message = 'HELLO WORLD';
 var ecclevel = 'M';
-var version = 1;
+var version = 2;
 var mode = 'alphanumeric';
+var mask = null;
 
-if(1) {
+if(0) {
 // http://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Wikipedia_mobile_en.svg/296px-Wikipedia_mobile_en.svg.png
-message = 'Hello, World!';
-mode = 'byte';
-version = 2;
-ecclevel = 'M';
+    message = 'http://en.m.wikipedia.org';
+
+    message = 'Hello, World!';
+    mode = 'byte';
+    version = 2;
+    ecclevel = 'Q';
+    mask = -1;
 }
 
 // http://mathgames.dev/qrcode/qrcode.svg?message=HELLO%20WORLD&mode=alphanumeric&ecclevel=L&version=1
@@ -26,8 +30,7 @@ var getParams = function () {
             var pair = part.split('=');
             pair[0] = decodeURIComponent(pair[0]);
             pair[1] = decodeURIComponent(pair[1]);
-            params[pair[0]] = (pair[1] !== 'undefined') ?
-                              pair[1] : true;
+            params[pair[0]] = (pair[1] !== 'undefined') ? pair[1] : true;
         });
     }
     return params;
@@ -51,7 +54,17 @@ if(params.hasOwnProperty('mode')) {
     mode = params['mode'];
 }
 
-var coder = new QrCode(message, ecclevel, version, mode);
+if(params.hasOwnProperty('mask')) {
+    mask = params['mask'];
+}
+
+var blocksize = 4;
+
+if(params.hasOwnProperty('blocksize')) {
+    blocksize = params['blocksize'];
+}
+
+var coder = new QrCode(message, ecclevel, version, mode, mask);
 
 var info = {
     message: coder.message,
@@ -67,15 +80,13 @@ console.log(info);
 
 function drawQrCode(coder) {
 
-    var grid = coder.matrix;
-//    grid = coder.mask;
-
     var quietZoneSize = 4;
-
-    var imgsize = 512;
-    var blocksize = 8; //imgsize / (coder.size + 2 * quietZoneSize);
-
     var quietZone = quietZoneSize * blocksize;
+    var size = coder.size * blocksize + 2 * quietZone;
+
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('viewBox', '0 0 ' + size + ' ' + size)
 
     var colors = {
     // QR Code colors:
@@ -99,24 +110,33 @@ function drawQrCode(coder) {
         1000: 'cyan'
     };
 
-
     square(
         0,
         0,
-        coder.size * blocksize + 2 * quietZone,
+        size,
         colors[0]
     );
 
+    var dc = 0;
+    var grid = coder.matrix;
+//    grid = coder.mask;
+
     for (var top = 0; top < grid.length; top++) {
         for (var left = 0; left < grid[0].length; left++) {
+            if(coder.mask[top][left] === coder.DATA) {
+                ++dc;
+            }
             square(
                 quietZone + top * blocksize,
                 quietZone + left * blocksize,
-                blocksize, 
-				false && coder.mask[top][left] === coder.DATA ? colors[301] : colors[grid[top][left]]
+                blocksize,
+                colors[grid[top][left]]
+//				coder.mask[top][left] !== coder.DATA ? colors[9] : colors[grid[top][left]]
             );
         }
     }
+
+    console.log({'DATA MODULES COUNT': dc});
 }
 
 init();

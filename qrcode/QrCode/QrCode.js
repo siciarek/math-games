@@ -1,38 +1,8 @@
-var QrCode = function (message, eccLevel, version, mode) {
+var QrCode = function (message, eccLevel, version, mode, mask) {
 
-    var off = 230; // 3;
-    var lim = 115 + off;
-
-    this.setDataArea = function () {
-
-        var datastr = '';
-
-        for (var i = 0; i < this.data.length; i++) {
-            var val = this.data[i].toString(2);
-
-            while (val.length < 8) {
-                val = '0' + val;
-            }
-
-            datastr += val;
-        }
-
-        var data = datastr.split('');
-
-        var dl = data.length;
-
-        i = 0;
-
-        while(data.length > 0) {
-//            if(this.V > 1 && i > lim) {
-//                break;
-//            }
-//
-//            console.log(dl - data.length - i);
-
-            this.setDataModule(data.shift(), i++);
-        }
-    };
+    if (typeof mask === 'undefined') {
+        mask = null;
+    }
 
     this.encode = function () {
 
@@ -45,37 +15,46 @@ var QrCode = function (message, eccLevel, version, mode) {
         this.setFormatInformationArea(true);
         this.setVersionInformationArea(true);
 
-        this.encodeData();
+        this.encodeData(false);
         this.setDataArea();
 
-        var tempres = [];
+        if (mask !== null && mask >= 0) {
 
-        for (var p = 0; p < 8; p++) {
-            var result = this.applyMask(p);
-            tempres.push(result);
-            this.evaluation[result] = p;
+            mask = parseInt(mask);
+            console.log(['MASK APPLIED MANUALLY', mask]);
+            this.applyMask(mask, true);
+            this.setFormatInformationArea();
+            this.setVersionInformationArea();
         }
+        else if (mask !== null && mask < 0) {
+            var tempres = [];
 
+            for (var p = 0; p < 8; p++) {
+                var result = this.applyMask(p);
+                tempres.push(result);
+                this.evaluation[result] = p;
+            }
 
-        this.penalty = this.evaluation[tempres.sort().shift()];
-        this.applyMask(this.penalty, true);
+            tempres = tempres.sort();
 
-        this.setFormatInformationArea();
-        this.setVersionInformationArea();
+            mask = this.evaluation[tempres[0]];
+
+            console.log(tempres);
+            console.log(this.evaluation.toSource());
+
+            mask = parseInt(mask);
+            console.log(['MASK APPLIED AUTOMATICALLY', mask]);
+            this.applyMask(mask, true);
+            this.setFormatInformationArea();
+            this.setVersionInformationArea();
+        }
+        else {
+            console.log(['NO MASK']);
+        }
     };
 
-    this.analyzer = new QrCodeDataAnalyzer();
-    this.encoder = new QrCodeDataEncoder();
-    this.tiler = new QrCodeTiler();
-    this.config = new QrCodeConfig();
-    this.eval = new QrCodeEvaluation();
-    this.ec = new QrCodeErrorCorrection();
-
-    this.UP = -1;
-    this.DOWN = 1;
-
-    this.LEFT = -1;
-    this.RIGHT = -1;
+    var off = 230; // 3;
+    var lim = 115 + off;
 
     this.UNDEFINDED = 9;
     this.FINDER = 200;
@@ -88,111 +67,18 @@ var QrCode = function (message, eccLevel, version, mode) {
     this.SEPARATOR = 700;
     this.DATA = 1000;
 
-    this.datadirx = this.LEFT;
-    this.datadiry = this.UP;
+    this.setDataArea = function () {
+        this.tiler = new QrCodeTiler(this);
+        this.tiler.setArea();
+    };
 
-    this.ending = false;
+    this.config = new QrCodeConfig();
+    this.analyzer = new QrCodeDataAnalyzer();
+    this.encoder = new QrCodeDataEncoder();
+    this.eval = new QrCodeEvaluation();
+    this.ec = new QrCodeErrorCorrection();
 
     this.maskPattern = 0;
-
-    this.al = false;
-
-    this.setDataModule = function (value, index, dx, dy) {
-
-        var x = this.datax;
-        var y = this.datay;
-
-        if (index > 0 && this.al === false) {
-            x += index % 2 === 0 ? 0 : this.datadirx;
-            y += index % 2 === 0 ? this.datadiry : 0;
-        }
-
-        if (typeof this.mask[y] === 'undefined') {
-            if (this.datax === 10) {
-                this.datadiry = this.datadiry === this.UP ? this.DOWN : this.UP;
-                this.datax -= 2;
-                this.datay -= 8;
-
-                x = this.datax;
-                y = this.datay;
-
-                this.ending = true;
-            }
-            else {
-                this.datadiry = this.datadiry === this.UP ? this.DOWN : this.UP;
-                this.datax -= 2;
-                x = this.datax;
-                y = this.datay;
-            }
-        }
-        else {
-            var mval = this.al === true ? this.ALIGNMENT : this.mask[y][x];
-
-            if (mval !== this.UNDEFINDED) {
-                switch (mval) {
-                    case this.SEPARATOR:
-                        this.datadiry = this.datadiry === this.UP ? this.DOWN : this.UP;
-                        this.datax -= 2;
-                        x = this.datax;
-                        y = this.datay;
-                        break;
-                    case this.FORMAT:
-                        this.datadiry = this.datadiry === this.UP ? this.DOWN : this.UP;
-
-                        if (this.ending === true) {
-                            this.datay = 9;
-                            this.datax -= 3;
-                            x = this.datax;
-                            y = this.datay;
-                            this.ending = false;
-                        }
-                        else {
-                            this.datax -= 2;
-                            x = this.datax;
-                            y = this.datay;
-                        }
-                        break;
-                    case this.TOP_TIMER:
-                        x = this.datax;
-                        y = this.datay + (this.datadiry === this.UP ? -2 : 2);
-                        break;
-                        s
-                    case this.ALIGNMENT:
-                        if (this.datadiry === this.UP && this.matrix[y][x - 1] === this.UNDEFINDED) {
-                            this.datay -= (index % 2 === 0 ? 1 : 1);
-                            this.datax -= (this.al == false && index % 2 === 0 ? 1 : 0);
-                            this.al = true;
-
-                            y = this.datay;
-                            x = this.datax;
-
-                            break;
-                        }
-
-                        x = this.datax;
-                        y = this.datay + (this.datadiry === this.UP ? -6 : 6);
-
-                        break;
-                    default:
-                        return;
-                }
-            }
-        }
-
-        if (parseInt(value) === 1) {
-            this.setFullModule(x, y, 'data');
-        }
-        else {
-            this.setEmptyModule(x, y, 'data');
-        }
-
-        if (this.al === true && this.matrix[y - 1][x + 1] === this.UNDEFINDED) {
-            this.al = false;
-            this.datax += 1;
-        }
-
-        this.datay = y;
-    };
 
     eccLevel = eccLevel || 'Q';
     mode = mode || 'alphanumeric';
@@ -203,11 +89,9 @@ var QrCode = function (message, eccLevel, version, mode) {
     this.mode = mode;
 
     this.V = version;
-    var list = this.config.characterCapacities[this.V][this.eccLevel];
-    this.capacity = list[this.mode];
     this.size = (((this.V - 1) * 4) + 21);
-    this.datay = this.size - 1;
-    this.datax = this.size - 1;
+
+    this.capacity = this.config.characterCapacities[this.V][this.eccLevel][this.mode];
 
     this.penalty = 10000;
     this.evaluation = {};
@@ -243,15 +127,15 @@ var QrCode = function (message, eccLevel, version, mode) {
 
         var data = [];
 
-        this.maskPattern = number;
-
-        var binnum = number.toString(2);
+        var binnum = parseInt(number).toString(2);
 
         while (binnum.length < 3) {
             binnum = '0' + binnum;
         }
 
-        var funct = this.config.maskPatterns[binnum];
+        this.maskPattern = binnum;
+
+        var funct = this.config.maskPatterns[this.maskPattern];
 
         for (var r = 0; r < this.size; r++) {
             data[r] = [];
@@ -271,12 +155,19 @@ var QrCode = function (message, eccLevel, version, mode) {
         return this.eval.evaluate(data);
     };
 
-    this.encodeData = function () {
-        var data = this.encoder.encode(this.message, this.getVersion(), this.getMode(), this.getEccLevel());
-		var numberOfEcCodewords = parseInt(this.config.dataSizeInfo['' + this.getVersion() + '-' + this.getEccLevel()][1]);
+    this.encodeData = function (skipEcc) {
 
-		var ecc = this.ec.getCode(data, numberOfEcCodewords);
-        this.data = data.concat(ecc);
+        skipEcc = skipEcc || false;
+
+        this.data = this.encoder.encode(this.message, this.getVersion(), this.getMode(), this.getEccLevel());
+
+        if (skipEcc === true) {
+            return this.data;
+        }
+
+        var numberOfEcCodewords = parseInt(this.config.dataSizeInfo['' + this.getVersion() + '-' + this.getEccLevel()][1]);
+        var ecc = this.ec.getCode(this.data, numberOfEcCodewords);
+        this.data = this.data.concat(ecc);
     };
 
     this.getMode = function () {
@@ -300,7 +191,7 @@ var QrCode = function (message, eccLevel, version, mode) {
     };
 
     this.getTypeInformationBits = function (eccLevel, maskPattern) {
-        return this.config.typeInformationBits[eccLevel][maskPattern];
+        return this.config.typeInformationBits[eccLevel][parseInt(maskPattern, 2)];
     };
 
     this.setFinderPattern = function (top, left) {
@@ -376,11 +267,30 @@ var QrCode = function (message, eccLevel, version, mode) {
 
     this.setFullModule = function (x, y, maskValue) {
         maskValue = maskValue || 'undefined';
+
+        if (maskValue === 'data') {
+            if (this.matrix[y][x] < 9) {
+                console.log('Ivalid FULL [' + this.matrix[y][x] + '] ' + x + ', ' + y + "\n");
+            }
+            else {
+//                console.log('OK FULL ' + x + ', ' + y + "\n");
+            }
+        }
+
         this.setModule(x, y, 'full', maskValue);
     };
 
     this.setEmptyModule = function (x, y, maskValue) {
         maskValue = maskValue || 'undefined';
+        if (maskValue === 'data') {
+            if (this.matrix[y][x] < 9) {
+                console.log('Ivalid EMPTY [' + this.matrix[y][x] + '] ' + x + ', ' + y + "\n");
+            }
+            else {
+//                console.log('OK EMPTY ' + x + ', ' + y + "\n");
+            }
+        }
+
         this.setModule(x, y, 'empty', maskValue);
     };
 
@@ -534,11 +444,9 @@ var QrCode = function (message, eccLevel, version, mode) {
         var maskPattern = this.getMaskPattern();
 
         var temp = this.getTypeInformationBits(eccLevel, maskPattern);
-		
-	    console.log([temp, temp.length]);
-		
-		temp = temp.split('');
-		
+
+        temp = temp.split('');
+
         var bits = [
             [],
             []
@@ -634,10 +542,6 @@ var QrCode = function (message, eccLevel, version, mode) {
 
         return true;
     };
-
-
-
-
 
     this.encode();
 };

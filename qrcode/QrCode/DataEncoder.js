@@ -97,19 +97,17 @@ QrCodeDataEncoder.prototype.encodeByte = function(message) {
 	var data = [];
     var characters = message.split('');
 
-	data = characters.map(function(e) {
-        var _bytenum = e.charCodeAt(0);
-        var _byte = _bytenum.toString(2);
+	data = characters.map(function(c) {
+        var charCode = c.charCodeAt(0);
+        var octet = charCode.toString(2);
 
-		while(_byte.length < 8) {
-            _byte = '0' + _byte;
+		while(octet.length < 8) {
+            octet = '0' + octet;
 		}
-        console.log([e, _bytenum, _byte]);
-        return _byte;
+
+        return octet;
     });
 
-console.log(data);
-    
 	return data;
 };
 
@@ -148,17 +146,24 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
         characterCountIndicator = '0' + characterCountIndicator;
     }
 
-    console.log({
-        'Number of Data Bits': numberOfDataBits,
+    var remainder = this.config.remainderBits[version];
+
+    var info = {
+        'Total Data Bits': numberOfDataCodewords * 8 + numberOfEcCodewords * 8 + remainder,
+
         'Total Number of Data Codewords for this Version and EC Level': numberOfDataCodewords,
         'EC Codewords Per Block': numberOfEcCodewords,
+        'Number of Data Bits': numberOfDataCodewords * 8,
+        'Number of EC Codewords Bits': numberOfEcCodewords * 8,
         'Character Count Indicator': characterCountIndicator,
         'Mode': this.mode,
         'Mode Indicator': modeIndicator,
         'Word Size': wordSize,
         'Version': version,
         'Error Correction Level': this.eccLevel
-    });
+    };
+
+//    console.log(info);
 
     bitdata = bitdata.concat([modeIndicator, characterCountIndicator]);
 
@@ -179,40 +184,40 @@ QrCodeDataEncoder.prototype.encode = function (message, version, mod, eccLevel) 
     var codewords = [];
     var diff = numberOfDataBits - bitstring.length;
 
-    if(diff > 4) {
-        bitstring += terminator;
+    if(diff >= 4) {
+        terminator = terminator;
     }
     else {
-        while(diff > 0) {
-            bitstring += '0';
-            diff--;
+        terminator = '';
+        for(var d = 0; d < diff; d++) {
+            terminator += '0';
         }
     }
 
+    bitstring += terminator;
+
+    var i = 0;
+    while(true){
+        var octet = bitstring.substring(i, i + 8);
+        i += 8;
+        if(octet === '') {
+            break;
+        }
+        codewords.push(octet);
+    }
+
     // Add More 0s to Make the Length a Multiple of 8
-    while(bitstring.length % 8 > 0) {
-        bitstring += '0';
+    while(codewords[codewords.length - 1].length < 8) {
+        codewords[codewords.length - 1] += '0';
     }
 
     // Add Pad Bytes if the String is Still too Short
     var b = 0;
-    while(bitstring.length / 8 < numberOfDataCodewords) {
-        bitstring += padBytes[b++ % padBytes.length];
-    }
-
-    var start = 0;
-    var octet = null;
-
     while(codewords.length < numberOfDataCodewords) {
-        octet = bitstring.substring(start, start + 8);
-        start += 8;
-        codewords.push(octet);
+        codewords.push(padBytes[b++ % padBytes.length]);
     }
 
-    while(codewords.length) {
-        octet = codewords.shift();
-        data.push(parseInt(octet, 2));
-    }
-	
+    data = codewords.map(function(e){ return parseInt(e, 2); });
+
     return data;
 };
