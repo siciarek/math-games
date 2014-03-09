@@ -12,8 +12,7 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
         this.setDarkModule();
         this.setAlignmentPatterns();
 
-        this.setFormatInformationArea(true);
-        this.setVersionInformationArea(true);
+        this.setReservedAreas();
 
         this.encodeData(false);
         this.setDataArea();
@@ -423,11 +422,16 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
         }
     };
 
-    this.setDarkModule = function (color) {
+    this.setDarkModule = function () {
         var x = 8;
         var y = (4 * this.V) + 9;
 
         this.setFullModule(x, y, 'dark_module');
+    };
+
+    this.setReservedAreas = function() {
+        this.setFormatInformationArea(true);
+        this.setVersionInformationArea(true);
     };
 
     this.setFormatInformationArea = function (reserve) {
@@ -541,4 +545,3 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
 
     this.encode();
 };
-

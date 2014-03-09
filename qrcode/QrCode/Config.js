@@ -50,7 +50,6 @@ Config.prototype.getVersionInformationString = function (version) {
 
     return versionString + result;
 };
-
 Config.prototype.getFormatString = function (correctionLevel, maskPattern) {
     var generatorPolynominal = '10100110111';
     var mask = '101010000010010';
