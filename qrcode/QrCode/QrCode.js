@@ -190,10 +190,6 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
         return this.config.versionInformationStrings[this.V];
     };
 
-    this.getTypeInformationBits = function (eccLevel, maskPattern) {
-        return this.config.typeInformationBits[eccLevel][parseInt(maskPattern, 2)];
-    };
-
     this.setFinderPattern = function (top, left) {
 
         var x = 0;
@@ -443,7 +439,7 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
         var eccLevel = this.getEccLevel();
         var maskPattern = this.getMaskPattern();
 
-        var temp = this.getTypeInformationBits(eccLevel, maskPattern);
+        var temp = this.config.getFormatString(eccLevel, parseInt(maskPattern));
 
         temp = temp.split('');
 
@@ -505,7 +501,7 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
             reserve = false;
         }
 
-        var temp = this.getVersionInformationString().split('');
+        var temp = this.config.getVersionInformationString(this.V).split('');
         var bits = [
             [],
             []

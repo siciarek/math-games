@@ -1,7 +1,124 @@
 var Config = function () {
 
 };
+
 Config.prototype.constructor = Config;
+
+Config.prototype.xorBits = function (first, second) {
+    return (parseInt(first, 2) ^ parseInt(second, 2)).toString(2);
+};
+
+Config.prototype.getVersionInformationString = function (version) {
+    var generatorPolynominal = '1111100100101';
+    var mask = '101010000010010';
+
+    var versionString = parseInt(version).toString(2);
+
+    while(versionString.length < 6) {
+        versionString = '0' + versionString;
+    }
+
+    var result = versionString;
+
+    // Turn this into an 18 bit string by padding on the right with 0s:
+    while(result.length < 18) {
+        result += '0';
+    }
+
+    // And remove the 0s from the left side:
+    result = result.replace(/^0+/, '');
+
+    while (result.length >= 13) {
+        var gp = generatorPolynominal;
+
+        // 1. Pad the generator polynomial string on the RIGHT with 0s to make it the same length as the current format string.
+        while (gp.length < result.length) {
+            gp += '0';
+        }
+
+        // 2. XOR the padded generator polynomial string with the current format string.
+        result = this.xorBits(gp, result);
+
+        // 3. Remove 0s from the left side of the result.
+        result = result.replace(/^0+/, '');
+    }
+
+    // If the result were smaller than 10 bits, we would pad it on the LEFT with 0s to make it 10 bits long.
+    while (result.length < 12) {
+        result = '0' + result;
+    }
+
+    return versionString + result;
+};
+
+Config.prototype.getFormatString = function (correctionLevel, maskPattern) {
+    var generatorPolynominal = '10100110111';
+    var mask = '101010000010010';
+
+    var formatString = '';
+    var result = formatString;
+
+    var cl = this.correctionLevels[correctionLevel].toString(2);
+    while (cl.length < 2) {
+        cl = '0' + cl;
+    }
+    formatString += cl;
+
+    var mp = parseInt(maskPattern).toString(2);
+    while (mp.length < 3) {
+        mp = '0' + mp;
+    }
+    formatString += mp;
+
+    result = formatString;
+
+    // To do this, first create a 15-bit string by putting ten 0s to the RIGHT of the format string, like so:
+    while (result.length < 15) {
+        result += '0';
+    }
+
+    // Now remove any 0s from the LEFT side:
+    result = result.replace(/^0+/, '');
+
+    while (result.length >= 11) {
+        var gp = generatorPolynominal;
+
+        // 1. Pad the generator polynomial string on the RIGHT with 0s to make it the same length as the current format string.
+        while (gp.length < result.length) {
+            gp += '0';
+        }
+
+        // 2. XOR the padded generator polynomial string with the current format string.
+        result = this.xorBits(gp, result);
+
+        // 3. Remove 0s from the left side of the result.
+        result = result.replace(/^0+/, '');
+    }
+
+    // If the result were smaller than 10 bits, we would pad it on the LEFT with 0s to make it 10 bits long.
+    while (result.length < 10) {
+        result = '0' + result;
+    }
+
+    // Put the Format and Error Correction Bits Together
+    formatString += result;
+
+    // XOR with the Mask String:
+    formatString = this.xorBits(formatString, mask);
+
+    while (formatString.length < 15) {
+        formatString = '0' + formatString;
+    }
+
+    return formatString;
+};
+
+Config.prototype.correctionLevels = {
+    L: 1,
+    M: 0,
+    Q: 3,
+    H: 2
+};
 Config.prototype.remainderBits = {
     1: 0,
     2: 7,
@@ -236,8 +353,7 @@ Config.prototype.dataModeBitStrings = {
     numeric: '0001',
     alphanumeric: '0010',
     binary: '0100',
-    kanji: '1000',
-    eci: '0111'
+    kanji: '1000'
 };
 Config.prototype.wordSizes = {
     numeric: {
@@ -1344,82 +1460,4 @@ Config.prototype.characterCapacities = {
             kanji: 784
         }
     }
-};
-Config.prototype.typeInformationBits = {
-    L: [
-        '111011111000100',
-        '111001011110011',
-        '111110110101010',
-        '111100010011101',
-        '110011000101111',
-        '110001100011000',
-        '110110001000001',
-        '110100101110110'
-    ],
-    M: [
-        '101010000010010',
-        '101000100100101',
-        '101111001111100',
-        '101101101001011',
-        '100010111111001',
-        '100000011001110',
-        '100111110010111',
-        '100101010100000'
-    ],
-    Q: [
-        '011010101011111',
-        '011000001101000',
-        '011111100110001',
-        '011101000000110',
-        '010010010110100',
-        '010000110000011',
-        '010111011011010',
-        '010101111101101'
-    ],
-    H: [
-        '001011010001001',
-        '001001110111110',
-        '001110011100111',
-        '001100111010000',
-        '000011101100010',
-        '000001001010101',
-        '000110100001100',
-        '000100000111011'
-    ]
-};
-Config.prototype.versionInformationStrings = {
-    7: '000111110010010100',
-    8: '001000010110111100',
-    9: '001001101010011001',
-    10: '001010010011010011',
-    11: '001011101111110110',
-    12: '001100011101100010',
-    13: '001101100001000111',
-    14: '001110011000001101',
-    15: '001111100100101000',
-    16: '010000101101111000',
-    17: '010001010001011101',
-    18: '010010101000010111',
-    19: '010011010100110010',
-    20: '010100100110100110',
-    21: '010101011010000011',
-    22: '010110100011001001',
-    23: '010111011111101100',
-    24: '011000111011000100',
-    25: '011001000111100001',
-    26: '011010111110101011',
-    27: '011011000010001110',
-    28: '011100110000011010',
-    29: '011101001100111111',
-    30: '011110110101110101',
-    31: '011111001001010000',
-    32: '100000100111010101',
-    33: '100001011011110000',
-    34: '100010100010111010',
-    35: '100011011110011111',
-    36: '100100101100001011',
-    37: '100101010000101110',
-    38: '100110101001100100',
-    39: '100111010101000001',
-    40: '101000110001101001'
 };

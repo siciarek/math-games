@@ -1,5 +1,4 @@
 var DataAnalyzer = function () {
-    this.config = new Config();
     this.encoder = new DataEncoder();
     this.modes = {
         numeric: function (message, self) {
@@ -25,7 +24,7 @@ DataAnalyzer.prototype.constructor = DataAnalyzer;
 
 DataAnalyzer.prototype.analyze = function (message) {
     var result = {
-        mode: null
+        mode: 'binary'
     };
 
     for(var mode in this.modes) {
