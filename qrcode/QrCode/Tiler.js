@@ -68,7 +68,9 @@ Tiler.prototype.setArea = function () {
         var ret = this.setModule(el, d);
 
         if(ret === 100) {
-            this.setModule(el, d)
+            el = data.shift();
+            this.setModule(el, d);
+
         }
 
         d++;

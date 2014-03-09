@@ -15,7 +15,7 @@ if(1) {
 //    message = 'Hello, World!';
     mode = 'binary';
     version = 2;
-    ecclevel = 'Q';
+    ecclevel = 'M';
     mask = -1;
 }
 
