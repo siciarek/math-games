@@ -1,15 +1,19 @@
-var message = 'HELLO WORLD';
-var ecclevel = 'M';
-var version = 2;
-var mode = 'alphanumeric';
-var mask = null;
+var dataOnly = false;
 
-if(0) {
+// http://www.thonky.com/qr-code-tutorial/hello-world-final.png
+
+var message = 'HELLO WORLD';
+var ecclevel = 'Q';
+var version = 1;
+var mode = 'alphanumeric';
+var mask = -1;
+
+if(1) {
 // http://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Wikipedia_mobile_en.svg/296px-Wikipedia_mobile_en.svg.png
     message = 'http://en.m.wikipedia.org';
 
-    message = 'Hello, World!';
-    mode = 'byte';
+//    message = 'Hello, World!';
+    mode = 'binary';
     version = 2;
     ecclevel = 'Q';
     mask = -1;
@@ -56,6 +60,10 @@ if(params.hasOwnProperty('mode')) {
 
 if(params.hasOwnProperty('mask')) {
     mask = params['mask'];
+}
+
+if(params.hasOwnProperty('do')) {
+    dataOnly = params['do'];
 }
 
 var blocksize = 4;
@@ -130,8 +138,7 @@ function drawQrCode(coder) {
                 quietZone + top * blocksize,
                 quietZone + left * blocksize,
                 blocksize,
-                colors[grid[top][left]]
-//				coder.mask[top][left] !== coder.DATA ? colors[9] : colors[grid[top][left]]
+				dataOnly && coder.mask[top][left] !== coder.DATA ? colors[9] : colors[grid[top][left]]
             );
         }
     }

@@ -31,6 +31,8 @@ Tiler.prototype.remainder = function() {
     while(rb-- > 0) {
         remainder += '0';
     }
+
+    return remainder;
 };
 
 Tiler.prototype.setArea = function () {
@@ -49,18 +51,30 @@ Tiler.prototype.setArea = function () {
 
     datastr += this.remainder();
 
-    var data = datastr.split('');
+    var data = datastr.split('').map(function(e){return parseInt(e);});
 
     console.log({ BEFORE: data.length });
 
-    var limit = data.length;
+    var limit = 122000;
+    var checkstr = '';
+    var d = 0;
 
-    for (var d = 0; d < limit; d++) {
-        var el = data[d];
-        this.setModule(el, d);
+    while (data.length > 0) {
+        var el = data.shift();
+        if(typeof el === 'undefined') break;
+        if(d >= limit)break;
+        checkstr += el;
+
+        var ret = this.setModule(el, d);
+
+        if(ret === 100) {
+            this.setModule(el, d)
+        }
+
+        d++;
     }
 
-    console.log({ AFTER: this.check.length });
+    console.log({ AFTER: this.check.length, STR: checkstr });
 };
 
 Tiler.prototype.setModule = function (value, index) {
@@ -141,16 +155,19 @@ Tiler.prototype.setModule = function (value, index) {
 
                     break;
                 default:
-                    return;
+                    return 1;
             }
         }
     }
 
-    if (parseInt(value) === 1) {
+    if (value === 1) {
         this.coder.setFullModule(x, y, 'data');
     }
-    else {
+    else if(value === 0) {
         this.coder.setEmptyModule(x, y, 'data');
+    }
+    else {
+        throw 'Invalid value: ' + value;
     }
 
     this.check.push([x, y]);
@@ -158,7 +175,9 @@ Tiler.prototype.setModule = function (value, index) {
     if (this.al === true && this.coder.matrix[y - 1][x + 1] === this.coder.UNDEFINDED) {
         this.al = false;
         this.datax += 1;
+        return 100;
     }
 
     this.datay = y;
+    return 1;
 };

@@ -1,6 +1,6 @@
 var QrCode = function (message, eccLevel, version, mode, mask) {
 
-    if (typeof mask === 'undefined') {
+    if (typeof mask === 'undefined' || isNaN(mask)) {
         mask = null;
     }
 
