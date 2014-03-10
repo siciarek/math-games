@@ -8,8 +8,14 @@
 <body>
 <?php
     $params['blocksize'] = 3;
+
     $params['version'] = 2;
     $params['message'] = 'http://pl.m.wikipedia.org';
+
+    $params['version'] = 1;
+    $params['message'] = '1234567890';
+    $params['mode'] = 'numeric';
+
 
     $params = array_merge($params, $_GET);
     $size = $params['blocksize'] * (($params['version'] - 1) * 4 + 21 + (2 * 4));

@@ -1,75 +1,50 @@
+var request = new Request();
+
 var dataOnly = false;
-
-// http://www.thonky.com/qr-code-tutorial/hello-world-final.png
-
-var message = 'HELLO WORLD';
-var ecclevel = 'Q';
-var version = 1;
-var mode = 'alphanumeric';
-var mask = -1;
-
-if(1) {
-// http://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Wikipedia_mobile_en.svg/296px-Wikipedia_mobile_en.svg.png
-    message = 'http://en.m.wikipedia.org';
-
-//    message = 'Hello, World!';
-    mode = 'binary';
-    version = 2;
-    ecclevel = 'M';
-    mask = -1;
-}
-
-// http://mathgames.dev/qrcode/qrcode.svg?message=HELLO%20WORLD&mode=alphanumeric&ecclevel=L&version=1
-// http://mathgames.dev/qrcode/qrcode.svg?message=http://siciarek.pl&mode=byte&ecclevel=L&version=1
-// http://mathgames.dev/qrcode/qrcode.svg?message=1234567890&mode=numeric&ecclevel=L&version=1
-// http://mathgames.dev/qrcode/qrcode.svg?message=HELLO%20WORLD&mode=alphanumeric&ecclevel=L&version=2
-// message=ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCDE
-
-var getParams = function () {
-    var params = {};
-    if (location.search) {
-        var parts = location.search.slice(1).split('&');
-
-        parts.forEach(function (part) {
-            var pair = part.split('=');
-            pair[0] = decodeURIComponent(pair[0]);
-            pair[1] = decodeURIComponent(pair[1]);
-            params[pair[0]] = (pair[1] !== 'undefined') ? pair[1] : true;
-        });
-    }
-    return params;
-};
-
-var params = getParams();
-
-if(params.hasOwnProperty('message')) {
-    message = params['message'];
-}
-
-if(params.hasOwnProperty('version')) {
-    version = parseInt(params['version']);
-}
-
-if(params.hasOwnProperty('ecclevel')) {
-    ecclevel = params['ecclevel'];
-}
-
-if(params.hasOwnProperty('mode')) {
-    mode = params['mode'];
-}
-
-if(params.hasOwnProperty('mask')) {
-    mask = params['mask'];
-}
-
-if(params.hasOwnProperty('do')) {
-    dataOnly = params['do'];
-}
-
 var blocksize = 4;
 
-if(params.hasOwnProperty('blocksize')) {
-    blocksize = params['blocksize'];
+var message = null;
+
+message = 'HELLO WORLD'; // http://www.thonky.com/qr-code-tutorial/hello-world-final.png
+message = '48603173114';
+message = '00000000000000000000000000000000000000000';
+//message = '11111111111111111111111111111111111111111';
+//message = '11111111';
+
+if(request.params.hasOwnProperty('message')) {
+    message = request.params['message'];
+}
+
+var analyzer = new DataAnalyzer();
+var a = analyzer.analyze(message);
+
+ecclevel = a.eclevel;
+mode = a.mode;
+version = a.version;
+mask = -1;
+
+if(request.params.hasOwnProperty('version')) {
+    version = parseInt(request.params['version']);
+}
+
+if(request.params.hasOwnProperty('ecclevel')) {
+    ecclevel = request.params['ecclevel'];
+}
+
+if(request.params.hasOwnProperty('mode')) {
+    mode = request.params['mode'];
+}
+
+if(request.params.hasOwnProperty('mask')) {
+    mask = request.params['mask'];
+}
+
+if(request.params.hasOwnProperty('do')) {
+    dataOnly = request.params['do'];
+}
+
+if(request.params.hasOwnProperty('blocksize')) {
+    blocksize = request.params['blocksize'];
 }
 
 var coder = new QrCode(message, ecclevel, version, mode, mask);

@@ -5,13 +5,6 @@ var DataEncoder = function () {
 
 DataEncoder.prototype.constructor = DataEncoder;
 
-DataEncoder.prototype.encodeNumeric = function(message) {
-	var data = [];
-    var characters = message.split('');
-
-	return data;
-};
-
 DataEncoder.prototype.alphanumericCharsTable = {
     '0': 0,
     '1': 1,
@@ -60,14 +53,33 @@ DataEncoder.prototype.alphanumericCharsTable = {
     ':': 44
 };
 
-DataEncoder.prototype.encodeAlphanumeric = function(message) {
-	var data = [];
+DataEncoder.prototype.encodeNumeric = function (message) {
+    var data = [];
     var characters = message.split('');
 
-	
-	var numbers = characters.map(function(e) { return this.alphanumericCharsTable[e]; }, this);
-    
-	var alphanumericWordLength = 11;
+    for (var i = 0; i < characters.length; i += 3) {
+        var slice = characters.slice(i, i + 3).join('');
+        var number = parseInt(slice);
+        var numbin = number.toString(2);
+
+        while(numbin.length < 10) {
+            numbin = '0' + numbin;
+        }
+        data.push(numbin);
+    }
+
+    return data;
+};
+
+DataEncoder.prototype.encodeAlphanumeric = function (message) {
+    var data = [];
+    var characters = message.split('');
+
+    var numbers = characters.map(function (e) {
+        return this.alphanumericCharsTable[e];
+    }, this);
+
+    var alphanumericWordLength = 11;
 
     for (var n = 0; n < numbers.length; n += 2) {
         var encoded = 0;
@@ -87,29 +99,29 @@ DataEncoder.prototype.encodeAlphanumeric = function(message) {
                 bin = '0' + bin;
             }
         }
-        
-		data.push(bin);
+
+        data.push(bin);
     }
 
-	return data;
+    return data;
 };
 
-DataEncoder.prototype.encodeBinary = function(message) {
-	var data = [];
+DataEncoder.prototype.encodeBinary = function (message) {
+    var data = [];
     var characters = message.split('');
 
-	data = characters.map(function(c) {
+    data = characters.map(function (c) {
         var charCode = c.charCodeAt(0);
         var octet = charCode.toString(2);
 
-		while(octet.length < 8) {
+        while (octet.length < 8) {
             octet = '0' + octet;
-		}
+        }
 
         return octet;
     });
 
-	return data;
+    return data;
 };
 
 DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
@@ -168,29 +180,29 @@ DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
 
     bitdata = bitdata.concat([modeIndicator, characterCountIndicator]);
 
-    if (this.mode === 'numeric') {		
-		bitdata = bitdata.concat(this.encodeNumeric(message));
-	}
-    if (this.mode === 'alphanumeric') {		
-		bitdata = bitdata.concat(this.encodeAlphanumeric(message));
-	}
+    if (this.mode === 'numeric') {
+        bitdata = bitdata.concat(this.encodeNumeric(message));
+    }
+    if (this.mode === 'alphanumeric') {
+        bitdata = bitdata.concat(this.encodeAlphanumeric(message));
+    }
     else if (this.mode === 'binary') {
-		bitdata = bitdata.concat(this.encodeBinary(message));
-	}
-	else {
-	
-	}
+        bitdata = bitdata.concat(this.encodeBinary(message));
+    }
+    else {
+
+    }
 
     var bitstring = bitdata.join('');
     var codewords = [];
     var diff = numberOfDataBits - bitstring.length;
 
-    if(diff >= 4) {
+    if (diff >= 4) {
         terminator = terminator;
     }
     else {
         terminator = '';
-        for(var d = 0; d < diff; d++) {
+        for (var d = 0; d < diff; d++) {
             terminator += '0';
         }
     }
@@ -198,27 +210,29 @@ DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
     bitstring += terminator;
 
     var i = 0;
-    while(true){
+    while (true) {
         var octet = bitstring.substring(i, i + 8);
         i += 8;
-        if(octet === '') {
+        if (octet === '') {
             break;
         }
         codewords.push(octet);
     }
 
     // Add More 0s to Make the Length a Multiple of 8
-    while(codewords[codewords.length - 1].length < 8) {
+    while (codewords[codewords.length - 1].length < 8) {
         codewords[codewords.length - 1] += '0';
     }
 
     // Add Pad Bytes if the String is Still too Short
     var b = 0;
-    while(codewords.length < numberOfDataCodewords) {
+    while (codewords.length < numberOfDataCodewords) {
         codewords.push(padBytes[b++ % padBytes.length]);
     }
 
-    data = codewords.map(function(e){ return parseInt(e, 2); });
+    data = codewords.map(function (e) {
+        return parseInt(e, 2);
+    });
 
     return data;
 };
