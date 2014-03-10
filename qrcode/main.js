@@ -1,15 +1,13 @@
 var request = new Request();
 
 var dataOnly = false;
-var blocksize = 4;
+var blocksize = 6;
 
 var message = null;
 
 message = 'HELLO WORLD'; // http://www.thonky.com/qr-code-tutorial/hello-world-final.png
-message = '48603173114';
-message = '00000000000000000000000000000000000000000';
-//message = '11111111111111111111111111111111111111111';
-//message = '11111111';
+message = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+message = 'http://www.tec-it.com';
 
 if(request.params.hasOwnProperty('message')) {
     message = request.params['message'];

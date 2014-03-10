@@ -7,18 +7,13 @@
 
 <body>
 <?php
-    $params['blocksize'] = 3;
+    $params['blocksize'] = 6;
 
-    $params['version'] = 2;
     $params['message'] = 'http://pl.m.wikipedia.org';
-
-    $params['version'] = 1;
-    $params['message'] = '1234567890';
-    $params['mode'] = 'numeric';
-
+//    $params['message'] = '603173114';
 
     $params = array_merge($params, $_GET);
-    $size = $params['blocksize'] * (($params['version'] - 1) * 4 + 21 + (2 * 4));
+    $size = $params['blocksize'] * ((2 - 1) * 4 + 21 + (2 * 4));
 ?>
 
 <h1><?php echo $params['message'] ?></h1>
@@ -33,7 +28,7 @@ $pstring = http_build_query($params);
 ?>
 <iframe frameborder="0" width="<?php echo $size ?>" height="<?php echo $size ?>" src="qrcode.svg?<?php echo $pstring; ?>"></iframe>
 
-<?php foreach(range(0, 7) as $mask):
+<?php foreach([0, 1, 2, 3, 4, 5, 6, 7, 'X'] as $mask):
     $params['mask'] = $mask;
     $pstring = http_build_query($params);
 ?>

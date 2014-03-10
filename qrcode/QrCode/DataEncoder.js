@@ -54,72 +54,71 @@ DataEncoder.prototype.alphanumericCharsTable = {
 };
 
 DataEncoder.prototype.encodeNumeric = function (message) {
-    var data = [];
+    var wordSize = 10;
     var characters = message.split('');
+    var word = null;
+    var data = [];
 
     for (var i = 0; i < characters.length; i += 3) {
         var slice = characters.slice(i, i + 3).join('');
-        var number = parseInt(slice);
-        var numbin = number.toString(2);
+        wordSize = slice.length * 3 + 1;
+        word = parseInt(slice);
 
-        while(numbin.length < 10) {
-            numbin = '0' + numbin;
+        var binary = word.toString(2);
+        while(binary.length < wordSize) {
+            binary = '0' + binary;
         }
-        data.push(numbin);
+        data.push(binary);
     }
 
     return data;
 };
 
 DataEncoder.prototype.encodeAlphanumeric = function (message) {
-    var data = [];
+    var wordSize = 11;
     var characters = message.split('');
+    var word = null;
+    var data = [];
 
     var numbers = characters.map(function (e) {
         return this.alphanumericCharsTable[e];
     }, this);
 
-    var alphanumericWordLength = 11;
-
-    for (var n = 0; n < numbers.length; n += 2) {
-        var encoded = 0;
-        var bin = null;
-
-        if (n + 1 < numbers.length) {
-            encoded = 45 * numbers[n] + numbers[n + 1];
-            bin = encoded.toString(2);
-            while (bin.length < alphanumericWordLength) {
-                bin = '0' + bin;
-            }
+    for (var i = 0; i < numbers.length; i += 2) {
+        if (i + 1 < numbers.length) {
+            word = 45 * numbers[i] + numbers[i + 1];
         }
         else {
-            encoded = numbers[n];
-            bin = encoded.toString(2);
-            while (bin.length < Math.ceil(alphanumericWordLength / 2)) {
-                bin = '0' + bin;
-            }
+            word = numbers[i];
+            wordSize = Math.ceil(wordSize / 2);
         }
 
-        data.push(bin);
+        var binary = word.toString(2);
+        while (binary.length < wordSize) {
+            binary = '0' + binary;
+        }
+        data.push(binary);
     }
 
     return data;
 };
 
 DataEncoder.prototype.encodeBinary = function (message) {
-    var data = [];
+    var wordSize = 8;
     var characters = message.split('');
+    var word = null;
+    var data = [];
 
-    data = characters.map(function (c) {
-        var charCode = c.charCodeAt(0);
-        var octet = charCode.toString(2);
+    for (var i = 0; i < characters.length; i += 1) {
+        var character = characters[i];
+        word = character.charCodeAt(0);
 
-        while (octet.length < 8) {
-            octet = '0' + octet;
+        var binary = word.toString(2);
+        while (binary.length < wordSize) {
+            binary = '0' + binary;
         }
-
-        return octet;
-    });
+        data.push(binary);
+    }
 
     return data;
 };
@@ -159,25 +158,6 @@ DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
         characterCountIndicator = '0' + characterCountIndicator;
     }
 
-    var remainder = this.config.remainderBits[version];
-
-    var info = {
-        'Total Data Bits': numberOfDataCodewords * 8 + numberOfEcCodewords * 8 + remainder,
-
-        'Total Number of Data Codewords for this Version and EC Level': numberOfDataCodewords,
-        'EC Codewords Per Block': numberOfEcCodewords,
-        'Number of Data Bits': numberOfDataCodewords * 8,
-        'Number of EC Codewords Bits': numberOfEcCodewords * 8,
-        'Character Count Indicator': characterCountIndicator,
-        'Mode': this.mode,
-        'Mode Indicator': modeIndicator,
-        'Word Size': wordSize,
-        'Version': version,
-        'Error Correction Level': this.eccLevel
-    };
-
-//    console.log(info);
-
     bitdata = bitdata.concat([modeIndicator, characterCountIndicator]);
 
     if (this.mode === 'numeric') {
@@ -197,10 +177,7 @@ DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
     var codewords = [];
     var diff = numberOfDataBits - bitstring.length;
 
-    if (diff >= 4) {
-        terminator = terminator;
-    }
-    else {
+    if (diff < 4) {
         terminator = '';
         for (var d = 0; d < diff; d++) {
             terminator += '0';
@@ -212,11 +189,11 @@ DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
     var i = 0;
     while (true) {
         var octet = bitstring.substring(i, i + 8);
-        i += 8;
         if (octet === '') {
             break;
         }
         codewords.push(octet);
+        i += 8;
     }
 
     // Add More 0s to Make the Length a Multiple of 8
