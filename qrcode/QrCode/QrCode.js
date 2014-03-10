@@ -1,4 +1,4 @@
-var QrCode = function (message, eccLevel, version, mode, mask) {
+var QrCode = function (message, ecLevel, version, mode, mask) {
 
     if (typeof mask === 'undefined' || isNaN(mask)) {
         mask = null;
@@ -79,18 +79,18 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
 
     this.maskPattern = 0;
 
-    eccLevel = eccLevel || 'Q';
+    ecLevel = ecLevel || 'Q';
     mode = mode || 'alphanumeric';
     version = version || 1;
 
     this.message = message;
-    this.eccLevel = eccLevel;
+    this.ecLevel = ecLevel;
     this.mode = mode;
 
     this.V = version;
     this.size = (((this.V - 1) * 4) + 21);
 
-    this.capacity = this.config.characterCapacities[this.V][this.eccLevel][this.mode];
+    this.capacity = this.config.characterCapacities[this.V][this.ecLevel][this.mode];
 
     this.penalty = 10000;
     this.evaluation = {};
@@ -178,7 +178,7 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
     };
 
     this.getEccLevel = function () {
-        return this.eccLevel;
+        return this.ecLevel;
     };
 
     this.getMaskPattern = function () {
@@ -440,10 +440,10 @@ var QrCode = function (message, eccLevel, version, mode, mask) {
             reserve = false;
         }
 
-        var eccLevel = this.getEccLevel();
+        var ecLevel = this.getEccLevel();
         var maskPattern = this.getMaskPattern();
 
-        var temp = this.config.getFormatString(eccLevel, parseInt(maskPattern));
+        var temp = this.config.getFormatString(ecLevel, parseInt(maskPattern));
 
         temp = temp.split('');
 

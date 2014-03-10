@@ -8,15 +8,16 @@ var message = null;
 message = 'HELLO WORLD'; // http://www.thonky.com/qr-code-tutorial/hello-world-final.png
 message = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
 message = 'http://www.tec-it.com';
+message = 'Anna Siciarek';
 
 if(request.params.hasOwnProperty('message')) {
     message = request.params['message'];
 }
 
 var analyzer = new DataAnalyzer();
-var a = analyzer.analyze(message);
+var a = analyzer.analyze(message, 'M');
 
-ecclevel = a.eclevel;
+eclevel = a.eclevel;
 mode = a.mode;
 version = a.version;
 mask = -1;
@@ -25,8 +26,8 @@ if(request.params.hasOwnProperty('version')) {
     version = parseInt(request.params['version']);
 }
 
-if(request.params.hasOwnProperty('ecclevel')) {
-    ecclevel = request.params['ecclevel'];
+if(request.params.hasOwnProperty('eclevel')) {
+    eclevel = request.params['eclevel'];
 }
 
 if(request.params.hasOwnProperty('mode')) {
@@ -45,15 +46,15 @@ if(request.params.hasOwnProperty('blocksize')) {
     blocksize = request.params['blocksize'];
 }
 
-var coder = new QrCode(message, ecclevel, version, mode, mask);
+var coder = new QrCode(message, eclevel, version, mode, mask);
 
 var info = {
-    message: coder.message,
-    messagelen: coder.message.length,
-    capacity: coder.capacity,
-    mode: coder.mode,
+    msg: coder.message,
+    eclevel: coder.ecLevel,
     version: coder.V,
-    ecclevel: coder.eccLevel,
+    mode: coder.mode,
+    len: coder.message.length,
+    capacity: coder.capacity,
     penalty: coder.penalty
 };
 

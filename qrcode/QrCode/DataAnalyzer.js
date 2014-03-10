@@ -10,8 +10,8 @@ var DataAnalyzer = function () {
                 return (i == a.indexOf(el) && el.length > 0)
             });
 
-            while(chars.length > 0) {
-                if(typeof self.encoder.alphanumericCharsTable[chars.shift()] === 'undefined') {
+            while (chars.length > 0) {
+                if (typeof self.encoder.alphanumericCharsTable[chars.shift()] === 'undefined') {
                     return false;
                 }
             }
@@ -23,71 +23,44 @@ var DataAnalyzer = function () {
 
 DataAnalyzer.prototype.constructor = DataAnalyzer;
 
-DataAnalyzer.prototype.analyze = function (message) {
+DataAnalyzer.prototype.analyze = function (message, eclevel) {
+
+    eclevel = eclevel || null;
 
     var result = {
         mode: 'binary',
         eclevel: null,
-        version: 0
+        version: 2
     };
 
-    for(var mode in this.modes) {
-        if(this.modes.hasOwnProperty(mode)) {
+    var clevels = Object.keys(this.config.correctionLevels).reverse();
+
+    for (var mode in this.modes) {
+        if (this.modes.hasOwnProperty(mode)) {
             var matches = this.modes[mode](message, this);
-            if(matches) {
+            if (matches) {
                 result.mode = mode;
                 break;
             }
         }
     }
 
-    for(var version in this.config.characterCapacities) {
-        if(this.config.characterCapacities.hasOwnProperty(version)) {
+    for (var version in this.config.characterCapacities) {
+        if (this.config.characterCapacities.hasOwnProperty(version)) {
             var cap = this.config.characterCapacities[version];
-
-            if(message.length <= cap.H[result.mode]) {
-                result.version = version;
-                result.eclevel = 'H';
-                break;
-            }
-
-            if(result.version > 0) {
-                break;
-            }
-
-            if(message.length <= cap.Q[result.mode]) {
-                result.version = version;
-                result.eclevel = 'Q';
-                break;
-            }
-
-            if(result.version > 0) {
-                break;
-            }
-
-            if(message.length <= cap.M[result.mode]) {
-                result.version = version;
-                result.eclevel = 'M';
-                break;
-            }
-
-            if(result.version > 0) {
-                break;
-            }
-
-            if(message.length <= cap.L[result.mode]) {
-                result.version = version;
-                result.eclevel = 'L';
-                break;
-            }
-
-            if(result.version > 0) {
-                break;
+            for (var c = 0; c < clevels.length; c++) {
+                var clevel = clevels[c];
+                if(eclevel !== null && clevel !== eclevel) {
+                    continue;
+                }
+                if (message.length <= cap[clevel][result.mode]) {
+                    result.eclevel = clevel;
+                    result.version = parseInt(version);
+                    return result;
+                }
             }
         }
     }
-
-    result.version = parseInt(result.version);
 
     return result;
 };

@@ -41,7 +41,7 @@ echo json_encode($data);
 exit;
 
 $version = null;
-$eccLevel = null;
+$ecLevel = null;
 
 $data = array();
 
@@ -68,12 +68,12 @@ foreach ($doc->getElementsByTagName('tr') as $row) {
         $value = trim($cell->nodeValue);
 
         if (in_array($value, array('L', 'M', 'H', 'Q',))) {
-            $eccLevel = trim($cell->nodeValue);
-            $data[$version][$eccLevel] = array();
+            $ecLevel = trim($cell->nodeValue);
+            $data[$version][$ecLevel] = array();
             continue;
         }
 
-        $data[$version][$eccLevel][$keys[$i++]] = intval($value);
+        $data[$version][$ecLevel][$keys[$i++]] = intval($value);
     }
 }
 

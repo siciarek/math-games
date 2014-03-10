@@ -23,7 +23,7 @@
 
 <?php
 $params['mask'] = -1;
-$params['ecclevel'] = $ecl;
+$params['eclevel'] = $ecl;
 $pstring = http_build_query($params);
 ?>
 <iframe frameborder="0" width="<?php echo $size ?>" height="<?php echo $size ?>" src="qrcode.svg?<?php echo $pstring; ?>"></iframe>

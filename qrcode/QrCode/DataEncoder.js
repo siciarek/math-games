@@ -123,12 +123,12 @@ DataEncoder.prototype.encodeBinary = function (message) {
     return data;
 };
 
-DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
+DataEncoder.prototype.encode = function (message, version, mod, ecLevel) {
     var data = [];
     var bitdata = [];
 
     this.mode = mod;
-    this.eccLevel = eccLevel;
+    this.ecLevel = ecLevel;
 
     var terminator = '0000';
     var padBytes = ['11101100', '00010001'];
@@ -136,8 +136,8 @@ DataEncoder.prototype.encode = function (message, version, mod, eccLevel) {
     var wordSize = 0;
     var modeIndicator = this.config.dataModeBitStrings[this.mode];
     var wordSizes = this.config.wordSizes[this.mode];
-    var numberOfDataCodewords = parseInt(this.config.dataSizeInfo['' + version + '-' + this.eccLevel][0]);
-    var numberOfEcCodewords = parseInt(this.config.dataSizeInfo['' + version + '-' + this.eccLevel][1]);
+    var numberOfDataCodewords = parseInt(this.config.dataSizeInfo['' + version + '-' + this.ecLevel][0]);
+    var numberOfEcCodewords = parseInt(this.config.dataSizeInfo['' + version + '-' + this.ecLevel][1]);
     var numberOfDataBits = numberOfDataCodewords * 8;
 
     for (var key in wordSizes) {
