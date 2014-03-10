@@ -1,4 +1,11 @@
+/**
+ * HTTP Request support
+ * @constructor
+ */
 var Request = function () {
+    this.href = location.href;
+    this.host = this.href.split('?').shift();
+    this.query = this.href.split('?').pop();
     this.params = this.getParams();
 };
 
