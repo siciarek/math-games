@@ -52,6 +52,14 @@ var QrCode = function (message, ecLevel, version, mode, mask) {
         }
     };
 
+    this.getMask = function() {
+        return this.mask;
+    };
+
+    this.getData = function() {
+        return this.matrix;
+    };
+
     var off = 230; // 3;
     var lim = 115 + off;
 

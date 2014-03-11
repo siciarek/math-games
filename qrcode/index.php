@@ -12,25 +12,30 @@
     $params['message'] = 'http://pl.m.wikipedia.org';
 //    $params['message'] = '603173114';
 
+    $params['message'] = 'Jacek Siciarek';
+
     $params = array_merge($params, $_GET);
     $size = $params['blocksize'] * ((2 - 1) * 4 + 21 + (2 * 4));
 ?>
 
 <h1><?php echo $params['message'] ?></h1>
 
-<?php foreach(array('L', 'M') as $ecl):?>
+<?php foreach(array('Q', 'L', 'M') as $ecl):?>
 <h3><?php echo $ecl ?></h3>
 
 <?php
 $params['mask'] = -1;
 $params['eclevel'] = $ecl;
-$pstring = http_build_query($params);
+$pstring = http_build_query($params, null, '&', PHP_QUERY_RFC3986);
 ?>
+
+<h3><?php echo $pstring ?></h3>
+
 <iframe frameborder="0" width="<?php echo $size ?>" height="<?php echo $size ?>" src="qrcode.svg?<?php echo $pstring; ?>"></iframe>
 
 <?php foreach([0, 1, 2, 3, 4, 5, 6, 7, 'X'] as $mask):
     $params['mask'] = $mask;
-    $pstring = http_build_query($params);
+    $pstring = http_build_query($params, null, '&', PHP_QUERY_RFC3986);
 ?>
      <iframe frameborder="0" width="<?php echo $size ?>" height="<?php echo $size ?>" src="qrcode.svg?<?php echo $pstring; ?>"></iframe>
 <?php endforeach;?>

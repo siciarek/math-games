@@ -6,16 +6,16 @@ var blocksize = 6;
 var message = null;
 
 message = 'HELLO WORLD'; // http://www.thonky.com/qr-code-tutorial/hello-world-final.png
-message = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
-message = 'http://www.tec-it.com';
-message = 'Anna Siciarek';
+//message = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+//message = 'http://www.tec-it.com';
+//message = 'Anna Siciarek';
 
 if(request.params.hasOwnProperty('message')) {
     message = request.params['message'];
 }
 
 var analyzer = new DataAnalyzer();
-var a = analyzer.analyze(message, 'M');
+var a = analyzer.analyze(message);
 
 eclevel = a.eclevel;
 mode = a.mode;
@@ -27,11 +27,11 @@ if(request.params.hasOwnProperty('version')) {
 }
 
 if(request.params.hasOwnProperty('eclevel')) {
-    eclevel = request.params['eclevel'];
+    eclevel = request.params['eclevel'].toUpperCase();
 }
 
 if(request.params.hasOwnProperty('mode')) {
-    mode = request.params['mode'];
+    mode = request.params['mode'].toLowerCase();
 }
 
 if(request.params.hasOwnProperty('mask')) {
@@ -100,19 +100,20 @@ function drawQrCode(coder) {
     );
 
     var dc = 0;
-    var grid = coder.matrix;
-//    grid = coder.mask;
+    var grid = coder.getData();
+    var mask = coder.getMask();
+//    grid = coder.getMask();
 
     for (var top = 0; top < grid.length; top++) {
         for (var left = 0; left < grid[0].length; left++) {
-            if(coder.mask[top][left] === coder.DATA) {
+            if(mask[top][left] === coder.DATA) {
                 ++dc;
             }
             square(
                 quietZone + top * blocksize,
                 quietZone + left * blocksize,
                 blocksize,
-				dataOnly && coder.mask[top][left] !== coder.DATA ? colors[9] : colors[grid[top][left]]
+				dataOnly && mask[top][left] !== coder.DATA ? colors[9] : colors[grid[top][left]]
             );
         }
     }
