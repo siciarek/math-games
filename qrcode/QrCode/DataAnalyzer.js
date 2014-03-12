@@ -23,17 +23,16 @@ var DataAnalyzer = function () {
 
 DataAnalyzer.prototype.constructor = DataAnalyzer;
 
-DataAnalyzer.prototype.analyze = function (message, eclevel) {
+DataAnalyzer.prototype.analyze = function (message, eclevels) {
 
-    eclevel = eclevel || null;
+    message = message || 'QRCODE';
+    eclevels = eclevels || ['H', 'Q', 'M', 'L'];
 
     var result = {
         mode: 'binary',
         eclevel: null,
         version: 2
     };
-
-    var clevels = Object.keys(this.config.correctionLevels).reverse();
 
     for (var mode in this.modes) {
         if (this.modes.hasOwnProperty(mode)) {
@@ -47,17 +46,18 @@ DataAnalyzer.prototype.analyze = function (message, eclevel) {
 
     for (var version in this.config.characterCapacities) {
         if (this.config.characterCapacities.hasOwnProperty(version)) {
-            var cap = this.config.characterCapacities[version];
-            for (var c = 0; c < clevels.length; c++) {
-                var clevel = clevels[c];
-                if(eclevel !== null && clevel !== eclevel) {
-                    continue;
-                }
-                if (message.length <= cap[clevel][result.mode]) {
-                    result.eclevel = clevel;
+            for (var c = 0; c < eclevels.length; c++) {
+                var eclevel = eclevels[c];
+
+                if (message.length <= this.config.characterCapacities[version][eclevel][result.mode]) {
+                    result.eclevel = eclevel;
                     result.version = parseInt(version);
-                    return result;
+                    break;
                 }
+            }
+
+            if(result.eclevel !== null) {
+                break;
             }
         }
     }

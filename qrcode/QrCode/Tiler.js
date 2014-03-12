@@ -53,7 +53,7 @@ Tiler.prototype.setArea = function () {
 
     var data = datastr.split('').map(function(e){return parseInt(e);});
 
-    console.log({ BEFORE: data.length });
+//    console.log({ BEFORE: data.length });
 
     var limit = 122000;
     var checkstr = '';
@@ -70,13 +70,12 @@ Tiler.prototype.setArea = function () {
         if(ret === 100) {
             el = data.shift();
             this.setModule(el, d);
-
         }
 
         d++;
     }
 
-    console.log({ AFTER: this.check.length, STR: checkstr });
+//    console.log({ AFTER: this.check.length, STR: checkstr });
 };
 
 Tiler.prototype.setModule = function (value, index) {

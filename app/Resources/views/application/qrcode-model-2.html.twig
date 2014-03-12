@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+
+        form *[required] {
+            background-color: lightgoldenrodyellow !important;
+        }
+
+        div.input-group {
+            margin-bottom: 16px;
+        }
+
+        div.input-group label.input-group-addon {
+            min-width: 130px;
+            vertical-align: top;
+            text-align: right;
+            padding-top: 10px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-horizontal .btn.btn-default {
+            min-width: 130px;
+        }
+
+        iframe.board {
+            width: 100%;
+            height: 450px;
+            border: 0;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="page-header text-muted">
+        <h1>
+            <i class="icon-qrcode"></i>
+            QRCode Model 2
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <form class="form-horizontal qrcode-generator">
+
+                <div class="input-group">
+                    <label for="phrase" class="input-group-addon">Phrase</label>
+                    <textarea id="phrase" required="required" name="phrase" class="form-control"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="error_correction" class="input-group-addon">Error Correction</label>
+                    <select id="error_correction" name="error_correction" class="form-control">
+                        <option value="L">Level L (Low) 7% of codewords can be restored.</option>
+                        <option value="M" selected="selected">Level M (Medium) 15% of codewords can be restored.</option>
+                        <option value="Q">Level Q (Quartile) 25% of codewords can be restored.</option>
+                        <option value="H">Level H (High) 30% of codewords can be restored.</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-default btn-lg pull-right">Generate</button>
+            </form>
+        </div>
+        <div class="col-lg-6">
+            <iframe class="board" src="/qrcode/qrcode.svg"></iframe>
+        </div>
+    </div>
+
+{% endblock %}

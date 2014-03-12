@@ -23,12 +23,14 @@ function clear() {
     svg.appendChild(g);
 }
 
-function text(string, x, y, color) {
+function text(string, x, y, align, fontSize, color) {
+    align = align || 'left';
+    fontSize = fontSize || 14;
     color = color || '#000000';
     var element = doc.createElementNS(ns, 'text');
     element.setAttribute('x', x);
     element.setAttribute('y', y);
-    element.setAttribute('style', 'font-size:7px;text-anchor:middle;font-family:sans-serif;fill:' + color);
+    element.setAttribute('style', 'font-size:' + fontSize + 'px;text-anchor:' + align + ';font-family:sans-serif;fill:' + color);
     element.appendChild(doc.createTextNode(string));
 
     var canvas = svg.getElementById('canvas');

@@ -111,7 +111,6 @@ Config.prototype.getFormatString = function (correctionLevel, maskPattern) {
 
     return formatString;
 };
-
 Config.prototype.correctionLevels = {
     L: 1,
     M: 0,
@@ -419,1044 +418,1044 @@ Config.prototype.alignmentPatternLocations = {
     40: [6, 30, 58, 86, 114, 142, 170]
 };
 Config.prototype.characterCapacities = {
-    1: {
-        L: {
-            numeric: 41,
-            alphanumeric: 25,
-            binary: 17,
-            kanji: 10
+    "1": {
+        "L": {
+            "numeric": 41,
+            "alphanumeric": 25,
+            "binary": 17,
+            "kanji": 10
         },
-        M: {
-            numeric: 34,
-            alphanumeric: 20,
-            binary: 14,
-            kanji: 8
+        "M": {
+            "numeric": 34,
+            "alphanumeric": 20,
+            "binary": 14,
+            "kanji": 8
         },
-        Q: {
-            numeric: 27,
-            alphanumeric: 16,
-            binary: 11,
-            kanji: 7
+        "Q": {
+            "numeric": 27,
+            "alphanumeric": 16,
+            "binary": 11,
+            "kanji": 7
         },
-        H: {
-            numeric: 17,
-            alphanumeric: 10,
-            binary: 7,
-            kanji: 4
+        "H": {
+            "numeric": 17,
+            "alphanumeric": 10,
+            "binary": 7,
+            "kanji": 4
         }
     },
-    2: {
-        L: {
-            numeric: 77,
-            alphanumeric: 47,
-            binary: 32,
-            kanji: 20
+    "2": {
+        "L": {
+            "numeric": 77,
+            "alphanumeric": 47,
+            "binary": 32,
+            "kanji": 20
         },
-        M: {
-            numeric: 63,
-            alphanumeric: 38,
-            binary: 26,
-            kanji: 16
+        "M": {
+            "numeric": 63,
+            "alphanumeric": 38,
+            "binary": 26,
+            "kanji": 16
         },
-        Q: {
-            numeric: 48,
-            alphanumeric: 29,
-            binary: 20,
-            kanji: 12
+        "Q": {
+            "numeric": 48,
+            "alphanumeric": 29,
+            "binary": 20,
+            "kanji": 12
         },
-        H: {
-            numeric: 34,
-            alphanumeric: 20,
-            binary: 14,
-            kanji: 8
+        "H": {
+            "numeric": 34,
+            "alphanumeric": 20,
+            "binary": 14,
+            "kanji": 8
         }
     },
-    3: {
-        L: {
-            numeric: 127,
-            alphanumeric: 77,
-            binary: 53,
-            kanji: 32
+    "3": {
+        "L": {
+            "numeric": 127,
+            "alphanumeric": 77,
+            "binary": 53,
+            "kanji": 32
         },
-        M: {
-            numeric: 101,
-            alphanumeric: 61,
-            binary: 42,
-            kanji: 26
+        "M": {
+            "numeric": 101,
+            "alphanumeric": 61,
+            "binary": 42,
+            "kanji": 26
         },
-        Q: {
-            numeric: 77,
-            alphanumeric: 47,
-            binary: 32,
-            kanji: 20
+        "Q": {
+            "numeric": 77,
+            "alphanumeric": 47,
+            "binary": 32,
+            "kanji": 20
         },
-        H: {
-            numeric: 58,
-            alphanumeric: 35,
-            binary: 24,
-            kanji: 15
+        "H": {
+            "numeric": 58,
+            "alphanumeric": 35,
+            "binary": 24,
+            "kanji": 15
         }
     },
-    4: {
-        L: {
-            numeric: 187,
-            alphanumeric: 114,
-            binary: 78,
-            kanji: 48
+    "4": {
+        "L": {
+            "numeric": 187,
+            "alphanumeric": 114,
+            "binary": 78,
+            "kanji": 48
         },
-        M: {
-            numeric: 149,
-            alphanumeric: 90,
-            binary: 62,
-            kanji: 38
+        "M": {
+            "numeric": 149,
+            "alphanumeric": 90,
+            "binary": 62,
+            "kanji": 38
         },
-        Q: {
-            numeric: 111,
-            alphanumeric: 67,
-            binary: 46,
-            kanji: 28
+        "Q": {
+            "numeric": 111,
+            "alphanumeric": 67,
+            "binary": 46,
+            "kanji": 28
         },
-        H: {
-            numeric: 82,
-            alphanumeric: 50,
-            binary: 34,
-            kanji: 21
+        "H": {
+            "numeric": 82,
+            "alphanumeric": 50,
+            "binary": 34,
+            "kanji": 21
         }
     },
-    5: {
-        L: {
-            numeric: 255,
-            alphanumeric: 154,
-            binary: 106,
-            kanji: 65
+    "5": {
+        "L": {
+            "numeric": 255,
+            "alphanumeric": 154,
+            "binary": 106,
+            "kanji": 65
         },
-        M: {
-            numeric: 202,
-            alphanumeric: 122,
-            binary: 84,
-            kanji: 52
+        "M": {
+            "numeric": 202,
+            "alphanumeric": 122,
+            "binary": 84,
+            "kanji": 52
         },
-        Q: {
-            numeric: 144,
-            alphanumeric: 87,
-            binary: 60,
-            kanji: 37
+        "Q": {
+            "numeric": 144,
+            "alphanumeric": 87,
+            "binary": 60,
+            "kanji": 37
         },
-        H: {
-            numeric: 106,
-            alphanumeric: 64,
-            binary: 44,
-            kanji: 27
+        "H": {
+            "numeric": 106,
+            "alphanumeric": 64,
+            "binary": 44,
+            "kanji": 27
         }
     },
-    6: {
-        L: {
-            numeric: 322,
-            alphanumeric: 195,
-            binary: 134,
-            kanji: 82
+    "6": {
+        "L": {
+            "numeric": 322,
+            "alphanumeric": 195,
+            "binary": 134,
+            "kanji": 82
         },
-        M: {
-            numeric: 255,
-            alphanumeric: 154,
-            binary: 106,
-            kanji: 65
+        "M": {
+            "numeric": 255,
+            "alphanumeric": 154,
+            "binary": 106,
+            "kanji": 65
         },
-        Q: {
-            numeric: 178,
-            alphanumeric: 108,
-            binary: 74,
-            kanji: 45
+        "Q": {
+            "numeric": 178,
+            "alphanumeric": 108,
+            "binary": 74,
+            "kanji": 45
         },
-        H: {
-            numeric: 139,
-            alphanumeric: 84,
-            binary: 58,
-            kanji: 36
+        "H": {
+            "numeric": 139,
+            "alphanumeric": 84,
+            "binary": 58,
+            "kanji": 36
         }
     },
-    7: {
-        L: {
-            numeric: 370,
-            alphanumeric: 224,
-            binary: 154,
-            kanji: 95
+    "7": {
+        "L": {
+            "numeric": 370,
+            "alphanumeric": 224,
+            "binary": 154,
+            "kanji": 95
         },
-        M: {
-            numeric: 293,
-            alphanumeric: 178,
-            binary: 122,
-            kanji: 75
+        "M": {
+            "numeric": 293,
+            "alphanumeric": 178,
+            "binary": 122,
+            "kanji": 75
         },
-        Q: {
-            numeric: 207,
-            alphanumeric: 125,
-            binary: 86,
-            kanji: 53
+        "Q": {
+            "numeric": 207,
+            "alphanumeric": 125,
+            "binary": 86,
+            "kanji": 53
         },
-        H: {
-            numeric: 154,
-            alphanumeric: 93,
-            binary: 64,
-            kanji: 39
+        "H": {
+            "numeric": 154,
+            "alphanumeric": 93,
+            "binary": 64,
+            "kanji": 39
         }
     },
-    8: {
-        L: {
-            numeric: 461,
-            alphanumeric: 279,
-            binary: 192,
-            kanji: 118
+    "8": {
+        "L": {
+            "numeric": 461,
+            "alphanumeric": 279,
+            "binary": 192,
+            "kanji": 118
         },
-        M: {
-            numeric: 365,
-            alphanumeric: 221,
-            binary: 152,
-            kanji: 93
+        "M": {
+            "numeric": 365,
+            "alphanumeric": 221,
+            "binary": 152,
+            "kanji": 93
         },
-        Q: {
-            numeric: 259,
-            alphanumeric: 157,
-            binary: 108,
-            kanji: 66
+        "Q": {
+            "numeric": 259,
+            "alphanumeric": 157,
+            "binary": 108,
+            "kanji": 66
         },
-        H: {
-            numeric: 202,
-            alphanumeric: 122,
-            binary: 84,
-            kanji: 52
+        "H": {
+            "numeric": 202,
+            "alphanumeric": 122,
+            "binary": 84,
+            "kanji": 52
         }
     },
-    9: {
-        L: {
-            numeric: 552,
-            alphanumeric: 335,
-            binary: 230,
-            kanji: 141
+    "9": {
+        "L": {
+            "numeric": 552,
+            "alphanumeric": 335,
+            "binary": 230,
+            "kanji": 141
         },
-        M: {
-            numeric: 432,
-            alphanumeric: 262,
-            binary: 180,
-            kanji: 111
+        "M": {
+            "numeric": 432,
+            "alphanumeric": 262,
+            "binary": 180,
+            "kanji": 111
         },
-        Q: {
-            numeric: 312,
-            alphanumeric: 189,
-            binary: 130,
-            kanji: 80
+        "Q": {
+            "numeric": 312,
+            "alphanumeric": 189,
+            "binary": 130,
+            "kanji": 80
         },
-        H: {
-            numeric: 235,
-            alphanumeric: 143,
-            binary: 98,
-            kanji: 60
+        "H": {
+            "numeric": 235,
+            "alphanumeric": 143,
+            "binary": 98,
+            "kanji": 60
         }
     },
-    10: {
-        L: {
-            numeric: 652,
-            alphanumeric: 395,
-            binary: 271,
-            kanji: 167
+    "10": {
+        "L": {
+            "numeric": 652,
+            "alphanumeric": 395,
+            "binary": 271,
+            "kanji": 167
         },
-        M: {
-            numeric: 513,
-            alphanumeric: 311,
-            binary: 213,
-            kanji: 131
+        "M": {
+            "numeric": 513,
+            "alphanumeric": 311,
+            "binary": 213,
+            "kanji": 131
         },
-        Q: {
-            numeric: 364,
-            alphanumeric: 221,
-            binary: 151,
-            kanji: 93
+        "Q": {
+            "numeric": 364,
+            "alphanumeric": 221,
+            "binary": 151,
+            "kanji": 93
         },
-        H: {
-            numeric: 288,
-            alphanumeric: 174,
-            binary: 119,
-            kanji: 74
+        "H": {
+            "numeric": 288,
+            "alphanumeric": 174,
+            "binary": 119,
+            "kanji": 74
         }
     },
-    11: {
-        L: {
-            numeric: 772,
-            alphanumeric: 468,
-            binary: 321,
-            kanji: 198
+    "11": {
+        "L": {
+            "numeric": 772,
+            "alphanumeric": 468,
+            "binary": 321,
+            "kanji": 198
         },
-        M: {
-            numeric: 604,
-            alphanumeric: 366,
-            binary: 251,
-            kanji: 155
+        "M": {
+            "numeric": 604,
+            "alphanumeric": 366,
+            "binary": 251,
+            "kanji": 155
         },
-        Q: {
-            numeric: 427,
-            alphanumeric: 259,
-            binary: 177,
-            kanji: 109
+        "Q": {
+            "numeric": 427,
+            "alphanumeric": 259,
+            "binary": 177,
+            "kanji": 109
         },
-        H: {
-            numeric: 331,
-            alphanumeric: 200,
-            binary: 137,
-            kanji: 85
+        "H": {
+            "numeric": 331,
+            "alphanumeric": 200,
+            "binary": 137,
+            "kanji": 85
         }
     },
-    12: {
-        L: {
-            numeric: 883,
-            alphanumeric: 535,
-            binary: 367,
-            kanji: 226
+    "12": {
+        "L": {
+            "numeric": 883,
+            "alphanumeric": 535,
+            "binary": 367,
+            "kanji": 226
         },
-        M: {
-            numeric: 691,
-            alphanumeric: 419,
-            binary: 287,
-            kanji: 177
+        "M": {
+            "numeric": 691,
+            "alphanumeric": 419,
+            "binary": 287,
+            "kanji": 177
         },
-        Q: {
-            numeric: 489,
-            alphanumeric: 296,
-            binary: 203,
-            kanji: 125
+        "Q": {
+            "numeric": 489,
+            "alphanumeric": 296,
+            "binary": 203,
+            "kanji": 125
         },
-        H: {
-            numeric: 374,
-            alphanumeric: 227,
-            binary: 155,
-            kanji: 96
+        "H": {
+            "numeric": 374,
+            "alphanumeric": 227,
+            "binary": 155,
+            "kanji": 96
         }
     },
-    13: {
-        L: {
-            numeric: 1022,
-            alphanumeric: 619,
-            binary: 425,
-            kanji: 262
+    "13": {
+        "L": {
+            "numeric": 1022,
+            "alphanumeric": 619,
+            "binary": 425,
+            "kanji": 262
         },
-        M: {
-            numeric: 796,
-            alphanumeric: 483,
-            binary: 331,
-            kanji: 204
+        "M": {
+            "numeric": 796,
+            "alphanumeric": 483,
+            "binary": 331,
+            "kanji": 204
         },
-        Q: {
-            numeric: 580,
-            alphanumeric: 352,
-            binary: 241,
-            kanji: 149
+        "Q": {
+            "numeric": 580,
+            "alphanumeric": 352,
+            "binary": 241,
+            "kanji": 149
         },
-        H: {
-            numeric: 427,
-            alphanumeric: 259,
-            binary: 177,
-            kanji: 109
+        "H": {
+            "numeric": 427,
+            "alphanumeric": 259,
+            "binary": 177,
+            "kanji": 109
         }
     },
-    14: {
-        L: {
-            numeric: 1101,
-            alphanumeric: 667,
-            binary: 458,
-            kanji: 282
+    "14": {
+        "L": {
+            "numeric": 1101,
+            "alphanumeric": 667,
+            "binary": 458,
+            "kanji": 282
         },
-        M: {
-            numeric: 871,
-            alphanumeric: 528,
-            binary: 362,
-            kanji: 223
+        "M": {
+            "numeric": 871,
+            "alphanumeric": 528,
+            "binary": 362,
+            "kanji": 223
         },
-        Q: {
-            numeric: 621,
-            alphanumeric: 376,
-            binary: 258,
-            kanji: 159
+        "Q": {
+            "numeric": 621,
+            "alphanumeric": 376,
+            "binary": 258,
+            "kanji": 159
         },
-        H: {
-            numeric: 468,
-            alphanumeric: 283,
-            binary: 194,
-            kanji: 120
+        "H": {
+            "numeric": 468,
+            "alphanumeric": 283,
+            "binary": 194,
+            "kanji": 120
         }
     },
-    15: {
-        L: {
-            numeric: 1250,
-            alphanumeric: 758,
-            binary: 520,
-            kanji: 320
+    "15": {
+        "L": {
+            "numeric": 1250,
+            "alphanumeric": 758,
+            "binary": 520,
+            "kanji": 320
         },
-        M: {
-            numeric: 991,
-            alphanumeric: 600,
-            binary: 412,
-            kanji: 254
+        "M": {
+            "numeric": 991,
+            "alphanumeric": 600,
+            "binary": 412,
+            "kanji": 254
         },
-        Q: {
-            numeric: 703,
-            alphanumeric: 426,
-            binary: 292,
-            kanji: 180
+        "Q": {
+            "numeric": 703,
+            "alphanumeric": 426,
+            "binary": 292,
+            "kanji": 180
         },
-        H: {
-            numeric: 530,
-            alphanumeric: 321,
-            binary: 220,
-            kanji: 136
+        "H": {
+            "numeric": 530,
+            "alphanumeric": 321,
+            "binary": 220,
+            "kanji": 136
         }
     },
-    16: {
-        L: {
-            numeric: 1408,
-            alphanumeric: 854,
-            binary: 586,
-            kanji: 361
+    "16": {
+        "L": {
+            "numeric": 1408,
+            "alphanumeric": 854,
+            "binary": 586,
+            "kanji": 361
         },
-        M: {
-            numeric: 1082,
-            alphanumeric: 656,
-            binary: 450,
-            kanji: 277
+        "M": {
+            "numeric": 1082,
+            "alphanumeric": 656,
+            "binary": 450,
+            "kanji": 277
         },
-        Q: {
-            numeric: 775,
-            alphanumeric: 470,
-            binary: 322,
-            kanji: 198
+        "Q": {
+            "numeric": 775,
+            "alphanumeric": 470,
+            "binary": 322,
+            "kanji": 198
         },
-        H: {
-            numeric: 602,
-            alphanumeric: 365,
-            binary: 250,
-            kanji: 154
+        "H": {
+            "numeric": 602,
+            "alphanumeric": 365,
+            "binary": 250,
+            "kanji": 154
         }
     },
-    17: {
-        L: {
-            numeric: 1548,
-            alphanumeric: 938,
-            binary: 644,
-            kanji: 397
+    "17": {
+        "L": {
+            "numeric": 1548,
+            "alphanumeric": 938,
+            "binary": 644,
+            "kanji": 397
         },
-        M: {
-            numeric: 1212,
-            alphanumeric: 734,
-            binary: 504,
-            kanji: 310
+        "M": {
+            "numeric": 1212,
+            "alphanumeric": 734,
+            "binary": 504,
+            "kanji": 310
         },
-        Q: {
-            numeric: 876,
-            alphanumeric: 531,
-            binary: 364,
-            kanji: 224
+        "Q": {
+            "numeric": 876,
+            "alphanumeric": 531,
+            "binary": 364,
+            "kanji": 224
         },
-        H: {
-            numeric: 674,
-            alphanumeric: 408,
-            binary: 280,
-            kanji: 173
+        "H": {
+            "numeric": 674,
+            "alphanumeric": 408,
+            "binary": 280,
+            "kanji": 173
         }
     },
-    18: {
-        L: {
-            numeric: 1725,
-            alphanumeric: 1046,
-            binary: 718,
-            kanji: 442
+    "18": {
+        "L": {
+            "numeric": 1725,
+            "alphanumeric": 1046,
+            "binary": 718,
+            "kanji": 442
         },
-        M: {
-            numeric: 1346,
-            alphanumeric: 816,
-            binary: 560,
-            kanji: 345
+        "M": {
+            "numeric": 1346,
+            "alphanumeric": 816,
+            "binary": 560,
+            "kanji": 345
         },
-        Q: {
-            numeric: 948,
-            alphanumeric: 574,
-            binary: 394,
-            kanji: 243
+        "Q": {
+            "numeric": 948,
+            "alphanumeric": 574,
+            "binary": 394,
+            "kanji": 243
         },
-        H: {
-            numeric: 746,
-            alphanumeric: 452,
-            binary: 310,
-            kanji: 191
+        "H": {
+            "numeric": 746,
+            "alphanumeric": 452,
+            "binary": 310,
+            "kanji": 191
         }
     },
-    19: {
-        L: {
-            numeric: 1903,
-            alphanumeric: 1153,
-            binary: 792,
-            kanji: 488
+    "19": {
+        "L": {
+            "numeric": 1903,
+            "alphanumeric": 1153,
+            "binary": 792,
+            "kanji": 488
         },
-        M: {
-            numeric: 1500,
-            alphanumeric: 909,
-            binary: 624,
-            kanji: 384
+        "M": {
+            "numeric": 1500,
+            "alphanumeric": 909,
+            "binary": 624,
+            "kanji": 384
         },
-        Q: {
-            numeric: 1063,
-            alphanumeric: 644,
-            binary: 442,
-            kanji: 272
+        "Q": {
+            "numeric": 1063,
+            "alphanumeric": 644,
+            "binary": 442,
+            "kanji": 272
         },
-        H: {
-            numeric: 813,
-            alphanumeric: 493,
-            binary: 338,
-            kanji: 208
+        "H": {
+            "numeric": 813,
+            "alphanumeric": 493,
+            "binary": 338,
+            "kanji": 208
         }
     },
-    20: {
-        L: {
-            numeric: 2061,
-            alphanumeric: 1249,
-            binary: 858,
-            kanji: 528
+    "20": {
+        "L": {
+            "numeric": 2061,
+            "alphanumeric": 1249,
+            "binary": 858,
+            "kanji": 528
         },
-        M: {
-            numeric: 1600,
-            alphanumeric: 970,
-            binary: 666,
-            kanji: 410
+        "M": {
+            "numeric": 1600,
+            "alphanumeric": 970,
+            "binary": 666,
+            "kanji": 410
         },
-        Q: {
-            numeric: 1159,
-            alphanumeric: 702,
-            binary: 482,
-            kanji: 297
+        "Q": {
+            "numeric": 1159,
+            "alphanumeric": 702,
+            "binary": 482,
+            "kanji": 297
         },
-        H: {
-            numeric: 919,
-            alphanumeric: 557,
-            binary: 382,
-            kanji: 235
+        "H": {
+            "numeric": 919,
+            "alphanumeric": 557,
+            "binary": 382,
+            "kanji": 235
         }
     },
-    21: {
-        L: {
-            numeric: 2232,
-            alphanumeric: 1352,
-            binary: 929,
-            kanji: 572
+    "21": {
+        "L": {
+            "numeric": 2232,
+            "alphanumeric": 1352,
+            "binary": 929,
+            "kanji": 572
         },
-        M: {
-            numeric: 1708,
-            alphanumeric: 1035,
-            binary: 711,
-            kanji: 438
+        "M": {
+            "numeric": 1708,
+            "alphanumeric": 1035,
+            "binary": 711,
+            "kanji": 438
         },
-        Q: {
-            numeric: 1224,
-            alphanumeric: 742,
-            binary: 509,
-            kanji: 314
+        "Q": {
+            "numeric": 1224,
+            "alphanumeric": 742,
+            "binary": 509,
+            "kanji": 314
         },
-        H: {
-            numeric: 969,
-            alphanumeric: 587,
-            binary: 403,
-            kanji: 248
+        "H": {
+            "numeric": 969,
+            "alphanumeric": 587,
+            "binary": 403,
+            "kanji": 248
         }
     },
-    22: {
-        L: {
-            numeric: 2409,
-            alphanumeric: 1460,
-            binary: 1003,
-            kanji: 618
+    "22": {
+        "L": {
+            "numeric": 2409,
+            "alphanumeric": 1460,
+            "binary": 1003,
+            "kanji": 618
         },
-        M: {
-            numeric: 1872,
-            alphanumeric: 1134,
-            binary: 779,
-            kanji: 480
+        "M": {
+            "numeric": 1872,
+            "alphanumeric": 1134,
+            "binary": 779,
+            "kanji": 480
         },
-        Q: {
-            numeric: 1358,
-            alphanumeric: 823,
-            binary: 565,
-            kanji: 348
+        "Q": {
+            "numeric": 1358,
+            "alphanumeric": 823,
+            "binary": 565,
+            "kanji": 348
         },
-        H: {
-            numeric: 1056,
-            alphanumeric: 640,
-            binary: 439,
-            kanji: 270
+        "H": {
+            "numeric": 1056,
+            "alphanumeric": 640,
+            "binary": 439,
+            "kanji": 270
         }
     },
-    23: {
-        L: {
-            numeric: 2620,
-            alphanumeric: 1588,
-            binary: 1091,
-            kanji: 672
+    "23": {
+        "L": {
+            "numeric": 2620,
+            "alphanumeric": 1588,
+            "binary": 1091,
+            "kanji": 672
         },
-        M: {
-            numeric: 2059,
-            alphanumeric: 1248,
-            binary: 857,
-            kanji: 528
+        "M": {
+            "numeric": 2059,
+            "alphanumeric": 1248,
+            "binary": 857,
+            "kanji": 528
         },
-        Q: {
-            numeric: 1468,
-            alphanumeric: 890,
-            binary: 611,
-            kanji: 376
+        "Q": {
+            "numeric": 1468,
+            "alphanumeric": 890,
+            "binary": 611,
+            "kanji": 376
         },
-        H: {
-            numeric: 1108,
-            alphanumeric: 672,
-            binary: 461,
-            kanji: 284
+        "H": {
+            "numeric": 1108,
+            "alphanumeric": 672,
+            "binary": 461,
+            "kanji": 284
         }
     },
-    24: {
-        L: {
-            numeric: 2812,
-            alphanumeric: 1704,
-            binary: 1171,
-            kanji: 721
+    "24": {
+        "L": {
+            "numeric": 2812,
+            "alphanumeric": 1704,
+            "binary": 1171,
+            "kanji": 721
         },
-        M: {
-            numeric: 2188,
-            alphanumeric: 1326,
-            binary: 911,
-            kanji: 561
+        "M": {
+            "numeric": 2188,
+            "alphanumeric": 1326,
+            "binary": 911,
+            "kanji": 561
         },
-        Q: {
-            numeric: 1588,
-            alphanumeric: 963,
-            binary: 661,
-            kanji: 407
+        "Q": {
+            "numeric": 1588,
+            "alphanumeric": 963,
+            "binary": 661,
+            "kanji": 407
         },
-        H: {
-            numeric: 1228,
-            alphanumeric: 744,
-            binary: 511,
-            kanji: 315
+        "H": {
+            "numeric": 1228,
+            "alphanumeric": 744,
+            "binary": 511,
+            "kanji": 315
         }
     },
-    25: {
-        L: {
-            numeric: 3057,
-            alphanumeric: 1853,
-            binary: 1273,
-            kanji: 784
+    "25": {
+        "L": {
+            "numeric": 3057,
+            "alphanumeric": 1853,
+            "binary": 1273,
+            "kanji": 784
         },
-        M: {
-            numeric: 2395,
-            alphanumeric: 1451,
-            binary: 997,
-            kanji: 614
+        "M": {
+            "numeric": 2395,
+            "alphanumeric": 1451,
+            "binary": 997,
+            "kanji": 614
         },
-        Q: {
-            numeric: 1718,
-            alphanumeric: 1041,
-            binary: 715,
-            kanji: 440
+        "Q": {
+            "numeric": 1718,
+            "alphanumeric": 1041,
+            "binary": 715,
+            "kanji": 440
         },
-        H: {
-            numeric: 1286,
-            alphanumeric: 779,
-            binary: 535,
-            kanji: 330
+        "H": {
+            "numeric": 1286,
+            "alphanumeric": 779,
+            "binary": 535,
+            "kanji": 330
         }
     },
-    26: {
-        L: {
-            numeric: 3283,
-            alphanumeric: 1990,
-            binary: 1367,
-            kanji: 842
+    "26": {
+        "L": {
+            "numeric": 3283,
+            "alphanumeric": 1990,
+            "binary": 1367,
+            "kanji": 842
         },
-        M: {
-            numeric: 2544,
-            alphanumeric: 1542,
-            binary: 1059,
-            kanji: 652
+        "M": {
+            "numeric": 2544,
+            "alphanumeric": 1542,
+            "binary": 1059,
+            "kanji": 652
         },
-        Q: {
-            numeric: 1804,
-            alphanumeric: 1094,
-            binary: 751,
-            kanji: 462
+        "Q": {
+            "numeric": 1804,
+            "alphanumeric": 1094,
+            "binary": 751,
+            "kanji": 462
         },
-        H: {
-            numeric: 1425,
-            alphanumeric: 864,
-            binary: 593,
-            kanji: 365
+        "H": {
+            "numeric": 1425,
+            "alphanumeric": 864,
+            "binary": 593,
+            "kanji": 365
         }
     },
-    27: {
-        L: {
-            numeric: 3517,
-            alphanumeric: 2132,
-            binary: 1465,
-            kanji: 902
+    "27": {
+        "L": {
+            "numeric": 3517,
+            "alphanumeric": 2132,
+            "binary": 1465,
+            "kanji": 902
         },
-        M: {
-            numeric: 2701,
-            alphanumeric: 1637,
-            binary: 1125,
-            kanji: 692
+        "M": {
+            "numeric": 2701,
+            "alphanumeric": 1637,
+            "binary": 1125,
+            "kanji": 692
         },
-        Q: {
-            numeric: 1933,
-            alphanumeric: 1172,
-            binary: 805,
-            kanji: 496
+        "Q": {
+            "numeric": 1933,
+            "alphanumeric": 1172,
+            "binary": 805,
+            "kanji": 496
         },
-        H: {
-            numeric: 1501,
-            alphanumeric: 910,
-            binary: 625,
-            kanji: 385
+        "H": {
+            "numeric": 1501,
+            "alphanumeric": 910,
+            "binary": 625,
+            "kanji": 385
         }
     },
-    28: {
-        L: {
-            numeric: 3669,
-            alphanumeric: 2223,
-            binary: 1528,
-            kanji: 940
+    "28": {
+        "L": {
+            "numeric": 3669,
+            "alphanumeric": 2223,
+            "binary": 1528,
+            "kanji": 940
         },
-        M: {
-            numeric: 2857,
-            alphanumeric: 1732,
-            binary: 1190,
-            kanji: 732
+        "M": {
+            "numeric": 2857,
+            "alphanumeric": 1732,
+            "binary": 1190,
+            "kanji": 732
         },
-        Q: {
-            numeric: 2085,
-            alphanumeric: 1263,
-            binary: 868,
-            kanji: 534
+        "Q": {
+            "numeric": 2085,
+            "alphanumeric": 1263,
+            "binary": 868,
+            "kanji": 534
         },
-        H: {
-            numeric: 1581,
-            alphanumeric: 958,
-            binary: 658,
-            kanji: 405
+        "H": {
+            "numeric": 1581,
+            "alphanumeric": 958,
+            "binary": 658,
+            "kanji": 405
         }
     },
-    29: {
-        L: {
-            numeric: 3909,
-            alphanumeric: 2369,
-            binary: 1628,
-            kanji: 1002
+    "29": {
+        "L": {
+            "numeric": 3909,
+            "alphanumeric": 2369,
+            "binary": 1628,
+            "kanji": 1002
         },
-        M: {
-            numeric: 3035,
-            alphanumeric: 1839,
-            binary: 1264,
-            kanji: 778
+        "M": {
+            "numeric": 3035,
+            "alphanumeric": 1839,
+            "binary": 1264,
+            "kanji": 778
         },
-        Q: {
-            numeric: 2181,
-            alphanumeric: 1322,
-            binary: 908,
-            kanji: 559
+        "Q": {
+            "numeric": 2181,
+            "alphanumeric": 1322,
+            "binary": 908,
+            "kanji": 559
         },
-        H: {
-            numeric: 1677,
-            alphanumeric: 1016,
-            binary: 698,
-            kanji: 430
+        "H": {
+            "numeric": 1677,
+            "alphanumeric": 1016,
+            "binary": 698,
+            "kanji": 430
         }
     },
-    30: {
-        L: {
-            numeric: 4158,
-            alphanumeric: 2520,
-            binary: 1732,
-            kanji: 1066
+    "30": {
+        "L": {
+            "numeric": 4158,
+            "alphanumeric": 2520,
+            "binary": 1732,
+            "kanji": 1066
         },
-        M: {
-            numeric: 3289,
-            alphanumeric: 1994,
-            binary: 1370,
-            kanji: 843
+        "M": {
+            "numeric": 3289,
+            "alphanumeric": 1994,
+            "binary": 1370,
+            "kanji": 843
         },
-        Q: {
-            numeric: 2358,
-            alphanumeric: 1429,
-            binary: 982,
-            kanji: 604
+        "Q": {
+            "numeric": 2358,
+            "alphanumeric": 1429,
+            "binary": 982,
+            "kanji": 604
         },
-        H: {
-            numeric: 1782,
-            alphanumeric: 1080,
-            binary: 742,
-            kanji: 457
+        "H": {
+            "numeric": 1782,
+            "alphanumeric": 1080,
+            "binary": 742,
+            "kanji": 457
         }
     },
-    31: {
-        L: {
-            numeric: 4417,
-            alphanumeric: 2677,
-            binary: 1840,
-            kanji: 1132
+    "31": {
+        "L": {
+            "numeric": 4417,
+            "alphanumeric": 2677,
+            "binary": 1840,
+            "kanji": 1132
         },
-        M: {
-            numeric: 3486,
-            alphanumeric: 2113,
-            binary: 1452,
-            kanji: 894
+        "M": {
+            "numeric": 3486,
+            "alphanumeric": 2113,
+            "binary": 1452,
+            "kanji": 894
         },
-        Q: {
-            numeric: 2473,
-            alphanumeric: 1499,
-            binary: 1030,
-            kanji: 634
+        "Q": {
+            "numeric": 2473,
+            "alphanumeric": 1499,
+            "binary": 1030,
+            "kanji": 634
         },
-        H: {
-            numeric: 1897,
-            alphanumeric: 1150,
-            binary: 790,
-            kanji: 486
+        "H": {
+            "numeric": 1897,
+            "alphanumeric": 1150,
+            "binary": 790,
+            "kanji": 486
         }
     },
-    32: {
-        L: {
-            numeric: 4686,
-            alphanumeric: 2840,
-            binary: 1952,
-            kanji: 1201
+    "32": {
+        "L": {
+            "numeric": 4686,
+            "alphanumeric": 2840,
+            "binary": 1952,
+            "kanji": 1201
         },
-        M: {
-            numeric: 3693,
-            alphanumeric: 2238,
-            binary: 1538,
-            kanji: 947
+        "M": {
+            "numeric": 3693,
+            "alphanumeric": 2238,
+            "binary": 1538,
+            "kanji": 947
         },
-        Q: {
-            numeric: 2670,
-            alphanumeric: 1618,
-            binary: 1112,
-            kanji: 684
+        "Q": {
+            "numeric": 2670,
+            "alphanumeric": 1618,
+            "binary": 1112,
+            "kanji": 684
         },
-        H: {
-            numeric: 2022,
-            alphanumeric: 1226,
-            binary: 842,
-            kanji: 518
+        "H": {
+            "numeric": 2022,
+            "alphanumeric": 1226,
+            "binary": 842,
+            "kanji": 518
         }
     },
-    33: {
-        L: {
-            numeric: 4965,
-            alphanumeric: 3009,
-            binary: 2068,
-            kanji: 1273
+    "33": {
+        "L": {
+            "numeric": 4965,
+            "alphanumeric": 3009,
+            "binary": 2068,
+            "kanji": 1273
         },
-        M: {
-            numeric: 3909,
-            alphanumeric: 2369,
-            binary: 1628,
-            kanji: 1002
+        "M": {
+            "numeric": 3909,
+            "alphanumeric": 2369,
+            "binary": 1628,
+            "kanji": 1002
         },
-        Q: {
-            numeric: 2805,
-            alphanumeric: 1700,
-            binary: 1168,
-            kanji: 719
+        "Q": {
+            "numeric": 2805,
+            "alphanumeric": 1700,
+            "binary": 1168,
+            "kanji": 719
         },
-        H: {
-            numeric: 2157,
-            alphanumeric: 1307,
-            binary: 898,
-            kanji: 553
+        "H": {
+            "numeric": 2157,
+            "alphanumeric": 1307,
+            "binary": 898,
+            "kanji": 553
         }
     },
-    34: {
-        L: {
-            numeric: 5253,
-            alphanumeric: 3183,
-            binary: 2188,
-            kanji: 1347
+    "34": {
+        "L": {
+            "numeric": 5253,
+            "alphanumeric": 3183,
+            "binary": 2188,
+            "kanji": 1347
         },
-        M: {
-            numeric: 4134,
-            alphanumeric: 2506,
-            binary: 1722,
-            kanji: 1060
+        "M": {
+            "numeric": 4134,
+            "alphanumeric": 2506,
+            "binary": 1722,
+            "kanji": 1060
         },
-        Q: {
-            numeric: 2949,
-            alphanumeric: 1787,
-            binary: 1228,
-            kanji: 756
+        "Q": {
+            "numeric": 2949,
+            "alphanumeric": 1787,
+            "binary": 1228,
+            "kanji": 756
         },
-        H: {
-            numeric: 2301,
-            alphanumeric: 1394,
-            binary: 958,
-            kanji: 590
+        "H": {
+            "numeric": 2301,
+            "alphanumeric": 1394,
+            "binary": 958,
+            "kanji": 590
         }
     },
-    35: {
-        L: {
-            numeric: 5529,
-            alphanumeric: 3351,
-            binary: 2303,
-            kanji: 1417
+    "35": {
+        "L": {
+            "numeric": 5529,
+            "alphanumeric": 3351,
+            "binary": 2303,
+            "kanji": 1417
         },
-        M: {
-            numeric: 4343,
-            alphanumeric: 2632,
-            binary: 1809,
-            kanji: 1113
+        "M": {
+            "numeric": 4343,
+            "alphanumeric": 2632,
+            "binary": 1809,
+            "kanji": 1113
         },
-        Q: {
-            numeric: 3081,
-            alphanumeric: 1867,
-            binary: 1283,
-            kanji: 790
+        "Q": {
+            "numeric": 3081,
+            "alphanumeric": 1867,
+            "binary": 1283,
+            "kanji": 790
         },
-        H: {
-            numeric: 2361,
-            alphanumeric: 1431,
-            binary: 983,
-            kanji: 605
+        "H": {
+            "numeric": 2361,
+            "alphanumeric": 1431,
+            "binary": 983,
+            "kanji": 605
         }
     },
-    36: {
-        L: {
-            numeric: 5836,
-            alphanumeric: 3537,
-            binary: 2431,
-            kanji: 1496
+    "36": {
+        "L": {
+            "numeric": 5836,
+            "alphanumeric": 3537,
+            "binary": 2431,
+            "kanji": 1496
         },
-        M: {
-            numeric: 4588,
-            alphanumeric: 2780,
-            binary: 1911,
-            kanji: 1176
+        "M": {
+            "numeric": 4588,
+            "alphanumeric": 2780,
+            "binary": 1911,
+            "kanji": 1176
         },
-        Q: {
-            numeric: 3244,
-            alphanumeric: 1966,
-            binary: 1351,
-            kanji: 832
+        "Q": {
+            "numeric": 3244,
+            "alphanumeric": 1966,
+            "binary": 1351,
+            "kanji": 832
         },
-        H: {
-            numeric: 2524,
-            alphanumeric: 1530,
-            binary: 1051,
-            kanji: 647
+        "H": {
+            "numeric": 2524,
+            "alphanumeric": 1530,
+            "binary": 1051,
+            "kanji": 647
         }
     },
-    37: {
-        L: {
-            numeric: 6153,
-            alphanumeric: 3729,
-            binary: 2563,
-            kanji: 1577
+    "37": {
+        "L": {
+            "numeric": 6153,
+            "alphanumeric": 3729,
+            "binary": 2563,
+            "kanji": 1577
         },
-        M: {
-            numeric: 4775,
-            alphanumeric: 2894,
-            binary: 1989,
-            kanji: 1224
+        "M": {
+            "numeric": 4775,
+            "alphanumeric": 2894,
+            "binary": 1989,
+            "kanji": 1224
         },
-        Q: {
-            numeric: 3417,
-            alphanumeric: 2071,
-            binary: 1423,
-            kanji: 876
+        "Q": {
+            "numeric": 3417,
+            "alphanumeric": 2071,
+            "binary": 1423,
+            "kanji": 876
         },
-        H: {
-            numeric: 2625,
-            alphanumeric: 1591,
-            binary: 1093,
-            kanji: 673
+        "H": {
+            "numeric": 2625,
+            "alphanumeric": 1591,
+            "binary": 1093,
+            "kanji": 673
         }
     },
-    38: {
-        L: {
-            numeric: 6479,
-            alphanumeric: 3927,
-            binary: 2699,
-            kanji: 1661
+    "38": {
+        "L": {
+            "numeric": 6479,
+            "alphanumeric": 3927,
+            "binary": 2699,
+            "kanji": 1661
         },
-        M: {
-            numeric: 5039,
-            alphanumeric: 3054,
-            binary: 2099,
-            kanji: 1292
+        "M": {
+            "numeric": 5039,
+            "alphanumeric": 3054,
+            "binary": 2099,
+            "kanji": 1292
         },
-        Q: {
-            numeric: 3599,
-            alphanumeric: 2181,
-            binary: 1499,
-            kanji: 923
+        "Q": {
+            "numeric": 3599,
+            "alphanumeric": 2181,
+            "binary": 1499,
+            "kanji": 923
         },
-        H: {
-            numeric: 2735,
-            alphanumeric: 1658,
-            binary: 1139,
-            kanji: 701
+        "H": {
+            "numeric": 2735,
+            "alphanumeric": 1658,
+            "binary": 1139,
+            "kanji": 701
         }
     },
-    39: {
-        L: {
-            numeric: 6743,
-            alphanumeric: 4087,
-            binary: 2809,
-            kanji: 1729
+    "39": {
+        "L": {
+            "numeric": 6743,
+            "alphanumeric": 4087,
+            "binary": 2809,
+            "kanji": 1729
         },
-        M: {
-            numeric: 5313,
-            alphanumeric: 3220,
-            binary: 2213,
-            kanji: 1362
+        "M": {
+            "numeric": 5313,
+            "alphanumeric": 3220,
+            "binary": 2213,
+            "kanji": 1362
         },
-        Q: {
-            numeric: 3791,
-            alphanumeric: 2298,
-            binary: 1579,
-            kanji: 972
+        "Q": {
+            "numeric": 3791,
+            "alphanumeric": 2298,
+            "binary": 1579,
+            "kanji": 972
         },
-        H: {
-            numeric: 2927,
-            alphanumeric: 1774,
-            binary: 1219,
-            kanji: 750
+        "H": {
+            "numeric": 2927,
+            "alphanumeric": 1774,
+            "binary": 1219,
+            "kanji": 750
         }
     },
-    40: {
-        L: {
-            numeric: 7089,
-            alphanumeric: 4296,
-            binary: 2953,
-            kanji: 1817
+    "40": {
+        "L": {
+            "numeric": 7089,
+            "alphanumeric": 4296,
+            "binary": 2953,
+            "kanji": 1817
         },
-        M: {
-            numeric: 5596,
-            alphanumeric: 3391,
-            binary: 2331,
-            kanji: 1435
+        "M": {
+            "numeric": 5596,
+            "alphanumeric": 3391,
+            "binary": 2331,
+            "kanji": 1435
         },
-        Q: {
-            numeric: 3993,
-            alphanumeric: 2420,
-            binary: 1663,
-            kanji: 1024
+        "Q": {
+            "numeric": 3993,
+            "alphanumeric": 2420,
+            "binary": 1663,
+            "kanji": 1024
         },
-        H: {
-            numeric: 3057,
-            alphanumeric: 1852,
-            binary: 1273,
-            kanji: 784
+        "H": {
+            "numeric": 3057,
+            "alphanumeric": 1852,
+            "binary": 1273,
+            "kanji": 784
         }
     }
 };

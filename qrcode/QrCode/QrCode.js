@@ -1,20 +1,20 @@
 var QrCode = function (message, ecLevel, version, mode, mask) {
 
+    message = message || 'QRCODE';
+
     if (typeof mask === 'undefined' || isNaN(mask)) {
         mask = null;
     }
 
     this.encode = function () {
+        this.encodeData();
 
         this.setFinderPatterns();
         this.setSeparators();
         this.setTimingPatterns();
         this.setDarkModule();
         this.setAlignmentPatterns();
-
         this.setReservedAreas();
-
-        this.encodeData(false);
         this.setDataArea();
 
         if (mask !== null && mask >= 0) {
@@ -38,11 +38,11 @@ var QrCode = function (message, ecLevel, version, mode, mask) {
 
             mask = this.evaluation[tempres[0]];
 
-            console.log(tempres);
-            console.log(this.evaluation.toSource());
+//            console.log(tempres);
+//            console.log(this.evaluation.toSource());
 
             mask = parseInt(mask);
-            console.log(['MASK APPLIED AUTOMATICALLY', mask]);
+//            console.log(['MASK APPLIED AUTOMATICALLY', mask]);
             this.applyMask(mask, true);
             this.setFormatInformationArea();
             this.setVersionInformationArea();
@@ -162,18 +162,12 @@ var QrCode = function (message, ecLevel, version, mode, mask) {
         return this.eval.evaluate(data);
     };
 
-    this.encodeData = function (skipEcc) {
-
-        skipEcc = skipEcc || false;
-
+    this.encodeData = function () {
         this.data = this.encoder.encode(this.message, this.getVersion(), this.getMode(), this.getEccLevel());
-
-        if (skipEcc === true) {
-            return this.data;
-        }
 
         var numberOfEcCodewords = parseInt(this.config.dataSizeInfo['' + this.getVersion() + '-' + this.getEccLevel()][1]);
         var ecc = this.ec.getCode(this.data, numberOfEcCodewords);
+
         this.data = this.data.concat(ecc);
     };
 
