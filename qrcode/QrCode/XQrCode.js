@@ -1,4 +1,4 @@
-var QrCode = function (message, ecLevel, version, mode, mask) {
+var XQrCode = function (message, ecLevel, version, mode, mask) {
 
     message = message || 'QRCODE';
 

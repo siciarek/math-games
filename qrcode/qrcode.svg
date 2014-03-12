@@ -9,7 +9,7 @@
     <script type="text/ecmascript" xlink:href="QrCode/Tiler.js"/>
     <script type="text/ecmascript" xlink:href="QrCode/Evaluation.js"/>
     <script type="text/ecmascript" xlink:href="QrCode/ErrorCorrection.js"/>
-    <script type="text/ecmascript" xlink:href="QrCode/QrCode.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/XQrCode.js"/>
 
     <script type="text/ecmascript" xlink:href="request.js"/>
     <script type="text/ecmascript" xlink:href="svg-graphics.js"/>
