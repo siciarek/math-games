@@ -57,6 +57,7 @@ test('Data Analyzer Test', function () {
 
     while (dataAnalyzerDataProvider.length > 0) {
         var test = dataAnalyzerDataProvider.shift();
+        test.expected['data'] = test.message;
         var actual = analyzer.analyze(test.message);
         deepEqual(actual, test.expected, [test.expected.mode, test.message].toString());
     }

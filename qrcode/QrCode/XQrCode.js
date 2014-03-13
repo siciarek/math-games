@@ -165,8 +165,7 @@ var XQrCode = function (message, ecLevel, version, mode, mask) {
     this.encodeData = function () {
         this.data = this.encoder.encode(this.message, this.getVersion(), this.getMode(), this.getEccLevel());
 
-        var numberOfEcCodewords = parseInt(this.config.dataSizeInfo['' + this.getVersion() + '-' + this.getEccLevel()][1]);
-        var ecc = this.ec.getCode(this.data, numberOfEcCodewords);
+        var ecc = this.ec.getCode(this.data, this.getVersion(), this.getEccLevel());
 
         this.data = this.data.concat(ecc);
     };

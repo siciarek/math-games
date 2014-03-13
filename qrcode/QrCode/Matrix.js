@@ -10,21 +10,22 @@ var Matrix = function (version) {
     this.DATA_LIGHT_MODULE = 0;
     this.DATA_DARK_MODULE = 1;
 
+    this.MASK_UNDEFINED_MODULE = 15;
     this.MASK_POSITION_DETECTION_PATTERN = 101;
     this.MASK_SEPARATOR = 102;
     this.MASK_TOP_TIMER = 103;
     this.MASK_LEFT_TIMER = 104;
-    this.MASK_ALIGNMENT = 105;
+    this.MASK_ALIGNMENT_PATTERN = 105;
     this.MASK_FIXED_DARK_MODULE = 106;
 
     this.MASK_FORMAT_INFORMATION = 201;
     this.MASK_VERSION_INFORMATION = 202;
     this.MASK_DATA = 255;
 
-    this.version = version;
+    this.version = parseInt(version);
     this.size = (((this.version - 1) * 4) + 21);
     this.data = this.allocate(this.size, this.DATA_UNDEFINED_MODULE);
-    this.mask = this.allocate(this.size, this.MASK_DATA);
+    this.mask = this.allocate(this.size, this.MASK_UNDEFINED_MODULE);
 };
 
 Matrix.prototype.constructor = Matrix;
@@ -147,7 +148,11 @@ Matrix.prototype.setReservedAreas = function () {
 
 Matrix.prototype.setFormatInformationArea = function (reserve, formatInformationString) {
 
-    reserve = !(typeof reserve === 'undefined' || reserve == false);
+    reserve = !(typeof reserve === 'undefined' || reserve === false);
+
+    if(reserve === true) {
+        formatInformationString = this.config.getFormatString();
+    }
 
     var formatInformation = formatInformationString.split('').map(function (e) {
         return parseInt(e);
@@ -320,23 +325,23 @@ Matrix.prototype.setAlignmentPattern = function (cx, cy) {
     var x, y, i, offset;
 
     // CENTER:
-    this.setDarkModule(cx, cy, this.ALIGNMENT);
+    this.setDarkModule(cx, cy, this.MASK_ALIGNMENT_PATTERN);
 
     offset = 1;
 
     for (x = cx - offset; x <= cx + offset; x++) {
         y = cy - offset;
-        this.setLightModule(x, y, this.ALIGNMENT);
+        this.setLightModule(x, y, this.MASK_ALIGNMENT_PATTERN);
         y = cy + offset;
-        this.setLightModule(x, y, this.ALIGNMENT);
+        this.setLightModule(x, y, this.MASK_ALIGNMENT_PATTERN);
     }
 
     for (i = cy - offset; i <= cy + offset; i++) {
         y = i;
         x = cx - offset;
-        this.setLightModule(x, y, this.ALIGNMENT);
+        this.setLightModule(x, y, this.MASK_ALIGNMENT_PATTERN);
         x = cx + offset;
-        this.setLightModule(x, y, this.ALIGNMENT);
+        this.setLightModule(x, y, this.MASK_ALIGNMENT_PATTERN);
     }
 
     offset = 2;
@@ -344,17 +349,17 @@ Matrix.prototype.setAlignmentPattern = function (cx, cy) {
     for (i = cx - offset; i <= cx + offset; i++) {
         x = i;
         y = cy - offset;
-        this.setDarkModule(x, y, this.ALIGNMENT);
+        this.setDarkModule(x, y, this.MASK_ALIGNMENT_PATTERN);
         y = cy + offset;
-        this.setDarkModule(x, y, this.ALIGNMENT);
+        this.setDarkModule(x, y, this.MASK_ALIGNMENT_PATTERN);
     }
 
     for (i = cy - offset; i <= cy + offset; i++) {
         y = i;
         x = cx - offset;
-        this.setDarkModule(x, y, this.ALIGNMENT);
+        this.setDarkModule(x, y, this.MASK_ALIGNMENT_PATTERN);
         x = cx + offset;
-        this.setDarkModule(x, y, this.ALIGNMENT);
+        this.setDarkModule(x, y, this.MASK_ALIGNMENT_PATTERN);
     }
 };
 

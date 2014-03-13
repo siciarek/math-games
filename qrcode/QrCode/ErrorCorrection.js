@@ -5,7 +5,9 @@ var ErrorCorrection = function () {
 
 ErrorCorrection.prototype.constructor = ErrorCorrection;
 
-ErrorCorrection.prototype.getCode = function (data, numberOfEcCodewords) {
+ErrorCorrection.prototype.getCode = function (data, version, eclevel) {
+
+    var numberOfEcCodewords = parseInt(this.config.dataSizeInfo['' + version + '-' + eclevel][1]);
 
     var genpn = this.gen.polynominal(numberOfEcCodewords);
     var result = [];

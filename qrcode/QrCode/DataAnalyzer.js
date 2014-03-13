@@ -2,11 +2,11 @@ var DataAnalyzer = function () {
     this.config = new Config();
     this.encoder = new DataEncoder();
     this.modes = {
-        numeric: function (message, self) {
-            return message.match(/^\d+$/) !== null;
+        numeric: function (data, self) {
+            return data.match(/^\d+$/) !== null;
         },
-        alphanumeric: function (message, self) {
-            var chars = message.split('').sort().filter(function (el, i, a) {
+        alphanumeric: function (data, self) {
+            var chars = data.split('').sort().filter(function (el, i, a) {
                 return (i == a.indexOf(el) && el.length > 0)
             });
 
@@ -23,12 +23,13 @@ var DataAnalyzer = function () {
 
 DataAnalyzer.prototype.constructor = DataAnalyzer;
 
-DataAnalyzer.prototype.analyze = function (message, eclevels) {
+DataAnalyzer.prototype.analyze = function (data, eclevels) {
 
-    message = message || 'QRCODE';
+    data = data || 'QRCODE';
     eclevels = eclevels || ['H', 'Q', 'M', 'L'];
 
     var result = {
+        data: data,
         mode: 'binary',
         eclevel: null,
         version: 2
@@ -36,7 +37,7 @@ DataAnalyzer.prototype.analyze = function (message, eclevels) {
 
     for (var mode in this.modes) {
         if (this.modes.hasOwnProperty(mode)) {
-            var matches = this.modes[mode](message, this);
+            var matches = this.modes[mode](data, this);
             if (matches) {
                 result.mode = mode;
                 break;
@@ -49,7 +50,7 @@ DataAnalyzer.prototype.analyze = function (message, eclevels) {
             for (var c = 0; c < eclevels.length; c++) {
                 var eclevel = eclevels[c];
 
-                if (message.length <= this.config.characterCapacities[version][eclevel][result.mode]) {
+                if (data.length <= this.config.characterCapacities[version][eclevel][result.mode]) {
                     result.eclevel = eclevel;
                     result.version = parseInt(version);
                     break;
