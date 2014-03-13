@@ -5,7 +5,6 @@ test('Tiler Test', function () {
     while(tilerDataProvider.length > 0) {
         test = tilerDataProvider.shift();
 
-
         var analyzer = new DataAnalyzer();
         var encoder = new DataEncoder();
         var errcorrection = new ErrorCorrection();
