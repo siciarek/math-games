@@ -3,6 +3,7 @@ test('Matrix Test', function () {
 
     // Check for every available version:
     for (var version in matrixDataProvider) {
+
         if (matrixDataProvider.hasOwnProperty(version)) {
             matrix = new Matrix(version);
             actual = matrix.getSize();
@@ -46,8 +47,8 @@ test('Matrix Test', function () {
             message = 'Static Area V: ' + version;
             deepEqual(actual, expected, message);
 
-
-            matrix.setVersionInformationArea();
+            var versionInformationString = matrix.config.getVersionInformationString(version);
+            matrix.setVersionInformationArea(versionInformationString);
             actual = matrix.getData();
             expected = matrixDataProvider[version]['versioned'];
             message = 'Static Area + Version Information V: ' + version;

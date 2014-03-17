@@ -8,6 +8,6 @@ test('Evaluation Test', function () {
         expected = test.result;
         actual = evaluation.rules[test.rule](test.data);
 
-        deepEqual(actual, expected, ['Rule ' + test.rule].toString());
+        deepEqual(actual, expected, ['Evaluation Rule #' + test.rule].toString());
     }
 });
