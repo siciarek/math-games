@@ -52,13 +52,24 @@ var dataAnalyzerDataProvider = [
     }
 ];
 
-test('Data Analyzer Test', function () {
+test('Data Analyzer Test (mode)', function () {
     var analyzer = new DataAnalyzer();
+    var expected, actual, test;
+
+    while (capacitiesDataProvider.length > 0) {
+        var expected = capacitiesDataProvider.shift();
+        var actual = analyzer.analyze(expected.data, [expected.eclevel]);
+        deepEqual(actual, expected, ['CAPACITY', expected.capacity, expected.data].toString());
+    }
 
     while (dataAnalyzerDataProvider.length > 0) {
-        var test = dataAnalyzerDataProvider.shift();
+        test = dataAnalyzerDataProvider.shift();
         test.expected['data'] = test.message;
-        var actual = analyzer.analyze(test.message);
-        deepEqual(actual, test.expected, [test.expected.mode, test.message].toString());
+
+        expected = test.expected;
+        actual = analyzer.analyze(test.message);
+        delete(actual.capacity);
+
+        deepEqual(actual, expected, ['MODE', test.expected.mode, test.message].toString());
     }
 });

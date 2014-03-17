@@ -39,6 +39,7 @@ DataAnalyzer.prototype.analyze = function (data, eclevels) {
         data: data,
         mode: 'binary',
         eclevel: null,
+        capacity: 0,
         version: 2
     };
 
@@ -59,17 +60,20 @@ DataAnalyzer.prototype.analyze = function (data, eclevels) {
         }
 
         if (this.config.characterCapacities.hasOwnProperty(version)) {
+
             for (var c = 0; c < eclevels.length; c++) {
                 var eclevel = eclevels[c];
+                var capacity = this.config.characterCapacities[version][eclevel][result.mode];
 
-                if (data.length <= this.config.characterCapacities[version][eclevel][result.mode]) {
+                if (data.length <= capacity) {
+                    result.capacity = capacity;
                     result.eclevel = eclevel;
                     result.version = parseInt(version);
                     break;
                 }
             }
 
-            if (result.eclevel !== null) {
+            if (result.capacity > 0) {
                 break;
             }
         }
