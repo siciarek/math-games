@@ -1,6 +1,10 @@
-var DataAnalyzer = function () {
+var DataAnalyzer = function (version) {
     this.config = new Config();
     this.encoder = new DataEncoder();
+    this.version = version || null;
+    this.version = parseInt(this.version);
+    this.version = isNaN(this.version) ? null : parseInt(this.version);
+
     this.modes = {
         numeric: function (data, self) {
             return data.match(/^\d+$/) !== null;
@@ -17,6 +21,9 @@ var DataAnalyzer = function () {
             }
 
             return true;
+        },
+        kanji: function (data, self) {
+            return false; // TODO: implement
         }
     };
 };
@@ -46,6 +53,11 @@ DataAnalyzer.prototype.analyze = function (data, eclevels) {
     }
 
     for (var version in this.config.characterCapacities) {
+
+        if(this.version !== null && parseInt(version) !== this.version) {
+            continue;
+        }
+
         if (this.config.characterCapacities.hasOwnProperty(version)) {
             for (var c = 0; c < eclevels.length; c++) {
                 var eclevel = eclevels[c];
@@ -57,7 +69,7 @@ DataAnalyzer.prototype.analyze = function (data, eclevels) {
                 }
             }
 
-            if(result.eclevel !== null) {
+            if (result.eclevel !== null) {
                 break;
             }
         }

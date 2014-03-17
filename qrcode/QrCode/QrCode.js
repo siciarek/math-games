@@ -3,25 +3,30 @@
  *
  * @param data raw data, default 'QRCODE'
  * @param ecstrategy error correction strategy, default ['M']
- * @param pattern mask pattern, default from evaluator
+ * @param maskPattern force mask pattern, default null
  * @constructor
  */
-var QrCode = function (data, ecstrategy) {
+var QrCode = function (data, ecstrategy, maskPattern, version) {
 
     data = data || 'QRCODE';
     ecstrategy = ecstrategy || ['M'];
+    maskPattern = maskPattern || null;
+    version = version || null;
 
-    var analyzer = new DataAnalyzer();
+    this.info = {};
+
+    var analyzer = new DataAnalyzer(version);
+    this.info = analyzer.analyze(data, ecstrategy);
+
     var encoder = new DataEncoder();
     var errcorrection = new ErrorCorrection();
     var tiler, evaluator, mask;
     var formatString, versionInformationString;
 
-    var info = analyzer.analyze(data, ecstrategy);
-    var encdata = encoder.encode(info.data, info.version, info.mode, info.eclevel);
-    var ecc = errcorrection.getCode(encdata, info.version, info.eclevel);
+    var encdata = encoder.encode(this.info.data, this.info.version, this.info.mode, this.info.eclevel);
+    var ecc = errcorrection.getCode(encdata, this.info.version, this.info.eclevel);
 
-    this.matrix = new Matrix(info.version, info.eclevel);
+    this.matrix = new Matrix(this.info.version, this.info.eclevel);
     this.matrix.setStaticAreas();
     this.matrix.setReservedAreas();
 
@@ -29,26 +34,36 @@ var QrCode = function (data, ecstrategy) {
     tiler.setArea(encdata, ecc);
 
     mask = new Mask(this.matrix);
-    var results = [];
-    var evaluations = {};
-    var temp = [];
+
     var pattern = 0;
 
-    for(pattern = 0; pattern < 8; pattern++) {
-        var maskinfo = mask.apply(pattern);
-        results.push(maskinfo.evaluation.total);
-        evaluations[results[pattern]] = pattern;
+    if (maskPattern === null) {
+        var results = [];
+        var evaluations = {};
+        var temp = [];
+
+        for (pattern = 0; pattern < 8; pattern++) {
+            var maskinfo = mask.apply(pattern);
+            results.push(maskinfo.evaluation.total);
+            evaluations[results[pattern]] = pattern;
+        }
+
+        results = results.sort();
+        pattern = evaluations[results[0]];
+    }
+    else {
+        pattern = parseInt(maskPattern);
+        pattern = isNaN(pattern) ? 0 : pattern;
     }
 
-    results = results.sort();
-    pattern = evaluations[results[0]];
+    this.info['pattern'] = pattern;
 
-    maskinfo = mask.apply(pattern);
+    maskinfo = mask.apply(pattern, this.matrix.data);
     this.matrix.data = maskinfo.data;
+};
 
-    info['pattern'] = pattern;
-
-    console.log(info);
+QrCode.prototype.getInfo = function () {
+    return this.info;
 };
 
 QrCode.prototype.getData = function () {

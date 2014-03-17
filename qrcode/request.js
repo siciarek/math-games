@@ -22,5 +22,6 @@ Request.prototype.getParams = function () {
             params[pair[0]] = (pair[1] !== 'undefined') ? pair[1] : true;
         });
     }
+
     return params;
 };

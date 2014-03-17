@@ -1,11 +1,13 @@
-var request = new Request();
-
 var data = 'HELLO WORLD';
 var ecstrategy = ['Q'];
-var pattern = null;
+var maskPattern = null;
+var version = null;
+var qrcode = null;
+
+var request = new Request();
 
 if (request.params.hasOwnProperty('mask')) {
-    pattern = request.params['mask'];
+    maskPattern = request.params['mask'];
 }
 
 if (request.params.hasOwnProperty('data')) {
@@ -16,10 +18,22 @@ if (request.params.hasOwnProperty('ec')) {
     ecstrategy = [request.params['ec']];
 }
 
-// v: 7
-//message = "It is a long established fact that a reader will be distracted by the readable content of a page when looking.";
+if (request.params.hasOwnProperty('v')) {
+    version =  request.params['v'];
+}
 
-var qrcode = new QrCode(data, ecstrategy, pattern);
+// v: 7
+// data = "It is a long established fact that a reader will be distracted by the readable content of a page when looking.";
+
+
+if(Object.keys(request.params).length) {
+    qrcode = new QrCode(data, ecstrategy, maskPattern, version);
+}
+else {
+    qrcode = new QrCode(data);
+}
+
+console.log(['INFO', qrcode.getInfo()]);
 
 function drawQrCode(code, blocksize, quietZoneSize) {
 
