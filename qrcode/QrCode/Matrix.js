@@ -1,4 +1,4 @@
-var Matrix = function (version) {
+var Matrix = function (version, eclevel) {
 
     this.config = new Config();
 
@@ -23,6 +23,7 @@ var Matrix = function (version) {
     this.MASK_DATA = 255;
 
     this.version = parseInt(version);
+    this.eclevel = eclevel;
     this.size = (((this.version - 1) * 4) + 21);
     this.data = this.allocate(this.size, this.DATA_UNDEFINED_MODULE);
     this.mask = this.allocate(this.size, this.MASK_UNDEFINED_MODULE);
@@ -142,17 +143,19 @@ Matrix.prototype.setAlignmentPatterns = function () {
 };
 
 Matrix.prototype.setReservedAreas = function () {
-    this.setFormatInformationArea(true);
-    this.setVersionInformationArea(true);
+    this.setFormatInformationArea();
+    this.setVersionInformationArea();
 };
 
-Matrix.prototype.setFormatInformationArea = function (reserve, formatInformationString) {
+Matrix.prototype.setFormatInformationArea = function (formatInformationString, data) {
 
-    reserve = !(typeof reserve === 'undefined' || reserve === false);
+    /**
+     * If no format information string is given, reserve area (fill with light modules)
+     * @type {*|string}
+     */
+    formatInformationString = formatInformationString || '000000000000000';
 
-    if(reserve === true) {
-        formatInformationString = this.config.getFormatString();
-    }
+    data = data || this.data;
 
     var formatInformation = formatInformationString.split('').map(function (e) {
         return parseInt(e);
@@ -169,7 +172,6 @@ Matrix.prototype.setFormatInformationArea = function (reserve, formatInformation
 
     while (formatInformation.length > 0) {
         val = formatInformation.shift();
-        val = reserve === false ? val : 0;
         bits[0].push(val);
         bits[1].push(val);
     }
@@ -180,10 +182,10 @@ Matrix.prototype.setFormatInformationArea = function (reserve, formatInformation
     for (; y < 8; y++) {
         if (y !== 6) {
             if (bits[0].pop() === 1) {
-                this.setDarkModule(x, y, this.MASK_FORMAT_INFORMATION);
+                this.setDarkModule(x, y, this.MASK_FORMAT_INFORMATION, data);
             }
             else {
-                this.setLightModule(x, y, this.MASK_FORMAT_INFORMATION);
+                this.setLightModule(x, y, this.MASK_FORMAT_INFORMATION, data);
             }
         }
     }
@@ -194,10 +196,10 @@ Matrix.prototype.setFormatInformationArea = function (reserve, formatInformation
     for (; x >= 0; x--) {
         if (x !== 6) {
             if (bits[0].pop() === 1) {
-                this.setDarkModule(x, y, this.MASK_FORMAT_INFORMATION);
+                this.setDarkModule(x, y, this.MASK_FORMAT_INFORMATION, data);
             }
             else {
-                this.setLightModule(x, y, this.MASK_FORMAT_INFORMATION);
+                this.setLightModule(x, y, this.MASK_FORMAT_INFORMATION, data);
             }
         }
     }
@@ -207,10 +209,10 @@ Matrix.prototype.setFormatInformationArea = function (reserve, formatInformation
     y = 8;
     for (; x >= this.size - 8; x--) {
         if (bits[1].pop() === 1) {
-            this.setDarkModule(x, y, this.MASK_FORMAT_INFORMATION);
+            this.setDarkModule(x, y, this.MASK_FORMAT_INFORMATION, data);
         }
         else {
-            this.setLightModule(x, y, this.MASK_FORMAT_INFORMATION);
+            this.setLightModule(x, y, this.MASK_FORMAT_INFORMATION, data);
         }
     }
 
@@ -219,23 +221,27 @@ Matrix.prototype.setFormatInformationArea = function (reserve, formatInformation
     y = (4 * this.version) + 9 + 1;
     for (; y < this.size; y++) {
         if (bits[1].pop() === 1) {
-            this.setDarkModule(x, y, this.MASK_FORMAT_INFORMATION);
+            this.setDarkModule(x, y, this.MASK_FORMAT_INFORMATION, data);
         }
         else {
-            this.setLightModule(x, y, this.MASK_FORMAT_INFORMATION);
+            this.setLightModule(x, y, this.MASK_FORMAT_INFORMATION, data);
         }
     }
 };
 
-Matrix.prototype.setVersionInformationArea = function (reserve) {
+Matrix.prototype.setVersionInformationArea = function (versionInformationString, data) {
 
-    if (this.version < 7) {
+    if(this.version < 7) {
         return false;
     }
 
-    reserve = !(typeof reserve === 'undefined' || reserve == false);
+    /**
+     * If no version information string is given, reserve area (fill with light modules)
+     * @type {*|string}
+     */
+    versionInformationString = versionInformationString || '000000000000000000';
 
-    var versionInformationString = this.config.getVersionInformationString(this.version);
+    data = data || this.data;
 
     var temp = versionInformationString.split('').map(function (e) {
         return parseInt(e);
@@ -250,7 +256,6 @@ Matrix.prototype.setVersionInformationArea = function (reserve) {
 
     while (temp.length > 0) {
         val = temp.shift();
-        val = reserve === false ? val : 0;
         bits[0].push(val);
         bits[1].push(val);
     }
@@ -262,10 +267,10 @@ Matrix.prototype.setVersionInformationArea = function (reserve) {
     for (; y < 6; y++) {
         for (i = 0; i < 3; i++) {
             if (bits[0].pop() === 1) {
-                this.setDarkModule(x + i, y, this.MASK_VERSION_INFORMATION);
+                this.setDarkModule(x + i, y, this.MASK_VERSION_INFORMATION, data);
             }
             else {
-                this.setLightModule(x + i, y, this.MASK_VERSION_INFORMATION);
+                this.setLightModule(x + i, y, this.MASK_VERSION_INFORMATION, data);
             }
         }
     }
@@ -277,10 +282,10 @@ Matrix.prototype.setVersionInformationArea = function (reserve) {
     for (; x < 6; x++) {
         for (i = 0; i < 3; i++) {
             if (bits[1].pop() === 1) {
-                this.setDarkModule(x, y + i, this.MASK_VERSION_INFORMATION);
+                this.setDarkModule(x, y + i, this.MASK_VERSION_INFORMATION, data);
             }
             else {
-                this.setLightModule(x, y + i, this.MASK_VERSION_INFORMATION);
+                this.setLightModule(x, y + i, this.MASK_VERSION_INFORMATION, data);
             }
         }
     }
@@ -408,15 +413,18 @@ Matrix.prototype.setPositionDetectionPattern = function (top, left) {
     }
 };
 
-Matrix.prototype.setModule = function (x, y, value, maskValue) {
-    this.data[y][x] = value;
+Matrix.prototype.setModule = function (x, y, value, maskValue, data) {
+    data = data || this.data;
+    data[y][x] = value;
     this.mask[y][x] = maskValue;
 };
 
-Matrix.prototype.setDarkModule = function (x, y, maskValue) {
-    this.setModule(x, y, this.DATA_DARK_MODULE, maskValue);
+Matrix.prototype.setDarkModule = function (x, y, maskValue, data) {
+    data = data || this.data;
+    this.setModule(x, y, this.DATA_DARK_MODULE, maskValue, data);
 };
 
-Matrix.prototype.setLightModule = function (x, y, maskValue) {
-    this.setModule(x, y, this.DATA_LIGHT_MODULE, maskValue);
+Matrix.prototype.setLightModule = function (x, y, maskValue, data) {
+    data = data || this.data;
+    this.setModule(x, y, this.DATA_LIGHT_MODULE, maskValue, data);
 };

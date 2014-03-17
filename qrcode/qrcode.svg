@@ -5,10 +5,11 @@
     <script type="text/ecmascript" xlink:href="QrCode/Config.js"/>
     <script type="text/ecmascript" xlink:href="QrCode/DataAnalyzer.js"/>
     <script type="text/ecmascript" xlink:href="QrCode/DataEncoder.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/ErrorCorrection.js"/>
     <script type="text/ecmascript" xlink:href="QrCode/Matrix.js"/>
     <script type="text/ecmascript" xlink:href="QrCode/Tiler.js"/>
+    <script type="text/ecmascript" xlink:href="QrCode/Mask.js"/>
     <script type="text/ecmascript" xlink:href="QrCode/Evaluation.js"/>
-    <script type="text/ecmascript" xlink:href="QrCode/ErrorCorrection.js"/>
     <script type="text/ecmascript" xlink:href="QrCode/QrCode.js"/>
 
     <script type="text/ecmascript" xlink:href="request.js"/>

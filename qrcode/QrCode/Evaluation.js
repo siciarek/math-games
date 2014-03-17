@@ -1,83 +1,87 @@
-var Evaluation = function () {
-
+var Evaluation = function (matrix) {
+    this.matrix = matrix;
 };
 
 Evaluation.prototype.constructor = Evaluation;
 
-Evaluation.prototype.evaluate = function (data) {
-    var result = [];
-    var total = 0;
+Evaluation.prototype.evaluatePattern = function (data) {
 
-    result[0] = this.rules[1](data);
-    result[1] = this.rules[2](data);
-    result[2] = this.rules[3](data);
-    result[3] = this.rules[4](data);
+    var result = {
+        total: 0,
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0
+    };
 
-    total = result[0] + result[1] + result[2] + result[3];
+    for (var cond in this.rules) {
+        if (this.rules.hasOwnProperty(cond)) {
+            var c = parseInt(cond);
+            var res = this.rules[c](data);
+            result[c] = res.total;
+            result.total += result[c];
+        }
+    }
 
-    return total;
+    return result;
 };
 
 Evaluation.prototype.rules = {
 
     1: function (data) {
+
         /**
          * The first rule gives the QR code a penalty
          * for each group of five or more same-colored modules in a row (or column).
          */
-        var result = 0;
+        var result = {
+            horizontal: 0,
+            vertical: 0,
+            total: 0
+        };
 
-        var horizontal = 0;
-        var vertical = 0;
-
-        var r, c;
+        var r, c, found, penalty, totest;
 
         // rows:
 
         for (r = 0; r < data.length; r++) {
-            sum = 0;
-            sameColored = 0;
-            color = -1;
-            for (c = 0; c < data[0].length; c++) {
+            penalty = 0;
+            totest = data[r].join('');
 
-                if (data[r][c] !== color) {
-                    sameColored++;
-                    if (sameColored >= 5) {
-                        sum += 3 + (sameColored - 5);
-                    }
-                    sameColored = 0;
-                }
-                else {
-                    sameColored++;
-                }
-                color = data[r][c];
+            found = totest.match(/(0{5,}|1{5,})/g);
+
+            if (found !== null) {
+                found.forEach(function (e) {
+                    penalty += (3 + e.length - 5);
+                });
             }
-            horizontal += sum;
+
+
+            result.horizontal += penalty;
         }
 
         // columns:
 
         for (c = 0; c < data.length; c++) {
-            sum = 0;
-            sameColored = 0;
-            color = -1;
+            penalty = 0;
+            totest = '';
+
             for (r = 0; r < data[0].length; r++) {
-                if (data[r][c] !== color) {
-                    sameColored++;
-                    if (sameColored >= 5) {
-                        sum += 3 + (sameColored - 5);
-                    }
-                    sameColored = 0;
-                }
-                else {
-                    sameColored++;
-                }
-                color = data[r][c];
+                totest += data[r][c];
             }
-            vertical += sum;
+
+            found = totest.match(/(0{5,}|1{5,})/g);
+
+            if (found !== null) {
+                found.forEach(function (e) {
+                    penalty += (3 + e.length - 5);
+                });
+            }
+
+            result.vertical += penalty;
         }
 
-        result = horizontal + vertical;
+        result.total = result.horizontal + result.vertical;
 
         return result;
     },
@@ -87,19 +91,28 @@ Evaluation.prototype.rules = {
          * The second rule gives the QR code a penalty
          * for each 2x2 area of same-colored modules in the matrix.
          */
-        var result = 0;
+        var result = {
+            found: 0,
+            total: 0
+        };
+
+        var penalty = 3;
 
         var r, c;
 
-        for (r = 0; r < data.length - 2; r++) {
-            for (c = 0; c < data[0].length - 2; c++) {
-                if(data[r][c] === data[r][c + 1]
-                && data[r][c] === data[r + 1][c]
-                && data[r][c] === data[r + 1][c + 1]) {
-                    result += 3;
+        for (r = 0; r < data.length - 1; r++) {
+            for (c = 0; c < data[0].length - 1; c++) {
+
+                if (   data[r][c] === data[r][c + 1]
+                    && data[r][c] === data[r + 1][c]
+                    && data[r][c] === data[r + 1][c + 1]) {
+
+                    result.found++;
                 }
             }
         }
+
+        result.total = result.found * penalty;
 
         return result;
     },
@@ -113,19 +126,25 @@ Evaluation.prototype.rules = {
          * [ 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0 ]
          * [ 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1 ]
          */
-        var result = 0;
+        var result = {
+            cols: 0,
+            rows: 0,
+            total: 0
+        };
 
         var patterns = [
             [ 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0 ],
             [ 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1 ]
         ];
 
+        var penalty = 40;
+
         var match = true;
         var r, c;
 
         // Rows:
-        for (r = 0; r <  data.length; r++) {
-            for (c = 0; c <  data[0].length - patterns[0].length; c++) {
+        for (r = 0; r < data.length; r++) {
+            for (c = 0; c < data[0].length - patterns[0].length + 1; c++) {
                 match = [true, true];
 
                 for (var p = 0; p < patterns[0].length; p++) {
@@ -138,18 +157,18 @@ Evaluation.prototype.rules = {
                 }
 
                 if (match[0] === true) {
-                    result += 40;
+                    result.rows++;
                 }
 
                 if (match[1] === true) {
-                    result += 40;
+                    result.rows++;
                 }
             }
         }
 
         // Cols:
         for (c = 0; c < data[0].length; c++) {
-            for (r = 0; r < data.length - patterns[0].length; r++) {
+            for (r = 0; r < data.length - patterns[0].length + 1; r++) {
                 match = [true, true];
 
                 for (p = 0; p < patterns[0].length; p++) {
@@ -162,14 +181,16 @@ Evaluation.prototype.rules = {
                 }
 
                 if (match[0] === true) {
-                    result += 40;
+                    result.cols++;
                 }
 
                 if (match[1] === true) {
-                    result += 40;
+                    result.cols++;
                 }
             }
         }
+
+        result.total = (result.rows + result.cols) * penalty;
 
         return result;
     },
@@ -179,28 +200,31 @@ Evaluation.prototype.rules = {
          * The fourth rule gives the QR code a penalty
          * if more than half of the modules are dark or light, with a larger penalty for a larger difference.
          */
-        var result = 0;
-        var dark = 0;
-        var light = 0;
-        var total = 0;
+        var result = {
+            dark: 0,
+            all: 0,
+            total: 0
+        };
+
+        var penalty = 10;
+
         var r, c;
 
         for (r = 0; r < data.length; r++) {
             for (c = 0; c < data[0].length; c++) {
-                dark += data[r][c] === 1 ? 1 : 0;
-                light += data[r][c] === 0 ? 1 : 0;
-                total++;
+                result.dark += data[r][c] === 1 ? 1 : 0;
+                result.all++;
             }
         }
 
-        var perc = (dark / total) * 100;
+        var percentage = (result.dark / result.all) * 100;
 
         var fivemul = {
             upper: 0,
             lower: 0
         };
 
-        while (fivemul.upper < perc) {
+        while (fivemul.upper < percentage) {
             fivemul.upper += 5;
         }
 
@@ -209,8 +233,7 @@ Evaluation.prototype.rules = {
         var a = Math.abs(fivemul.lower - 50);
         var b = Math.abs(fivemul.upper - 50);
 
-        result = Math.min(a, b);
-        result *= 10;
+        result.total = Math.min(a, b) * penalty;
 
         return result;
     }

@@ -54,14 +54,12 @@ Tiler.prototype.setArea = function (data, ecc) {
         return val;
     });
 
+    // TODO: block support
+
     bytes = bytes.concat(databytes);
     bytes = bytes.concat(eccbytes);
 
-    console.log(databytes);
-    console.log(eccbytes);
-    console.log(bytes);
-
-    // TODO: block support
+    // ---------------------------
 
     // Add remainder:
     var datastr = bytes.join('');

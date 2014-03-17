@@ -1,12 +1,25 @@
 var request = new Request();
 
-var message = 'ABCDE123';
-var ecstrategy = ['H'];
+var data = 'HELLO WORLD';
+var ecstrategy = ['Q'];
+var pattern = null;
+
+if (request.params.hasOwnProperty('mask')) {
+    pattern = request.params['mask'];
+}
+
+if (request.params.hasOwnProperty('data')) {
+    data = request.params['data'];
+}
+
+if (request.params.hasOwnProperty('ec')) {
+    ecstrategy = [request.params['ec']];
+}
 
 // v: 7
 //message = "It is a long established fact that a reader will be distracted by the readable content of a page when looking.";
 
-var qrcode = new QrCode(message, ecstrategy);
+var qrcode = new QrCode(data, ecstrategy, pattern);
 
 function drawQrCode(code, blocksize, quietZoneSize) {
 
