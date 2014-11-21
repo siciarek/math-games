@@ -18,8 +18,8 @@ function main(n, mode) {
 
     var r_0out = 1;
 
-    n = n || 8;
-    mode = mode || 'two';
+    n = n || 4;
+    mode = mode || 'three';
 
     var loc = location.href.split('?');
 

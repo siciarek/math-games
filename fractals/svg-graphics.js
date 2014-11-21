@@ -98,3 +98,18 @@ function line(from, to, cls) {
     var canvas = svg.getElementById('canvas');
     canvas.appendChild(c);
 }
+
+
+function path(d, cls) {
+    cls = cls || null;
+
+    var c = doc.createElementNS(ns, 'path');
+    c.setAttribute('d', d);
+
+    if(cls !== null) {
+        c.setAttribute('class', cls);
+    }
+
+    var canvas = svg.getElementById('canvas');
+    canvas.appendChild(c);
+}
