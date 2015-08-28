@@ -69,10 +69,10 @@ var LangtonsAnt = function (width, height, pattern) {
         this.grid[this.r][this.c] = this.grid[this.r][this.c] !== 0 ? 0 : 1;
 
         var offsets = {
-            0:   [ 1, 0],
-            90:  [0, -1],
-            180: [-1, 0],
-            270: [0, 1]
+            0:   [ 1,  0],
+            90:  [ 0, -1],
+            180: [-1,  0],
+            270: [ 0,  1]
         };
 
         var o = offsets[this.dir];
