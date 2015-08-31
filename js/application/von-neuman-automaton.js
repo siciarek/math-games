@@ -9,7 +9,7 @@ var VonNeumanAutomaton = function (width, height, pattern) {
     this.rows = height;
 
     this.name = 'CA von Neuman';
-    this.generations = 1000;
+    this.generations = 2000;
     this.generation = 0;
     this.r = 0;
     this.c = 0;

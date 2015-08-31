@@ -3,129 +3,83 @@
  *
  * @author Jacek Siciarek <siciarek@gmail.com>
  */
-var Display = function (app, reset, renderTo) {
+var Display = function (app, pxsize) {
 
     /**
      * App to run
      * @type {object}
      */
     this.app = app;
-    this.reset = typeof reset === 'undefined' ? true : reset;
 
-    /**
-     * Main display selector
-     * @type {*|jQuery|HTMLElement}
-     */
-    this.selector = typeof renderTo === 'undefined' ? $('#display') : $(renderTo);
-    this.rowSelector = 'div';
-    this.cellSelector = 'span';
-    this.cursor = 1000;
-
-    this.buffer = {};
+    this.disp = null;
+    this.cx = null;
+    this.imgData = null;
+    this.data = [];
     this.interval = null;
-    this.colors = [
-        '_0',
-        '_1',
-        '_2',
-        '_3',
-        '_4',
-        '_5',
-        '_6',
-        '_7',
-        '_8',
-        '_1000'
+
+    this.pxsize = pxsize || 1;
+
+    this.buf = null;
+    this.buf8 = null;
+
+    this.colmap = [
+        [250, 250, 250, 255],
+        [0, 0, 0, 255],
+        [144, 144, 144, 255]
     ];
 
-    this.setName = function (name) {
-        var html = '<i class="icon-cog icon-large"></i> ' + name;
-        $('head title').text(name);
-        $('ul.navbar-right li.title a').html(html).attr('title', name);
-    };
-
-    this.setInfo = function () {
-        this.selector.next().html(this.app.getInfo());
-    };
-
-    this.clear = function () {
-        if (this.reset === true) {
-            for (var c = 0; c < this.colors.length; c++) {
-                var cls = this.colors[c];
-                this.selector.find(this.cellSelector + '.' + cls).removeClass(cls);
-            }
-        }
-    };
-
-    this.getCell = function (r, c) {
-        var key = r + '-' + c;
-
-        if (typeof this.buffer[key] === 'undefined') {
-            this.buffer[key] = $($(this.selector.find(this.rowSelector).get(r)).find(this.cellSelector).get(c));
-        }
-
-        return this.buffer[key];
-    };
-
-    this.setPixel = function (row, col, value) {
-        if (value > 0) {
-            var cls = '_' + value
-            this.getCell(row, col).removeAttr('class');
-            this.getCell(row, col).addClass(cls);
-        }
-    };
-
-    this.setCell = function (row, col, value) {
-
-        if (typeof value === 'undefined') {
-            value = true;
-        }
-
-        if (value === true) {
-            this.getCell(row, col).addClass('b');
-        }
-        else {
-            this.getCell(row, col).removeClass('b');
-        }
-    };
-
     this.init = function () {
-        var row = [
-            '<' + this.rowSelector + '>',
-            '</' + this.rowSelector + '>'
-        ];
-        var cell = '<' + this.cellSelector + '></' + this.cellSelector + '>';
-        var display = '';
-
-        for (var r = 0; r < this.app.rows; r++) {
-            display += row[0];
-            for (var c = 0; c < this.app.cols; c++) {
-                display += cell;
-            }
-            display += row[1];
-        }
-
-        this.selector.append(display);
         this.setName(this.app.name);
+
+        this.disp = document.getElementById('display');
+        this.disp.setAttribute('width', this.app.cols * this.pxsize);
+        this.disp.setAttribute('height', this.app.rows * this.pxsize);
+
+        this.cx = this.disp.getContext('2d');
+
+        this.imgData = this.cx.createImageData(this.app.cols * this.pxsize, this.app.rows * this.pxsize);
+
+        this.buf = new ArrayBuffer(this.imgData.data.length);
+        this.buf8 = new Uint8ClampedArray(this.buf);
+        this.data = new Uint32Array(this.buf);
+    };
+
+    this.setPixel = function (x, y, color) {
+
+        var width = this.app.cols * this.pxsize;
+        
+        var r = color[0];
+        var g = color[1];
+        var b = color[2];
+        var a = color[3];
+
+        for (var xo = 0; xo < this.pxsize; xo++) {
+            for (var yo = 0; yo < this.pxsize; yo++) {
+                this.data[(y + yo) * width + (x + xo)] =
+                        (a << 24) | // alpha
+                        (b << 16) | // blue
+                        (g << 8)  | // green
+                        r;          // red
+            }
+        }
     };
 
     this.move = function () {
-
-        this.clear();
-
-        var startrow = this.reset ? 0 : this.app.r - 1;
-        var endrow = this.reset ? this.app.rows : this.app.r;
-
-        for (var r = startrow; r < endrow; r++) {
-            for (var c = 0; c < this.app.cols; c++) {
-                if (typeof this.app.cursor === 'object' && this.app.cursor.r === r && this.app.cursor.c === c) {
-                    this.setPixel(r, c, this.cursor);
-                }
-                else {
-                    if (this.app.grid[r][c] !== 0) {
-                        this.setPixel(r, c, this.app.grid[r][c]);
-                    }
-                }
+        var ri = 0;
+        var ci = 0;
+        
+        for (var y = 0; y < this.app.rows * this.pxsize; y += this.pxsize) {
+            for (var x = 0; x < this.app.cols * this.pxsize; x += this.pxsize) {
+                var color = this.colmap[this.app.grid[ri][ci]];
+                this.setPixel(x, y, color);
+                ci++;                
             }
+            ri++;
+            ci = 0;            
         }
+
+        this.imgData.data.set(this.buf8);
+        this.cx.putImageData(this.imgData, 0, 0);
 
         if (typeof this.app.beforeMove === 'function') {
             this.app.beforeMove();
@@ -138,20 +92,34 @@ var Display = function (app, reset, renderTo) {
         }
 
         this.setInfo();
-
+ 
         return result;
     };
 
     this.run = function (speed) {
         var self = this;
+
         self.interval = setInterval(function () {
-            var result = self.move();
-            if (result === false) {
+            if (self.move() === false) {
                 clearInterval(self.interval);
             }
         }, speed);
 
         return true;
+    };
+
+    this.setName = function (name) {
+        var html = '<i class="icon-cog icon-large"></i> ' + name;
+        $('head title').text(name);
+        $('ul.navbar-right li.title a').html(html).attr('title', name);
+    };
+
+    this.setInfo = function () {
+        $('.info').html(this.app.getInfo());
+    };
+
+    this.clear = function () {
+
     };
 
     this.init();
