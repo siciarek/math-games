@@ -87,17 +87,14 @@ var VonNeumanAutomaton = function (width, height, pattern) {
     this.computeBuffer = function () {
         for (var r = 0; r < this.rows; r++) {
             for (var c = 0; c < this.cols; c++) {
-                v = this.trans(r, c);
-                this.buffer[r][c] = v;
+                this.buffer[r][c] = this.trans(r, c);
             }
         }
     };
 
     this.buffer2grid = function () {
         for (var r = 0; r < this.rows; r++) {
-            for (var c = 0; c < this.cols; c++) {
-                this.grid[r][c] = this.buffer[r][c];
-            }
+            this.grid[r] = this.buffer[r].slice(0);
         }
     };
 
@@ -114,14 +111,11 @@ var VonNeumanAutomaton = function (width, height, pattern) {
         };
 
         for (var dir in neighbourhood) {
-            if (neighbourhood.hasOwnProperty(dir)) {
-                var n = neighbourhood[dir];
-                var r = row + n.shift();
-                var c = col + n.shift();
+            var r = row + neighbourhood[dir][0];
+            var c = col + neighbourhood[dir][1];
 
-                var val = typeof this.grid[r] === 'undefined' || typeof this.grid[r][c] === 'undefined' ? 0 : this.grid[r][c];
-                key.push(val);
-            }
+            var val = (typeof this.grid[r] === 'undefined' || typeof this.grid[r][c] === 'undefined') ? 0 : this.grid[r][c];
+            key.push(val);
         }
 
         return key.join('');
@@ -157,7 +151,6 @@ var VonNeumanAutomaton = function (width, height, pattern) {
 
     this.move = function () {
 
-//        return false;
         this.computeBuffer();
         this.buffer2grid();
         return this.generation++ < this.generations;

@@ -58,8 +58,8 @@ var Display = function (app, pxsize) {
                 this.data[(y + yo) * width + (x + xo)] =
                         (a << 24) | // alpha
                         (b << 16) | // blue
-                        (g << 8) | // green
-                        r;		// red
+                        (g << 8)  | // green
+                        r;          // red
             }
         }
     }
@@ -68,7 +68,9 @@ var Display = function (app, pxsize) {
     this.move = function () {
         var ri = -1;
         var ci = -1;
-
+        
+        this.data = new Uint32Array(this.buf);
+        
         for (var y = 0; y < this.app.rows * this.pxsize; y += this.pxsize) {
             ri++;
             ci = -1;
@@ -94,11 +96,15 @@ var Display = function (app, pxsize) {
 
         this.setInfo();
 
+        console.log('.');
+        
         return result;
     };
 
     this.run = function (speed) {
         var self = this;
+
+console.log([speed]);
 
         self.interval = setInterval(function () {
             if (self.move() === false) {
