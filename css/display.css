@@ -27,16 +27,16 @@
 }
 
 #display div {
-	display: table-row;
+    display: table-row;
     color: transparent
 }
 
 #display span {
-	display: table-cell;
-	width: 3px;
-	height: 3px;
+    display: table-cell;
+    width: 3px;
+    height: 3px;
     color: transparent;
-	font-size: 0
+    font-size: 0
 }
 
 #display span._0 {background-color: transparent;}
