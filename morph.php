@@ -1,17 +1,21 @@
 <?php
+
 /**
  * Documents:
  * http://www.cs.toronto.edu/~mangas/teaching/320/slides/CSC320T12.pdf
  * http://www.cs.cmu.edu/afs/andrew/scs/cs/15-463/99/pub/www/notes/warp.pdf
  * http://graphics.cs.cmu.edu/courses/15-463/2011_fall/Lectures/morphing.pdf
+ * 
+ * http://matematyka.pisz.pl/forum/47244.html
+ * http://www.matemaks.pl/rownanie-prostej-przechodzacej-przez-dwa-punkty.html
  */
-
 $srcImage = __DIR__ . '/images/morph/pic3.png';
 $trgImage = __DIR__ . '/images/morph/pic2.png';
 
 $morphDir = __DIR__ . '/morph/';
 
 array_map('unlink', glob("$morphDir/*"));
+sleep(3);
 
 $info = getimagesize($srcImage);
 $width = array_shift($info);
@@ -20,15 +24,53 @@ $height = array_shift($info);
 $P = [180, 40];
 $Q = [140, 110];
 
+$P_ = [195, 67];
+$Q_ = [145, 145];
+
+$X = [200, 100];
+$X_ = [300, 150];
+
+$t = 0.5;
+
+// Pt to linia między granicami PQ i P_Q_
+
+$Pt = [(1 - $t) * $P[0] + $t * $P_[0], (1 - $t) * $P[1] + $t * $P_[1]];
+$Qt = [(1 - $t) * $Q[0] + $t * $Q_[0], (1 - $t) * $Q[1] + $t * $Q_[1]];
+
+// y = (yA−yB/xA−xBx) + (yA − (yA−yB/xA−xB) * xA)
+
+function getLine($xA, $yA, $xB, $yB) {
+    $a = ($yA - $yB) / ($xA - $xB);
+    $b = $yA - $a * $xA;
+    return [$a, $b];
+}
+
+function getPerpen($P, $Q, $X) {
+
+    list($a, $b) = getLine($P[0], $P[1], $Q[0], $Q[1]);
+
+    $pa = - (1 / $a);
+    $pb = - ($X[0] * $pa - $X[1]);
+
+    $T = [
+        ($pb - $b) / ($a - $pa),
+    ];
+
+    $T[1] = $a * $T[0] + $b;
+
+    return $T;
+}
+
+$T = getPerpen($P, $Q, $X);
+$R = getPerpen($P_, $Q_, $X_);
+
+
 $filename = $morphDir . '/src.01.png';
 $im = imagecreatefrompng($srcImage);
 $color = 0x0000FF;
 imageline($im, $P[0], $P[1], $Q[0], $Q[1], $color);
 imagepng($im, $filename);
 imagedestroy($im);
-
-$P_ = [195, 67];
-$Q_ = [145, 145];
 
 $filename = $morphDir . '/trg.01.png';
 $im = imagecreatefrompng($trgImage);
@@ -70,64 +112,49 @@ for ($r = 0; $r < $height; $r++) {
 }
 imagedestroy($im);
 
-$parts = 11;
+function U($r, $c) {
+    global $Pt, $Qt;
+    $X = [$r, $c];
+    $u = $r;
 
-$step = 1 / $parts;
+    /*
+      ($X - $Pt)($Qt - $Pt)
+      $u = ---------------------
+      || $Qt - $Pt ||^2
+     */
 
-$i = 1;
+    return $u;
+}
 
-$dfrac = 0.5;
-$t = $dfrac;
+function V($r, $c) {
+    global $Pt, $Qt;
+    $X = [$r, $c];
 
-$P = [100, 100];
-$Q = [100, 200];
-
-$P_ = [200, 100];
-$Q_ = [200, 200];
-
-$Pt = [(1 - $t) * $P[0] + $t * $P_[0], (1 - $t) * $P[1] + $t * $P_[1]];
-$Qt = [(1 - $t) * $Q[0] + $t * $Q_[0], (1 - $t) * $Q[1] + $t * $Q_[1]];
-
-$p00 = $P;
-$p10 = $P_;
-$p01 = $Q;
-$p11 = $Q_;
-
-//print_r([$p00, $p01, $p01, $p11]);exit;
+    $v = $c;
+    /*
+      ($X - $Pt)Perp($Qt - $Pt)
+      $v = ---------------------
+      || $Qt - $Pt ||
+     */
+    return $v;
+}
 
 for ($r = 0; $r < $height; $r++) {
     for ($c = 0; $c < $width; $c++) {
-        $x = $c;
-        $y = $r;
-         
-// px0 = p00 + x*(p10-p00)
-   $px0 = [$p00[0] + $x * ($p10[0] - $p00[0]), $p00[1] + $x * ($p10[1] - $p00[1])];
-// px1 = p01 + x*(p11-p01)
-   $px1 = [$p01[0] + $x * ($p11[0] - $p01[0]), $p01[1] + $x * ($p11[1] - $p01[1])];
-// pxy = px0 + y*(px1-px0)                
-   $pxy = [$px0[0] + $y * ($px1[0] - $px0[0]), $px0[1] + $y * ($px1[1] - $px0[1])];
-      
-        
-        $nr = $r;
-        $nc = $c;
-        
-        if($x > 100 and $x < 200 and $y > 100 and $y < 200) {
-            $nr = $pxy[1];
-            $nc = $pxy[0];
-            
-            print_r([$nc, $nr]);
-        }
 
-        $resultImgData[$r][$c] = $srcImgData[$nr][$nc][0] << 16 | $srcImgData[$nr][$nc][1] << 8 | $srcImgData[$nr][$nc][2];
-                
-//              ($srcImgData[$r][$c][0] + $dfrac * ($trgImgData[$r][$c][0] - $srcImgData[$r][$c][0])) << 16  // R
-//            | ($srcImgData[$r][$c][1] + $dfrac * ($trgImgData[$r][$c][1] - $srcImgData[$r][$c][1])) << 8   // G
-//            | ($srcImgData[$r][$c][2] + $dfrac * ($trgImgData[$r][$c][2] - $srcImgData[$r][$c][2]));       // B
+        $u = U($r, $c);
+        $v = V($r, $c);
+
+        $resultImgData[$r][$c] = $srcImgData[$u][$v][0] << 16 | $srcImgData[$u][$v][1] << 8 | $srcImgData[$u][$v][2];
+
+//              ($srcImgData[$r][$c][0] + $t * ($trgImgData[$r][$c][0] - $srcImgData[$r][$c][0])) << 16  // R
+//            | ($srcImgData[$r][$c][1] + $t * ($trgImgData[$r][$c][1] - $srcImgData[$r][$c][1])) << 8   // G
+//            | ($srcImgData[$r][$c][2] + $t * ($trgImgData[$r][$c][2] - $srcImgData[$r][$c][2]));       // B
     }
 }
 
 // Create image:
-
+$i = 1;
 $im = @imagecreatetruecolor($width, $height);
 
 $filename = $morphDir . sprintf('%02d', $i++) . '.png';
@@ -141,7 +168,7 @@ for ($r = 0; $r < $height; $r++) {
 imagepng($im, $filename);
 imagedestroy($im);
 
-exit;
+
 
 
 $resfname = $morphDir . '/res.01.png';
@@ -149,8 +176,13 @@ $im = imagecreatefrompng($srcImage);
 $color = 0x0000FF;
 
 imageline($im, $P[0], $P[1], $Q[0], $Q[1], 0x00FF00);
+// imageline($im, $Pt[0], $Pt[1], $Qt[0], $Qt[1], $color);
 imageline($im, $P_[0], $P_[1], $Q_[0], $Q_[1], 0x00FF00);
 
-imageline($im, $Pt[0], $Pt[1], $Qt[0], $Qt[1], $color);
+imagesetpixel($im, $X[0], $X[1], 0x00FF00);
+
+imageline($im, $X[0], $X[1], $T[0], $T[1], 0x00FF00);
+imageline($im, $X_[0], $X_[1], $R[0], $R[1], $color);
+
 imagepng($im, $resfname);
 imagedestroy($im);
