@@ -1,5 +1,10 @@
 <?php
 
+class Point {
+    public $x = 0;
+    public $y = 0;
+}
+
 /**
  * Documents:
  * http://www.cs.toronto.edu/~mangas/teaching/320/slides/CSC320T12.pdf
@@ -60,6 +65,14 @@ function getPerpen($P, $Q, $X) {
 $T = getPerpen($P, $Q, $X);
 $R = getPerpen($P_, $Q_, $X_);
 
+function perpendicular($pq, $perp) {
+    
+    $m = -(pq->p2.x - pq->p1.x) / (float) (pq->p2.y - pq->p1.y),
+    $len = lineLength(pq);
+    perp->y = m * len / sqrt(1 + pow(m, 2));
+    perp->x = sqrt(pow(len, 2) - pow(perp->y, 2));
+    return perp;
+}
 
 $filename = $morphDir . '/src.01.png';
 $im = imagecreatefrompng($srcImage);
@@ -113,6 +126,14 @@ function U($r, $c) {
     $X = [$r, $c];
     $u = $r;
 
+//    return ((x->x - pq->p1.x)*(pq->p2.x - pq->p1.x) +
+//        (x->y - pq->p1.y)*(pq->p2.y - pq->p1.y))
+//        / slength(&pq->p1, &pq->p2);
+
+    $u = (($X[0] - $Pt[0])*($Qt[0] - $Pt[0]) +
+        ($X[1] - $Qt[1])*($Pt[1] - $Qt[1]))
+        / slength($Pt, $Qt);
+
     /*
       ($X - $Pt)($Qt - $Pt)
       $u = ---------------------
@@ -126,7 +147,12 @@ function V($r, $c) {
     global $Pt, $Qt;
     $X = [$r, $c];
 
-    $v = $c;
+//     point perp;
+//    perpendicular(pq, &perp);
+//    return ((x->x - pq->p1.x) * perp.x + (x->y - pq->p1.y) * perp.y) / lineLength(pq);
+    
+    $v = $r;
+
     /*
       ($X - $Pt)Perp($Qt - $Pt)
       $v = ---------------------
@@ -134,6 +160,18 @@ function V($r, $c) {
      */
     return $v;
 }
+
+function slength($p, $q) {
+    return pow($q[0] - $p[0], 2) + pow($q[1] - $p[1], 2);
+}
+
+/**
+ * gets the length between two points
+ */
+function length($p, $q) {
+    return sqrt(slength($p, $q));
+}
+
 
 for ($r = 0; $r < $height; $r++) {
     for ($c = 0; $c < $width; $c++) {

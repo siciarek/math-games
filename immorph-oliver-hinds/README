@@ -1,0 +1,105 @@
+#######################################################################
+# README file for an image morphing application implemented after
+# Beier and Neely (1992).
+#
+# Version 1.0
+# Copyright 2004 Oliver Hinds <oph@bu.edu>
+# 2004-02-10
+# CS580 Programing Assignment 1
+#
+#  The image morphing application is free software; you
+#  can redistribute it and/or modify it under the terms of the GNU
+#  General Public License as published by the Free Software
+#  Foundation; either version 2 of the License, or (at your option)
+#  any later version.
+#
+#  The image morphing application is distributed in the
+#  hope that it will be useful, but WITHOUT ANY WARRANTY; without
+#  even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+#  PARTICULAR PURPOSE.  See the GNU General Public License for more
+#  details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with The image morphing application; if not,
+#  write to the Free Software Foundation, Inc., 59 Temple Place,
+#  Suite 330, Boston, MA 02111-1307 USA
+#######################################################################
+
+#######################################################################
+## Purpose
+#######################################################################
+
+This is an implementation of the Beier and Neely (1992) image morphing
+algorithm for CS580 programming assignment 1. 
+
+#######################################################################
+## Requirements
+#######################################################################
+
+This application requires opengl, glut, and jpeglib. 
+
+#######################################################################
+## Installation
+#######################################################################
+
+To install the program, unpack the tarball into the desired
+parent directory.
+
+$ tar xzvf immorph-oliver-hinds.tgz
+
+This will create a subdirectory called <install_path>/immorph, which
+is called the installation directory from now on. Next, change the
+system variables in the Makefile to values specific to the system you
+wish to install on, and compile the program. The only variables that
+should possibly need modification are the X11, openGL, and jpeglib
+paths. To compile, type
+
+$ make
+
+This will create an executable called immorph. If you want the
+executable in your executable path, include the installation
+directory in your $PATH environment variable.
+
+#######################################################################
+## Usage: 
+#######################################################################
+
+Syntax:
+
+immorph [options] SourceImageFilename DestinationImageFilename
+
+There are a few command line flags you can pass to immorph.
+
+Options:
+-------
+ -a: The value of the 'a' parameter in Beier and Neely (1992)
+ -b: The value of the 'b' parameter in Beier and Neely (1992)
+ -p: The value of the 'p' parameter in Beier and Neely (1992)
+ -f: The base name to give animation frame files written to disk
+ -n: The number of frames to generate
+ -l: The name of a lines file to load
+ -o: The name of the lines file to save the lines drawn
+
+#######################################################################
+## Examples
+#######################################################################
+
+The commands used to generate the examples presented in the
+accompanying html report are shows below.
+
+Example 1:
+./immorph -n 50 -l lines/gb2.line img/g.jpg img/b.jpg
+
+Example 2:
+./immorph -n 100 -l lines/cs.line img/c.jpg img/s.jpg
+
+Example 3:
+./immorph -n 50 -l lines/rm.line img/m.jpg img/r.jpg
+
+#######################################################################
+## References
+#######################################################################
+
+Beier and Neely, "Feature-based image metamorphosis," in
+	Proc. SIGGRAPH 92, pp. 35--41
+
