@@ -27,21 +27,20 @@ $Q = [140, 110];
 $P_ = [195, 67];
 $Q_ = [145, 145];
 
-$X = [200, 100];
+$X = [40, 100];
 $X_ = [300, 150];
 
 $t = 0.5;
 
-// Pt to linia między granicami PQ i P_Q_
+// Pt to odcinek między granicami PQ i P_Q_
 
 $Pt = [(1 - $t) * $P[0] + $t * $P_[0], (1 - $t) * $P[1] + $t * $P_[1]];
 $Qt = [(1 - $t) * $Q[0] + $t * $Q_[0], (1 - $t) * $Q[1] + $t * $Q_[1]];
 
-// y = (yA−yB/xA−xBx) + (yA − (yA−yB/xA−xB) * xA)
-
 function getLine($xA, $yA, $xB, $yB) {
     $a = ($yA - $yB) / ($xA - $xB);
     $b = $yA - $a * $xA;
+
     return [$a, $b];
 }
 
@@ -52,13 +51,10 @@ function getPerpen($P, $Q, $X) {
     $pa = - (1 / $a);
     $pb = - ($X[0] * $pa - $X[1]);
 
-    $T = [
-        ($pb - $b) / ($a - $pa),
-    ];
+    $x = ($pb - $b) / ($a - $pa);
+    $y = $a * $T[0] + $b;
 
-    $T[1] = $a * $T[0] + $b;
-
-    return $T;
+    return [$x, $y];
 }
 
 $T = getPerpen($P, $Q, $X);
