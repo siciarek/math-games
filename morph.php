@@ -9,18 +9,24 @@
  * http://matematyka.pisz.pl/forum/47244.html
  * http://www.matemaks.pl/rownanie-prostej-przechodzacej-przez-dwa-punkty.html
  */
-
 $src = [
-    [ 326, 116, 298, 47 ],
-    [ 298, 47, 180, 43 ],
-    [ 180, 43, 145, 106 ],
+    [326, 116, 298, 47],
+    [298, 47, 180, 43],
+    [180, 43, 145, 106],
+    [177, 234, 212, 291],
+    [212, 291, 249, 290],
+    [249, 290, 293, 227]
 ];
 
 $trg = [
-    [ 319, 151, 301, 88 ],
-    [ 301, 88, 181, 86 ],
-    [ 181, 86, 158, 149 ],
+    [319, 151, 301, 88],
+    [301, 88, 181, 86],
+    [181, 86, 158, 149],
+    [188, 252, 232, 294],
+    [232, 294, 260, 292],
+    [260, 292, 302, 238]
 ];
+
 
 $srcImage = __DIR__ . '/images/morph/pic3.png';
 $trgImage = __DIR__ . '/images/morph/pic2.png';
@@ -28,11 +34,11 @@ $trgImage = __DIR__ . '/images/morph/pic2.png';
 $morphDir = __DIR__ . '/morph/';
 
 array_map('unlink', glob("$morphDir/*.png"));
+array_map('unlink', glob("$morphDir/dest/warped/*.png"));
+array_map('unlink', glob("$morphDir/dest/notwarped/*.png"));
 sleep(3);
 
-$t = 0.5;
-
-$filename = $morphDir . '/src.01.png';
+$filename = $morphDir . '/src.png';
 $im = imagecreatefrompng($srcImage);
 $a = [];
 foreach ($src as $P) {
@@ -47,7 +53,7 @@ foreach ($a as $p) {
 imagepng($im, $filename);
 imagedestroy($im);
 
-$filename = $morphDir . '/trg.01.png';
+$filename = $morphDir . '/trg.png';
 $im = imagecreatefrompng($trgImage);
 
 $a = [];
@@ -63,21 +69,6 @@ foreach ($a as $p) {
 
 imagepng($im, $filename);
 imagedestroy($im);
-
-
-$srcLines = [];
-foreach ($src as $P) {
-    $srcLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
-}
-
-$trgLines = [];
-foreach ($trg as $P) {
-    $trgLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
-}
-
-$dstLines = getDstLines($srcLines, $trgLines, $t);
-$srcImgData = getImageData($srcImage);
-$trgImgData = getImageData($trgImage);
 
 class Point {
 
@@ -210,7 +201,7 @@ function warpImage($srcLines, $dstLines, $srcImgData) {
     $height = count($srcImgData);
 
     /* warping parameters */
-    
+
     $a = 1;
     $b = 1;
     $p = 0.5;
@@ -355,22 +346,44 @@ function getDestImgData($srcImgData, $trgImgData, $t) {
     return $dest;
 }
 
-$warpedSrcImgData = warpImage($srcLines, $dstLines, $srcImgData);
-$filename = $morphDir . '/warp.src.01.png';
-saveImage($filename, $warpedSrcImgData);
-var_dump('Warped source image');
+$srcLines = [];
+foreach ($src as $P) {
+    $srcLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
+}
 
-$warpedTrgImgData = warpImage($trgLines, $dstLines, $trgImgData);
-$filename = $morphDir . '/warp.trg.01.png';
-saveImage($filename, $warpedTrgImgData);
-var_dump('Warped target image');
+$trgLines = [];
+foreach ($trg as $P) {
+    $trgLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
+}
 
-$destWarpedImgData = getDestImgData($warpedSrcImgData, $warpedTrgImgData, $t);
-$filename = $morphDir . '/dest.warped.01.png';
-saveImage($filename, $destWarpedImgData);
-var_dump('Destination image warped');
+$srcImgData = getImageData($srcImage);
+$trgImgData = getImageData($trgImage);
 
-$destNotWarpedImgData = getDestImgData($srcImgData, $trgImgData, $t);
-$filename = $morphDir . '/dest.notwarped.01.png';
-saveImage($filename, $destNotWarpedImgData);
-var_dump('Destination image not warped');
+$count = 1;
+
+for ($t = 0; $t <= 1; $t += 0.2) {
+
+    $t = $t > 1 ? 1 : $t;
+    
+    var_dump($count);
+    
+    $fle = sprintf('%02d.png', $count++);
+
+    $dstLines = getDstLines($srcLines, $trgLines, $t);
+
+    $warpedSrcImgData = warpImage($srcLines, $dstLines, $srcImgData);
+    var_dump('Warped source image');
+
+    $warpedTrgImgData = warpImage($trgLines, $dstLines, $trgImgData);
+    var_dump('Warped target image');
+
+    $destWarpedImgData = getDestImgData($warpedSrcImgData, $warpedTrgImgData, $t);
+    $filename = $morphDir . '/dest/warped/' . $fle;
+    saveImage($filename, $destWarpedImgData);
+    var_dump('Destination image warped');
+
+    $destNotWarpedImgData = getDestImgData($srcImgData, $trgImgData, $t);
+    $filename = $morphDir . '/dest/notwarped/' . $fle;
+    saveImage($filename, $destNotWarpedImgData);
+    var_dump('Destination image not warped');
+}
