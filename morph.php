@@ -360,11 +360,10 @@ $srcImgData = getImageData($srcImage);
 $trgImgData = getImageData($trgImage);
 
 $count = 1;
+$step = 0.2;
 
-for ($t = 0; $t <= 1; $t += 0.2) {
+for ($t = $step; $t < 1; $t += $step) {
 
-    $t = $t > 1 ? 1 : $t;
-    
     var_dump($count);
     
     $fle = sprintf('%02d.png', $count++);
