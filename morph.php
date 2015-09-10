@@ -1,5 +1,74 @@
 <?php
 
+/**
+ * Documents:
+ * http://www.cs.toronto.edu/~mangas/teaching/320/slides/CSC320T12.pdf
+ * http://www.cs.cmu.edu/afs/andrew/scs/cs/15-463/99/pub/www/notes/warp.pdf
+ * http://graphics.cs.cmu.edu/courses/15-463/2011_fall/Lectures/morphing.pdf
+ * 
+ * http://matematyka.pisz.pl/forum/47244.html
+ * http://www.matemaks.pl/rownanie-prostej-przechodzacej-przez-dwa-punkty.html
+ */
+$srcImage = __DIR__ . '/images/morph/pic3.png';
+$trgImage = __DIR__ . '/images/morph/pic2.png';
+$src = [
+    [ 326, 116, 298, 47 ],
+	[ 298, 47, 180, 43 ],
+	[ 180, 43, 145, 106 ],
+];
+$trg = [
+    [ 319, 151, 301, 88 ],
+	[ 301, 88, 181, 86 ],
+	[ 181, 86, 158, 149 ],
+];
+
+$morphDir = __DIR__ . '/morph/';
+
+array_map('unlink', glob("$morphDir/*.png"));
+sleep(3);
+
+$t = 0.5;
+
+$filename = $morphDir . '/src.01.png';
+$im = imagecreatefrompng($srcImage);
+$a = [];
+foreach($src as $P) {
+	imageline($im, $P[0], $P[1], $P[2], $P[3], 0x0000FF);
+	$a[] = [ $P[2], $P[3] ];
+}
+
+foreach($a as $p)
+imagesetpixel($im, $p[0], $p[1], 0xFF0000);
+
+imagepng($im, $filename);
+imagedestroy($im);
+
+$filename = $morphDir . '/trg.01.png';
+$im = imagecreatefrompng($trgImage);
+
+foreach($trg as $P) {
+	imageline($im, $P[0], $P[1], $P[2], $P[3], 0x0000FF);
+}
+
+imagepng($im, $filename);
+imagedestroy($im);
+
+$srcLines = [];
+foreach($src as $P) {
+	$srcLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
+}
+
+$trgLines = [];
+foreach($trg as $P) {
+	$trgLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
+}
+
+
+
+$dstLines = getDstLines($srcLines, $trgLines, $t);
+$srcImgData = getImageData($srcImage);
+$trgImgData = getImageData($trgImage);
+
 class Point {
 
     public $x = 0;
@@ -21,81 +90,38 @@ class Line {
         $this->p1 = $p1;
         $this->p2 = $p2;
     }
-
 }
 
-/**
- * Documents:
- * http://www.cs.toronto.edu/~mangas/teaching/320/slides/CSC320T12.pdf
- * http://www.cs.cmu.edu/afs/andrew/scs/cs/15-463/99/pub/www/notes/warp.pdf
- * http://graphics.cs.cmu.edu/courses/15-463/2011_fall/Lectures/morphing.pdf
- * 
- * http://matematyka.pisz.pl/forum/47244.html
- * http://www.matemaks.pl/rownanie-prostej-przechodzacej-przez-dwa-punkty.html
- */
-$srcImage = __DIR__ . '/images/morph/pic3.png';
-$trgImage = __DIR__ . '/images/morph/pic2.png';
+function getDstLines($srcLines, $trgLines, $t) {
+	$dst = [];
+	
+	for($i = 0; $i < count($srcLines); $i++) {
 
-$morphDir = __DIR__ . '/morph/';
-
-array_map('unlink', glob("$morphDir/*"));
-sleep(3);
-
-$P = [180, 40];
-$Q = [140, 110];
-
-$P_ = [195, 67];
-$Q_ = [145, 145];
-
-$X = [40, 100];
-$X_ = [300, 150];
-
-$t = 0.5;
-
-// Pt to odcinek między granicami PQ i P_Q_
-$Pt = [(1 - $t) * $P[0] + $t * $P_[0], (1 - $t) * $P[1] + $t * $P_[1]];
-$Qt = [(1 - $t) * $Q[0] + $t * $Q_[0], (1 - $t) * $Q[1] + $t * $Q_[1]];
-
-
-$filename = $morphDir . '/src.01.png';
-$im = imagecreatefrompng($srcImage);
-$color = 0x0000FF;
-imageline($im, $P[0], $P[1], $Q[0], $Q[1], $color);
-imagepng($im, $filename);
-imagedestroy($im);
-
-$filename = $morphDir . '/trg.01.png';
-$im = imagecreatefrompng($trgImage);
-$color = 0x0000FF;
-imageline($im, $P_[0], $P_[1], $Q_[0], $Q_[1], $color);
-imagepng($im, $filename);
-imagedestroy($im);
-
-
-$srcLines = [
-    new Line(new Point($P[0], $P[1]), new Point($Q[0], $Q[1])),
-];
-
-$trgLines = [
-    new Line(new Point($P_[0], $P_[1]), new Point($Q_[0], $Q_[1])),
-];
-
-$dstLines = [
-    new Line(new Point($Pt[0], $Pt[1]), new Point($Qt[0], $Qt[1])),
-];
-
-$srcImgData = getImageData($srcImage);
-$trgImgData = getImageData($trgImage);
+		$P = $srcLines[$i]->p1;
+		$Q = $srcLines[$i]->p2;
+		
+		$P_ = $trgLines[$i]->p1;
+		$Q_ = $trgLines[$i]->p2;
+				
+		$Pt = new Point((1 - $t) * $P->x + $t * $P_->x, (1 - $t) * $P->y + $t * $P_->y);
+		$Qt = new Point((1 - $t) * $Q->x + $t * $Q_->x, (1 - $t) * $Q->y + $t * $Q_->y);
+		
+		$dst[] = new Line($Pt, $Qt);
+	}
+	
+	return $dst;
+}
 
 function getU(Line $pq, Point $x) {
-    return (($x->x - $pq->p1->x) * ($pq->p2->x - $pq->p1->x) +
-            ($x->y - $pq->p1->y) * ($pq->p2->y - $pq->p1->y)) / squareLength($pq->p1, $pq->p2);
+    return (($x->x - $pq->p1->x) * ($pq->p2->x - $pq->p1->x) + ($x->y - $pq->p1->y) * ($pq->p2->y - $pq->p1->y))
+			/ squareLength($pq->p1, $pq->p2);
 }
 
 function getV(Line $pq, Point $x) {
     $perp = perpendicular($pq);
 
-    return (($x->x - $pq->p1->x) * $perp->x + ($x->y - $pq->p1->y) * $perp->y) / lineLength($pq);
+    return (($x->x - $pq->p1->x) * $perp->x + ($x->y - $pq->p1->y) * $perp->y)
+			/ lineLength($pq);
 }
 
 function getXp($u, $v, Line $pqp, Point $x) {
@@ -319,20 +345,21 @@ function getDestImgData($srcImgData, $trgImgData, $t) {
 }
 
 $warpedSrcImgData = warpImage($srcLines, $dstLines, $srcImgData);
-$warpedTrgImgData = warpImage($trgLines, $dstLines, $trgImgData);
-$destWarpedImgData = getDestImgData($warpedSrcImgData, $warpedTrgImgData, $t);
-$destNowarpedImgData = getDestImgData($srcImgData, $trgImgData, $t);
-
-// Create warped images:
-
 $filename = $morphDir . '/warp.src.01.png';
 saveImage($filename, $warpedSrcImgData);
+var_dump('Warped source image');
 
+$warpedTrgImgData = warpImage($trgLines, $dstLines, $trgImgData);
 $filename = $morphDir . '/warp.trg.01.png';
 saveImage($filename, $warpedTrgImgData);
+var_dump('Warped target image');
 
+$destWarpedImgData = getDestImgData($warpedSrcImgData, $warpedTrgImgData, $t);
 $filename = $morphDir . '/dest.warped.01.png';
 saveImage($filename, $destWarpedImgData);
+var_dump('Destination image warped');
 
-$filename = $morphDir . '/dest.nowarped.01.png';
-saveImage($filename, $destNowarpedImgData);
+$destNotWarpedImgData = getDestImgData($srcImgData, $trgImgData, $t);
+$filename = $morphDir . '/dest.notwarped.01.png';
+saveImage($filename, $destNotWarpedImgData);
+var_dump('Destination image not warped');
