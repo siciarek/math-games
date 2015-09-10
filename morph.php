@@ -9,18 +9,21 @@
  * http://matematyka.pisz.pl/forum/47244.html
  * http://www.matemaks.pl/rownanie-prostej-przechodzacej-przez-dwa-punkty.html
  */
-$srcImage = __DIR__ . '/images/morph/pic3.png';
-$trgImage = __DIR__ . '/images/morph/pic2.png';
+
 $src = [
     [ 326, 116, 298, 47 ],
-	[ 298, 47, 180, 43 ],
-	[ 180, 43, 145, 106 ],
+    [ 298, 47, 180, 43 ],
+    [ 180, 43, 145, 106 ],
 ];
+
 $trg = [
     [ 319, 151, 301, 88 ],
-	[ 301, 88, 181, 86 ],
-	[ 181, 86, 158, 149 ],
+    [ 301, 88, 181, 86 ],
+    [ 181, 86, 158, 149 ],
 ];
+
+$srcImage = __DIR__ . '/images/morph/pic3.png';
+$trgImage = __DIR__ . '/images/morph/pic2.png';
 
 $morphDir = __DIR__ . '/morph/';
 
@@ -32,13 +35,14 @@ $t = 0.5;
 $filename = $morphDir . '/src.01.png';
 $im = imagecreatefrompng($srcImage);
 $a = [];
-foreach($src as $P) {
-	imageline($im, $P[0], $P[1], $P[2], $P[3], 0x0000FF);
-	$a[] = [ $P[2], $P[3] ];
+foreach ($src as $P) {
+    imageline($im, $P[0], $P[1], $P[2], $P[3], 0x0000FF);
+    $a[] = [ $P[2], $P[3]];
 }
 
-foreach($a as $p)
-imagesetpixel($im, $p[0], $p[1], 0xFF0000);
+foreach ($a as $p) {
+    imagesetpixel($im, $p[0], $p[1], 0xFF0000);
+}
 
 imagepng($im, $filename);
 imagedestroy($im);
@@ -46,24 +50,30 @@ imagedestroy($im);
 $filename = $morphDir . '/trg.01.png';
 $im = imagecreatefrompng($trgImage);
 
-foreach($trg as $P) {
-	imageline($im, $P[0], $P[1], $P[2], $P[3], 0x0000FF);
+$a = [];
+
+foreach ($trg as $P) {
+    imageline($im, $P[0], $P[1], $P[2], $P[3], 0x0000FF);
+    $a[] = [ $P[2], $P[3]];
+}
+
+foreach ($a as $p) {
+    imagesetpixel($im, $p[0], $p[1], 0xFF0000);
 }
 
 imagepng($im, $filename);
 imagedestroy($im);
 
+
 $srcLines = [];
-foreach($src as $P) {
-	$srcLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
+foreach ($src as $P) {
+    $srcLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
 }
 
 $trgLines = [];
-foreach($trg as $P) {
-	$trgLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
+foreach ($trg as $P) {
+    $trgLines[] = new Line(new Point($P[0], $P[1]), new Point($P[2], $P[3]));
 }
-
-
 
 $dstLines = getDstLines($srcLines, $trgLines, $t);
 $srcImgData = getImageData($srcImage);
@@ -90,38 +100,37 @@ class Line {
         $this->p1 = $p1;
         $this->p2 = $p2;
     }
+
 }
 
 function getDstLines($srcLines, $trgLines, $t) {
-	$dst = [];
-	
-	for($i = 0; $i < count($srcLines); $i++) {
+    $dst = [];
 
-		$P = $srcLines[$i]->p1;
-		$Q = $srcLines[$i]->p2;
-		
-		$P_ = $trgLines[$i]->p1;
-		$Q_ = $trgLines[$i]->p2;
-				
-		$Pt = new Point((1 - $t) * $P->x + $t * $P_->x, (1 - $t) * $P->y + $t * $P_->y);
-		$Qt = new Point((1 - $t) * $Q->x + $t * $Q_->x, (1 - $t) * $Q->y + $t * $Q_->y);
-		
-		$dst[] = new Line($Pt, $Qt);
-	}
-	
-	return $dst;
+    for ($i = 0; $i < count($srcLines); $i++) {
+
+        $P = $srcLines[$i]->p1;
+        $Q = $srcLines[$i]->p2;
+
+        $P_ = $trgLines[$i]->p1;
+        $Q_ = $trgLines[$i]->p2;
+
+        $Pt = new Point((1 - $t) * $P->x + $t * $P_->x, (1 - $t) * $P->y + $t * $P_->y);
+        $Qt = new Point((1 - $t) * $Q->x + $t * $Q_->x, (1 - $t) * $Q->y + $t * $Q_->y);
+
+        $dst[] = new Line($Pt, $Qt);
+    }
+
+    return $dst;
 }
 
 function getU(Line $pq, Point $x) {
-    return (($x->x - $pq->p1->x) * ($pq->p2->x - $pq->p1->x) + ($x->y - $pq->p1->y) * ($pq->p2->y - $pq->p1->y))
-			/ squareLength($pq->p1, $pq->p2);
+    return (($x->x - $pq->p1->x) * ($pq->p2->x - $pq->p1->x) + ($x->y - $pq->p1->y) * ($pq->p2->y - $pq->p1->y)) / squareLength($pq->p1, $pq->p2);
 }
 
 function getV(Line $pq, Point $x) {
     $perp = perpendicular($pq);
 
-    return (($x->x - $pq->p1->x) * $perp->x + ($x->y - $pq->p1->y) * $perp->y)
-			/ lineLength($pq);
+    return (($x->x - $pq->p1->x) * $perp->x + ($x->y - $pq->p1->y) * $perp->y) / lineLength($pq);
 }
 
 function getXp($u, $v, Line $pqp, Point $x) {
@@ -136,7 +145,7 @@ function getXp($u, $v, Line $pqp, Point $x) {
     return $xp;
 }
 
-function point2LineD(Point $x, Line $pq) {
+function pointLineDist(Point $x, Line $pq) {
 
     $c;
     $d;
@@ -201,6 +210,7 @@ function warpImage($srcLines, $dstLines, $srcImgData) {
     $height = count($srcImgData);
 
     /* warping parameters */
+    
     $a = 1;
     $b = 1;
     $p = 0.5;
@@ -233,12 +243,12 @@ function warpImage($srcLines, $dstLines, $srcImgData) {
                 $di->y = $xp->y - $xi->y;
 
                 /* dist = shortest distance from X to Pi Qi */
-                $dist = point2LineD($xi, $dstLines[$i]);
-                $lengthp = linelength($dstLines[$i]);
+                $dist = pointLineDist($xi, $dstLines[$i]);
+                $length = linelength($dstLines[$i]);
 
-                /* weight = (lengthp / (a + dist))b */
+                /* weight = (length^p / (a + dist))^b */
 
-                $weight = pow(pow($lengthp, $p) / ($a + $dist), $b);
+                $weight = pow(pow($length, $p) / ($a + $dist), $b);
 
                 /* DSUM += Di * weight */
 
@@ -252,8 +262,8 @@ function warpImage($srcLines, $dstLines, $srcImgData) {
 
             /* X' = X + DSUM / weightsum */
 
-            $xp->x = intval($xi->x + $dsum->x / $weightsum);
-            $xp->y = intval($xi->y + $dsum->y / $weightsum);
+            $xp->x = $xi->x + $dsum->x / $weightsum;
+            $xp->y = $xi->y + $dsum->y / $weightsum;
 
             // Fill empty pixels:
 
@@ -310,7 +320,7 @@ function getImageData($imageFileName) {
         $srcImgData[$r] = [];
         for ($c = 0; $c < $width; $c++) {
             $rgb = imagecolorat($im, $c, $r);
-            
+
             $srcImgData[$r][$c] = [
                 ($rgb >> 16) & 0xFF,
                 ($rgb >> 8) & 0xFF,
@@ -318,13 +328,14 @@ function getImageData($imageFileName) {
             ];
         }
     }
+
     imagedestroy($im);
-    
+
     return $srcImgData;
 }
 
 function getDestImgData($srcImgData, $trgImgData, $t) {
-   
+
     $width = count($srcImgData[0]);
     $height = count($srcImgData);
 
