@@ -133,7 +133,7 @@ function getV(Line $pq, Point $x) {
     return (($x->x - $pq->p1->x) * $perp->x + ($x->y - $pq->p1->y) * $perp->y) / lineLength($pq);
 }
 
-function getXp($u, $v, Line $pqp, Point $x) {
+function getXp($u, $v, Line $pqp) {
     $xp = new Point();
 
     $len = lineLength($pqp);
@@ -222,7 +222,7 @@ function warpImage($srcLines, $dstLines, $srcImgData) {
     for ($r = 0; $r < $height; $r++) {
         for ($c = 0; $c < $width; $c++) {
 
-            $dsum = new Point();
+            $DSUM = new Point();
             $weightsum = 0;
             $xi = new Point($c, $r);
 
@@ -235,7 +235,7 @@ function warpImage($srcLines, $dstLines, $srcImgData) {
 
                 /* calculate X'i based on u,v and Pi'Qi' */
 
-                $xp = getXp($u, $v, $srcLines[$i], $xi);
+                $xp = getXp($u, $v, $srcLines[$i]);
 
                 /* calculate displacement Di = Xi' - Xi for this line */
 
@@ -252,8 +252,8 @@ function warpImage($srcLines, $dstLines, $srcImgData) {
 
                 /* DSUM += Di * weight */
 
-                $dsum->x += $di->x * $weight;
-                $dsum->y += $di->y * $weight;
+                $DSUM->x += $di->x * $weight;
+                $DSUM->y += $di->y * $weight;
 
                 /* weightsum += weight */
 
@@ -262,8 +262,8 @@ function warpImage($srcLines, $dstLines, $srcImgData) {
 
             /* X' = X + DSUM / weightsum */
 
-            $xp->x = $xi->x + $dsum->x / $weightsum;
-            $xp->y = $xi->y + $dsum->y / $weightsum;
+            $xp->x = $xi->x + $DSUM->x / $weightsum;
+            $xp->y = $xi->y + $DSUM->y / $weightsum;
 
             // Fill empty pixels:
 
