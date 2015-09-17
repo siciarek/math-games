@@ -4,22 +4,103 @@
  * Morphological Image Processing
  * 
  * https://www.cs.auckland.ac.nz/courses/compsci773s1c/lectures/ImageProcessing-html/topic4.htm
+ * http://aragorn.pb.bialystok.pl/~boldak/DIP/CPO-W05-v01-50pr.pdf
+ * http://ee.lamar.edu/gleb/dip/10-2%20-%20Morphological%20Image%20Processing.pdf
  */
+//StructuringElelement::$image = <<<SE
+//0 1 0
+//1 2 1
+//0 1 0 
+//SE;
+
 $se = new StructuringElelement();
 $img = new Image();
 
-$base = $img->getData();
-$complement = $img->getComplement()->getData();
-$erosion = $se->erosion($img);
-$dilation = $se->dilation($img);
+$di = Mip::dilation($img, $se);
 
-echo $img::display($base, 'base') . PHP_EOL;
-echo PHP_EOL;
-echo $img::display($complement, 'complement') . PHP_EOL;
-echo PHP_EOL;
-echo $img::display($erosion, 'erosion') . PHP_EOL;
-echo PHP_EOL;
-echo $img::display($dilation, 'dilation') . PHP_EOL;
+$diimg = new Image();
+$diimg->setData($di);
+
+$results = [
+    'support' => Mip::support($img)->getData(),
+    'complement' => Mip::complement($img)->getData(),
+    'erosion' => Mip::erosion($img, $se),
+    'dilation' => Mip::dilation($img, $se),
+    'boundary' => Mip::boundary($diimg, $se),
+];
+
+foreach ($results as $name => $data) {
+    echo $img::display($data, $name);
+    echo PHP_EOL;
+    echo PHP_EOL;
+}
+
+class Mip {
+
+    public static function boundary(Image $image, StructuringElelement $se) {
+
+        $base = $image->getData();
+        $erosion = self::erosion($image, $se);
+        $result = self::diff($base, $erosion);
+
+        return $result;
+    }
+    
+    public static function diff($first, $second) {
+        $result = [];
+        
+        for ($y = 0; $y < count($first); $y++) {
+            $result[$y] = [];
+            for ($x = 0; $x < count($first[0]); $x++) {
+                $result[$y][$x] = $first[$y][$x] != $second[$y][$x] ? Image::FOREGROUND : Image::BACKGROUND;
+            }
+        }        
+        
+        return $result;
+    }
+
+    public static function mul($first, $second) {
+        $result = [];
+        
+        for ($y = 0; $y < count($first); $y++) {
+            $result[$y] = [];
+            for ($x = 0; $x < count($first[0]); $x++) {
+                $result[$y][$x] = ($first[$y][$x] === Image::FOREGROUND AND $second[$y][$x] === Image::FOREGROUND) ? Image::FOREGROUND : Image::BACKGROUND;
+            }
+        }        
+        
+        return $result;
+    }
+    
+    public static function add($first, $second) {
+        $result = [];
+        
+        for ($y = 0; $y < count($first); $y++) {
+            $result[$y] = [];
+            for ($x = 0; $x < count($first[0]); $x++) {
+                $result[$y][$x] = ($first[$y][$x] === Image::FOREGROUND OR $second[$y][$x] === Image::FOREGROUND) ? Image::FOREGROUND : Image::BACKGROUND;
+            }
+        }        
+        
+        return $result;
+    }
+
+    public static function support(Image $image) {
+        return $image->getSupport();
+    }
+
+    public static function complement(Image $image) {
+        return $image->getComplement();
+    }
+
+    public static function erosion(Image $image, StructuringElelement $se) {
+        return $se->erosion($image);
+    }
+
+    public static function dilation(Image $image, StructuringElelement $se) {
+        return $se->dilation($image);
+    }
+}
 
 class Image {
 
@@ -61,6 +142,10 @@ IMG;
         }
     }
 
+    public function setData(array $data) {
+        $this->data = $data;
+    }
+    
     public static function display($data, $name = null, $save = true) {
         $temp = [];
 
@@ -73,7 +158,7 @@ IMG;
 
         if ($name !== null and $save === true) {
 
-            $filename = $name . '.png';
+            $filename = __DIR__ . '/mip/' . $name . '.png';
             $im = @imagecreatetruecolor($width, $height);
 
             for ($r = 0; $r < $height; $r++) {
@@ -92,14 +177,19 @@ IMG;
     }
 
     public function getComplement() {
+
         $cimage = self::$image;
         $cimage = preg_replace('/0/', 'X', $cimage);
         $cimage = preg_replace('/1/', '0', $cimage);
         $cimage = preg_replace('/X/', '1', $cimage);
-        
+
         return new Image($cimage);
     }
-    
+
+    public function getSupport() {
+        return new Image(self::$image);
+    }
+
     public function getData() {
         return $this->data;
     }
@@ -126,7 +216,7 @@ IMG;
 
 class StructuringElelement {
 
-    public static $structuringElement = <<<SE
+    public static $image = <<<SE
 1 1 1
 1 2 1
 1 1 1 
@@ -159,11 +249,11 @@ SE;
         return $result;
     }
 
-    public function __construct() {
+    public function __construct($image = null) {
 
         $se = [];
 
-        $temp = explode("\n", self::$structuringElement);
+        $temp = explode("\n", $image === null ? self::$image : $image);
 
         foreach ($temp as $row) {
             $row = trim($row);
