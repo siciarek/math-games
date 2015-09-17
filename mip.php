@@ -7,11 +7,11 @@
  * http://aragorn.pb.bialystok.pl/~boldak/DIP/CPO-W05-v01-50pr.pdf
  * http://ee.lamar.edu/gleb/dip/10-2%20-%20Morphological%20Image%20Processing.pdf
  */
-//StructuringElelement::$image = <<<SE
-//0 1 0
-//1 2 1
-//0 1 0 
-//SE;
+StructuringElelement::$image = <<<SE
+0 1 0
+1 2 1
+0 1 0 
+SE;
 
 $se = new StructuringElelement();
 $img = new Image();
@@ -30,9 +30,44 @@ $results = [
 ];
 
 foreach ($results as $name => $data) {
-    echo $img::display($data, $name);
+    echo Image::display($data, $name);
     echo PHP_EOL;
     echo PHP_EOL;
+}
+
+$starimg = new Image();
+
+$starImage = __DIR__ . '/images/star.png';
+$dat = getImageData($starImage);
+$starimg->setData($dat);
+
+$b = Mip::boundary($starimg, $se);
+Image::display($starimg->getData(), 'star');
+Image::display($b, 'star.boundries');
+
+
+
+function getImageData($imageFileName) {
+
+    $info = getimagesize($imageFileName);
+    $width = array_shift($info);
+    $height = array_shift($info);
+
+    $srcImgData = [];
+    $im = imagecreatefrompng($imageFileName);
+    for ($r = 0; $r < $height; $r++) {
+        $srcImgData[$r] = [];
+        for ($c = 0; $c < $width; $c++) {
+            $rgb = imagecolorat($im, $c, $r);
+
+            $col = $rgb === 0 ? Image::BACKGROUND : Image::FOREGROUND;
+			$srcImgData[$r][$c] = $col;
+        }
+    }
+
+    imagedestroy($im);
+
+    return $srcImgData;
 }
 
 class Mip {
@@ -144,6 +179,8 @@ IMG;
 
     public function setData(array $data) {
         $this->data = $data;
+		
+		return $this;
     }
     
     public static function display($data, $name = null, $save = true) {
@@ -178,12 +215,18 @@ IMG;
 
     public function getComplement() {
 
-        $cimage = self::$image;
-        $cimage = preg_replace('/0/', 'X', $cimage);
-        $cimage = preg_replace('/1/', '0', $cimage);
-        $cimage = preg_replace('/X/', '1', $cimage);
-
-        return new Image($cimage);
+		$cdata = [];
+		
+        for ($r = 0; $r < $this->getHeight(); $r++) {
+			$cdata[$r] = [];
+			for ($c = 0; $c < $this->getWidth(); $c++) {
+				$cdata[$r][$c] = $this->getValueAt($c, $r) === 0 ? 1 : 0;
+			}
+		}
+		
+		$cimg = new Image();
+		$cimg->setData($cdata);
+		return $cimg;
     }
 
     public function getSupport() {
@@ -205,7 +248,7 @@ IMG;
     public function getValueAt($x, $y) {
 
         // Out of image boundries:
-        if (!($y > 0 AND $x > 0 AND $x < $this->getWidth() - 1 AND $y < $this->getHeight() - 1)) {
+        if (!($y > 0 AND $x > 0 AND $x < $this->getWidth() AND $y < $this->getHeight())) {
             return self::BACKGROUND;
         }
 
