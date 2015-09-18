@@ -6,12 +6,10 @@
  * https://www.cs.auckland.ac.nz/courses/compsci773s1c/lectures/ImageProcessing-html/topic4.htm
  * http://aragorn.pb.bialystok.pl/~boldak/DIP/CPO-W05-v01-50pr.pdf
  * http://ee.lamar.edu/gleb/dip/10-2%20-%20Morphological%20Image%20Processing.pdf
+ * http://www.mathworks.com/help/images/ref/strel.html
+ * https://en.wikipedia.org/wiki/Mathematical_morphology
  */
-StructuringElelement::$image = <<<SE
-0 1 0
-1 2 1
-0 1 0 
-SE;
+//
 
 $se = new StructuringElelement();
 $img = new Image();
@@ -35,6 +33,13 @@ foreach ($results as $name => $data) {
     echo PHP_EOL;
 }
 
+
+
+$radius = 5;
+$data = drawCircle($radius);
+echo Image::display($data, 'circle');
+
+
 $starimg = new Image();
 
 $starImage = __DIR__ . '/images/star.png';
@@ -44,8 +49,6 @@ $starimg->setData($dat);
 $b = Mip::boundary($starimg, $se);
 Image::display($starimg->getData(), 'star');
 Image::display($b, 'star.boundries');
-
-
 
 function getImageData($imageFileName) {
 
@@ -61,13 +64,61 @@ function getImageData($imageFileName) {
             $rgb = imagecolorat($im, $c, $r);
 
             $col = $rgb === 0 ? Image::BACKGROUND : Image::FOREGROUND;
-			$srcImgData[$r][$c] = $col;
+            $srcImgData[$r][$c] = $col;
         }
     }
 
     imagedestroy($im);
 
     return $srcImgData;
+}
+
+function drawCircle($radius) {
+    
+    $size = $radius * 2 - 1;
+    $data = [];
+
+    $centerX = $radius - 1;
+    $centerY = $radius - 1;
+
+    for ($r = 0; $r < $size; $r++) {
+        $data[$r] = [];
+        for ($c = 0; $c < $size; $c++) {
+            $data[$r][$c] = Image::BACKGROUND;
+        }
+    }
+
+    $x = 0;
+    $y = $radius - 1;
+
+    $d = (5 - 4 * $y) / 4;
+
+    do {
+    
+        $offsets = [
+            [+$y, +$x],
+            [-$y, +$x],
+            [+$y, -$x],
+            [-$y, -$x],
+        ];
+        
+        foreach($offsets as $o) {
+            $data[$centerY + $o[0]][$centerX + $o[1]] = Image::FOREGROUND;
+            $data[$centerY + $o[1]][$centerX + $o[0]] = Image::FOREGROUND;
+        }
+
+        if ($d < 0) {
+            $d += 2 * $x + 1;
+        } else {
+            $d += 2 * ($x - $y) + 1;
+            $y--;
+        }
+        
+        $x++;
+        
+    } while ($x <= $y);
+
+    return $data;
 }
 
 class Mip {
@@ -80,43 +131,43 @@ class Mip {
 
         return $result;
     }
-    
+
     public static function diff($first, $second) {
         $result = [];
-        
+
         for ($y = 0; $y < count($first); $y++) {
             $result[$y] = [];
             for ($x = 0; $x < count($first[0]); $x++) {
                 $result[$y][$x] = $first[$y][$x] != $second[$y][$x] ? Image::FOREGROUND : Image::BACKGROUND;
             }
-        }        
-        
+        }
+
         return $result;
     }
 
     public static function mul($first, $second) {
         $result = [];
-        
+
         for ($y = 0; $y < count($first); $y++) {
             $result[$y] = [];
             for ($x = 0; $x < count($first[0]); $x++) {
                 $result[$y][$x] = ($first[$y][$x] === Image::FOREGROUND AND $second[$y][$x] === Image::FOREGROUND) ? Image::FOREGROUND : Image::BACKGROUND;
             }
-        }        
-        
+        }
+
         return $result;
     }
-    
+
     public static function add($first, $second) {
         $result = [];
-        
+
         for ($y = 0; $y < count($first); $y++) {
             $result[$y] = [];
             for ($x = 0; $x < count($first[0]); $x++) {
                 $result[$y][$x] = ($first[$y][$x] === Image::FOREGROUND OR $second[$y][$x] === Image::FOREGROUND) ? Image::FOREGROUND : Image::BACKGROUND;
             }
-        }        
-        
+        }
+
         return $result;
     }
 
@@ -135,10 +186,12 @@ class Mip {
     public static function dilation(Image $image, StructuringElelement $se) {
         return $se->dilation($image);
     }
+
 }
 
 class Image {
 
+    public static $dir = __DIR__ . '/mip/images/';
     public static $image = <<<IMG
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -179,10 +232,10 @@ IMG;
 
     public function setData(array $data) {
         $this->data = $data;
-		
-		return $this;
+
+        return $this;
     }
-    
+
     public static function display($data, $name = null, $save = true) {
         $temp = [];
 
@@ -195,7 +248,7 @@ IMG;
 
         if ($name !== null and $save === true) {
 
-            $filename = __DIR__ . '/mip/' . $name . '.png';
+            $filename = self::$dir . $name . '.png';
             $im = @imagecreatetruecolor($width, $height);
 
             for ($r = 0; $r < $height; $r++) {
@@ -215,18 +268,18 @@ IMG;
 
     public function getComplement() {
 
-		$cdata = [];
-		
+        $cdata = [];
+
         for ($r = 0; $r < $this->getHeight(); $r++) {
-			$cdata[$r] = [];
-			for ($c = 0; $c < $this->getWidth(); $c++) {
-				$cdata[$r][$c] = $this->getValueAt($c, $r) === 0 ? 1 : 0;
-			}
-		}
-		
-		$cimg = new Image();
-		$cimg->setData($cdata);
-		return $cimg;
+            $cdata[$r] = [];
+            for ($c = 0; $c < $this->getWidth(); $c++) {
+                $cdata[$r][$c] = $this->getValueAt($c, $r) === 0 ? 1 : 0;
+            }
+        }
+
+        $cimg = new Image();
+        $cimg->setData($cdata);
+        return $cimg;
     }
 
     public function getSupport() {
